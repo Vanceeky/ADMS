@@ -1,0 +1,280 @@
+<!--
+=========================================================
+* Argon Dashboard 2 - v2.0.4
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/argon-dashboard
+* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
+  <title>
+    ADMS | Lyceum-Northwestern University
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="/static/assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="/static/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="/static/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="/static/assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
+</head>
+
+<body class="">
+  <div class="container position-sticky z-index-sticky top-0">
+    <div class="row">
+      <div class="col-12">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
+          <div class="container-fluid">
+            <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="/static/pages/dashboard.html">
+              Lyceum-Northwestern University
+            </a>
+            <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
+              <span class="navbar-toggler-icon mt-2">
+                <span class="navbar-toggler-bar bar1"></span>
+                <span class="navbar-toggler-bar bar2"></span>
+                <span class="navbar-toggler-bar bar3"></span>
+              </span>
+            </button>
+            <div class="collapse navbar-collapse" id="navigation">
+              <ul class="navbar-nav mx-auto">
+
+                <li class="nav-item">
+                  <a class="nav-link me-2" href="{% url 'authentication:register-user' %}">
+                    <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
+                    Sign Up
+                  </a>
+                </li>
+                <li class="nav-item">
+                  <a class="nav-link me-2" href="{% url 'authentication:login-user' %}">
+                    <i class="fas fa-key opacity-6 text-dark me-1"></i>
+                    Sign In
+                  </a>
+                </li>
+              </ul>
+              <ul class="navbar-nav d-lg-block d-none">
+                <li class="nav-item">
+                    <a href="javascript:;" target="_blank" class="text-secondary me-xl-4 me-4">
+                        <span class="text-lg fab fa-facebook"></span>
+                      </a>
+                      <a href="javascript:;" target="_blank" class="text-secondary me-xl-4 me-4">
+                        <span class="text-lg fab fa-twitter"></span>
+                      </a>
+                      <a href="javascript:;" target="_blank" class="text-secondary me-xl-4 me-4">
+                        <span class="text-lg fab fa-instagram"></span>
+                      </a>
+
+
+                      
+                </li>
+              </ul>
+            </div>
+          </div>
+        </nav>
+        <!-- End Navbar -->
+      </div>
+    </div>
+  </div>
+  <main class="main-content  mt-0">
+    <section>
+      <div class="page-header min-vh-100">
+        <div class="container">
+          <div class="row">
+            <div class="col-lg-6 col-md-4 d-flex flex-column mx-lg-0  mx-auto">
+              <div class="card card-plain">
+                <div class="card-header pb-0 text-start">
+                  <h4 class="font-weight-bolder">Register Account</h4>
+                    <div id="select_type">
+                        <label> Please select: </label>
+                        <div class="text-center d-flex justify-content-center">
+                            
+                            <button type="button" class="btn btn-lg bg-gradient-info btn-sm w-100 mx-2 mt-4 mb-0">Student</button>
+                            <button type="button" class="btn btn-lg bg-gradient-info btn-sm w-100 mt-4 mb-0">Faculty</button>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="card-body">
+                   
+                  <form role="form" id="student_form">
+
+                    <p class="mb-0">Please provide your information</p>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Select Course</label>
+                        <select class="form-control" id="exampleFormControlSelect1">
+                          <option>Bachelor of Science in Information Technology</option>
+
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" placeholder="Student number" aria-label="Email" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" placeholder="Year (1st Year)" aria-label="Email" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" placeholder="Firstname" aria-label="Email" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" placeholder="Lastname" aria-label="Email" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="email" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Please upload your latest student id or student load</label>
+                        <input type="file" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
+                    </div>
+
+                    <div class="text-center">
+                      <button type="button" class="btn btn-lg bg-gradient-info btn-lg w-100 mt-4 mb-0">Create account</button>
+                    </div>
+                  </form>
+
+                  <form role="form" id="faculty_form">
+                    <p class="mb-0">Please provide your information</p>
+                    <div class="form-group">
+                        <label for="exampleFormControlSelect1">Select Department</label>
+                        <select class="form-control" id="exampleFormControlSelect1">
+                          <option>College of Information and Computing Studies</option>
+
+                        </select>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" placeholder="Employee number" aria-label="Email" required>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" placeholder="Firstname" aria-label="Email" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <input type="text" class="form-control form-control-lg" placeholder="Lastname" aria-label="Email" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <input type="email" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
+                    </div>
+                    <div class="mb-3">
+                        <label>Please upload your employee ID</label>
+                        <input type="file" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
+                    </div>
+                    <div class="text-center">
+                      <button type="button" class="btn btn-lg bg-gradient-info btn-lg w-100 mt-4 mb-0">Create account</button>
+                    </div>
+                  </form>
+                  
+                </div>
+                <div class="card-footer text-center pt-0 px-lg-2 px-1">
+                  <p class="mb-4 text-sm mx-auto">
+                    Already have an account?
+                    <a href="{% url 'authentication:login-user' %}" class="text-primary text-gradient font-weight-bold">Sign in</a>
+                  </p>
+                </div>
+              </div>
+            </div>
+            <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
+              <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="background-image: url('/static/assets/img/lnu-bg-2.jpg');
+          background-size: cover;">
+                <span class="mask bg-gradient-primary opacity-2"></span>
+                <h4 class="mt-5 text-white font-weight-bolder position-relative">Automated Document Management System</h4>
+                <p class="text-white position-relative">Lyceum-Northwestern University ACAD Office</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <!--   Core JS Files   -->
+  <script src="/static/assets/js/core/popper.min.js"></script>
+  <script src="/static/assets/js/core/bootstrap.min.js"></script>
+  <script src="/static/assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="/static/assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="/static/assets/js/argon-dashboard.min.js?v=2.0.4"></script>
+
+  <script>
+  
+        document.addEventListener("DOMContentLoaded", function() {
+            // Get references to the select type div and both forms
+            var selectTypeDiv = document.getElementById("select_type");
+            var studentForm = document.getElementById("student_form");
+            var facultyForm = document.getElementById("faculty_form");
+    
+            // Initially hide both forms
+            studentForm.style.display = "none";
+            facultyForm.style.display = "none";
+    
+            // Add event listeners to the buttons
+            selectTypeDiv.addEventListener("click", function(event) {
+                if (event.target.matches("#select_type button")) {
+                    // Hide both forms first
+                    studentForm.style.display = "none";
+                    facultyForm.style.display = "none";
+    
+                    // Determine which button was clicked and show the respective form
+                    if (event.target.textContent.trim() === "Student") {
+                        studentForm.style.display = "block";
+                    } else if (event.target.textContent.trim() === "Faculty") {
+                        facultyForm.style.display = "block";
+                    }
+                }
+            });
+        });
+
+    
+
+  </script>
+</body>
+
+</html>
