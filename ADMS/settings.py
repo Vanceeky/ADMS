@@ -11,8 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-from allauth.account.signals import user_signed_up
-from django.dispatch import receiver
+
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -35,9 +34,6 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
 
-    'allauth',
-    'allauth.account',
-    'allauth.socialaccount',
     
     'jazzmin',
 
@@ -53,17 +49,10 @@ INSTALLED_APPS = [
 
     'authentication.apps.AuthenticationConfig',
     'base.apps.BaseConfig',
+    'department.apps.DepartmentConfig',
 
 ]
 
-
-@receiver(user_signed_up)
-def set_user_inactive(sender, request, user, **kwargs):
-    print("Signal received!")
-    print(f"User signed up: {user.username}")  # Add this line
-    user.is_active = False
-    user.save()
-    print(f"User is_active after setting: {user.is_active}")  # Add this line
 
 
 MIDDLEWARE = [
@@ -74,7 +63,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
+
 ]
 
 ROOT_URLCONF = 'ADMS.urls'
@@ -162,7 +151,7 @@ MEDIA_URL = '/media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 
-AUTHENTICATION_BACKENDS = [
+""" AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 ]
@@ -175,6 +164,11 @@ ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_UNIQUE_EMAIL = True
 ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
 
-ACCOUNT_SIGNUP_REDIRECT_URL = '/accounts/confirm-email/'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/accounts/confirm-email/' """
 
 #LOGIN_REDIRECT_URL = '/your-desired-page/' 
+
+EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
+EMAIL_HOST_USER = '6d6a5edefc2f28'
+EMAIL_HOST_PASSWORD = '9a75c3728d6594'
+EMAIL_PORT = '2525'

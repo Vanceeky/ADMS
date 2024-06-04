@@ -21,18 +21,24 @@
   <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/apple-icon.png">
   <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
   <title>
-    ADMS | Lyceum-Northwestern University
+    Register account | ADMS | L-NU ACAD Office
   </title>
-  <!--     Fonts and icons     -->
-  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700" rel="stylesheet" />
+  <!--     Fonts and icons    
+  https://fonts.googleapis.com/css?family=Open+Sans:300,400,600,700
+  -->
+  <link href="/static/assets/css/fonts/open_sans.css" rel="stylesheet" />
   <!-- Nucleo Icons -->
   <link href="/static/assets/css/nucleo-icons.css" rel="stylesheet" />
   <link href="/static/assets/css/nucleo-svg.css" rel="stylesheet" />
-  <!-- Font Awesome Icons -->
-  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!-- Font Awesome Icons 
+  https://kit.fontawesome.com/42d5adcbca.js
+  -->
+  <script src="/static/assets/js/plugins/font-awesome.js" crossorigin="anonymous"></script>
   <link href="/static/assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- CSS Files -->
   <link id="pagestyle" href="/static/assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
+
+
 </head>
 
 <body class="">
@@ -40,53 +46,7 @@
     <div class="row">
       <div class="col-12">
         <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
-          <div class="container-fluid">
-            <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="/static/pages/dashboard.html">
-              Lyceum-Northwestern University
-            </a>
-            <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
-              <span class="navbar-toggler-icon mt-2">
-                <span class="navbar-toggler-bar bar1"></span>
-                <span class="navbar-toggler-bar bar2"></span>
-                <span class="navbar-toggler-bar bar3"></span>
-              </span>
-            </button>
-            <div class="collapse navbar-collapse" id="navigation">
-              <ul class="navbar-nav mx-auto">
-
-                <li class="nav-item">
-                  <a class="nav-link me-2" href="{% url 'authentication:register-user' %}">
-                    <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
-                    Sign Up
-                  </a>
-                </li>
-                <li class="nav-item">
-                  <a class="nav-link me-2" href="{% url 'authentication:login-user' %}">
-                    <i class="fas fa-key opacity-6 text-dark me-1"></i>
-                    Sign In
-                  </a>
-                </li>
-              </ul>
-              <ul class="navbar-nav d-lg-block d-none">
-                <li class="nav-item">
-                    <a href="javascript:;" target="_blank" class="text-secondary me-xl-4 me-4">
-                        <span class="text-lg fab fa-facebook"></span>
-                      </a>
-                      <a href="javascript:;" target="_blank" class="text-secondary me-xl-4 me-4">
-                        <span class="text-lg fab fa-twitter"></span>
-                      </a>
-                      <a href="javascript:;" target="_blank" class="text-secondary me-xl-4 me-4">
-                        <span class="text-lg fab fa-instagram"></span>
-                      </a>
-
-
-                      
-                </li>
-              </ul>
-            </div>
-          </div>
-        </nav>
+        {% include 'authentication/nav.html' %}
         <!-- End Navbar -->
       </div>
     </div>
@@ -100,6 +60,7 @@
               <div class="card card-plain">
                 <div class="card-header pb-0 text-start">
                   <h4 class="font-weight-bolder">Register Account</h4>
+                  
                     <div id="select_type">
                         <label> Please select: </label>
                         <div class="text-center d-flex justify-content-center">
@@ -112,93 +73,100 @@
                 </div>
                 <div class="card-body">
                    
-                  <form role="form" id="student_form">
+                  <form role="form" id="student_form" action="{%url 'authentication:register-user' %}" method="POST" enctype="multipart/form-data">
+
+                    {% csrf_token %}
 
                     <p class="mb-0">Please provide your information</p>
                     <div class="form-group">
                         <label for="exampleFormControlSelect1">Select Course</label>
-                        <select class="form-control" id="exampleFormControlSelect1">
-                          <option>Bachelor of Science in Information Technology</option>
-
+                        <select class="form-control" name="course">
+                          {% for course in courses %}
+                          <option value="{{course.id}}">{{ course.name }}</option>
+                          {% endfor %}
                         </select>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <input type="text" class="form-control form-control-lg" placeholder="Student number" aria-label="Email" required>
+                                <input type="text" name="student_number"class="form-control form-control-lg" placeholder="Student number" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <input type="text" class="form-control form-control-lg" placeholder="Year (1st Year)" aria-label="Email" required>
+                                <input type="text" name="year_level" class="form-control form-control-lg" placeholder="Year (1st Year)" required>
                             </div>
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <input type="text" class="form-control form-control-lg" placeholder="Firstname" aria-label="Email" required>
+                                <input type="text" name="firstname" class="form-control form-control-lg" placeholder="Firstname" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <input type="text" class="form-control form-control-lg" placeholder="Lastname" aria-label="Email" required>
+                                <input type="text" name="lastname" class="form-control form-control-lg" placeholder="Lastname" required>
                             </div>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <input type="email" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
+                        <input type="email"  name="email" class="form-control form-control-lg" placeholder="Email" required>
                     </div>
                     <div class="mb-3">
                         <label>Please upload your latest student id or student load</label>
-                        <input type="file" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
+                        <input type="file" name="proof_of_enrollment" class="form-control form-control-lg" placeholder="proof_of_enrollment" accept=".pdf,.jpg,.jpeg,image/*" required>
                     </div>
 
                     <div class="text-center">
-                      <button type="button" class="btn btn-lg bg-gradient-info btn-lg w-100 mt-4 mb-0">Create account</button>
+                      <button type="submit" class="btn btn-lg bg-gradient-info btn-lg w-100 mt-4 mb-0">Create account</button>
                     </div>
                   </form>
 
-                  <form role="form" id="faculty_form">
+                  <form role="form" id="faculty_form" action="{% url 'authentication:register-employee' %}" method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
                     <p class="mb-0">Please provide your information</p>
                     <div class="form-group">
                         <label for="exampleFormControlSelect1">Select Department</label>
-                        <select class="form-control" id="exampleFormControlSelect1">
-                          <option>College of Information and Computing Studies</option>
-
+                        <select class="form-control" name="department">
+                          {% for department in departments %}
+                          <option value="{{ department.id }}">{{ department.name }}</option>
+                          {% endfor %}
                         </select>
                     </div>
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-md-5">
                             <div class="mb-3">
-                                <input type="text" class="form-control form-control-lg" placeholder="Employee number" aria-label="Email" required>
+                                <input type="text" name="employee_number" class="form-control form-control-lg" placeholder="Employee number" required>
                             </div>
                         </div>
+                        <div class="col-md-7">
+                          <div class="mb-3">
+                              <input type="email" name="email" class="form-control form-control-lg" placeholder="Company Email" required>
+                          </div>
+                      </div>
 
                     </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <input type="text" class="form-control form-control-lg" placeholder="Firstname" aria-label="Email" required>
+                                <input type="text" name="firstname" class="form-control form-control-lg" placeholder="Firstname" required>
                             </div>
                         </div>
                         <div class="col-md-6">
                             <div class="mb-3">
-                                <input type="text" class="form-control form-control-lg" placeholder="Lastname" aria-label="Email" required>
+                                <input type="text" name="lastname" class="form-control form-control-lg" placeholder="Lastname" required>
                             </div>
                         </div>
                     </div>
 
                     <div class="mb-3">
-                        <input type="email" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
-                    </div>
-                    <div class="mb-3">
                         <label>Please upload your employee ID</label>
-                        <input type="file" class="form-control form-control-lg" placeholder="Email" aria-label="Email" required>
+                        <input type="file" name="employee_id" class="form-control form-control-lg" placeholder="Employee ID" required>
                     </div>
                     <div class="text-center">
-                      <button type="button" class="btn btn-lg bg-gradient-info btn-lg w-100 mt-4 mb-0">Create account</button>
+                      <button type="submit" id="employee_btn" class="btn btn-lg bg-gradient-info btn-lg w-100 mt-4 mb-0">Create account</button>
                     </div>
                   </form>
                   
@@ -206,7 +174,7 @@
                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
                   <p class="mb-4 text-sm mx-auto">
                     Already have an account?
-                    <a href="{% url 'authentication:login-user' %}" class="text-primary text-gradient font-weight-bold">Sign in</a>
+                    <a href="{% url 'authentication:login-page' %}" class="text-primary text-gradient font-weight-bold">Sign in</a>
                   </p>
                 </div>
               </div>
@@ -225,23 +193,9 @@
     </section>
   </main>
   <!--   Core JS Files   -->
-  <script src="/static/assets/js/core/popper.min.js"></script>
-  <script src="/static/assets/js/core/bootstrap.min.js"></script>
-  <script src="/static/assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="/static/assets/js/plugins/smooth-scrollbar.min.js"></script>
-  <script>
-    var win = navigator.platform.indexOf('Win') > -1;
-    if (win && document.querySelector('#sidenav-scrollbar')) {
-      var options = {
-        damping: '0.5'
-      }
-      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
-    }
-  </script>
-  <!-- Github buttons -->
-  <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Soft Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="/static/assets/js/argon-dashboard.min.js?v=2.0.4"></script>
+  {% include 'includes/scripts.html' %}
+
+
 
   <script>
   
@@ -270,11 +224,190 @@
                     }
                 }
             });
+
+            
         });
 
     
 
   </script>
+
+<!-- Include jQuery -->
+
+
+
+<!--
+
+<script>
+  $(document).ready(function() {
+    $('#student_form').submit(function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registration submitted successfully!',
+                        text: response.message,
+                    }).then(function() {
+                        
+                        window.location.href = '/login/';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message,
+                    });
+                }
+            },
+            error: function(xhr, errmsg, err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while processing your request. Please try again later.',
+                });
+            }
+        });
+    });
+});
+
+</script>
+
+<script>
+  $(document).ready(function() {
+    $('#faculty_form').submit(function(e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'POST',
+            url: $(this).attr('action'),
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function(response) {
+                if (response.success) {
+                    Swal.fire({
+                        icon: 'success',
+                        title: 'Registration submitted successfully!',
+                        text: response.message,
+                    }).then(function() {
+                        
+                        window.location.href = '/login/';
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Error',
+                        text: response.message,
+                    });
+                }
+            },
+            error: function(xhr, errmsg, err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Error',
+                    text: 'An error occurred while processing your request. Please try again later.',
+                });
+            }
+        });
+    });
+});
+
+</script>
+
+-->
+
+<script>
+  
+  $(document).ready(function() {
+    $('form#student_form, form#faculty_form').submit(function(e) {
+      e.preventDefault(); // Prevent default form submission
+  
+      const form = $(this); // Reference the submitted form
+  
+      Swal.fire({
+        title: 'Please wait...',
+        text: 'Submitting your registration...',
+        allowEscapeKey: false,
+        allowOutsideClick: false,
+        didOpen: () => {
+          Swal.showLoading();
+          $.ajax({
+            type: 'POST',
+            url: form.attr('action'),
+            data: new FormData(this),
+            processData: false,
+            contentType: false,
+            success: function(response) {
+              Swal.hideLoading();
+              if (response.success) {
+                Swal.fire({
+                  icon: 'success',
+                  title: 'Registration submitted successfully!',
+                  text: response.message,
+                }).then(function() {
+                  window.location.href = '/login/';
+                });
+              } else {
+                Swal.fire({
+                  icon: 'error',
+                  title: 'Error',
+                  text: response.message,
+                });
+              }
+            },
+            error: function(xhr, errmsg, err) {
+              Swal.hideLoading();
+              Swal.fire({
+                icon: 'error',
+                title: 'Error',
+                text: 'An error occurred while processing your request. Please try again later.',
+              });
+            }
+          });
+        }
+      });
+    });
+  });
+  
+  
+  
+</script>
+
+<script>
+  $(document).ready(function() {
+    const emailInput = $('input[name="email"]');
+    const emailBtn = $('#employee_btn');
+  
+    // Enable button by default (optional)
+    emailBtn.prop('disabled', false);  // Use .prop() for setting disabled attribute
+  
+    emailInput.on('keyup change', function() {
+      const emailValue = $(this).val();
+      const validEmail = emailValue.endsWith('@lyceum.edu.ph');
+  
+      if (validEmail) {
+        $(this).removeClass('is-invalid');
+        $(this).addClass('is-valid');
+        emailBtn.prop('disabled', false);  // Enable button if valid
+      } else {
+        $(this).removeClass('is-valid');
+        $(this).addClass('is-invalid');
+        emailBtn.prop('disabled', true);   // Disable button if invalid
+      }
+    });
+  });
+  
+  </script>
+
+  
+
+
 </body>
 
 </html>
