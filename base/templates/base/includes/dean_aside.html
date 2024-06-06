@@ -1,0 +1,139 @@
+<ul class="navbar-nav">
+    <li class="nav-item">
+      <a class="nav-link {% if request.path == '/dean-dashboard/' %}active{% endif %}" href="{% url 'base:dean-dashboard' %}">
+        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">Home</span>
+      </a>
+    </li>
+    <li class="nav-item">
+        <a data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link {% if request.path == '/request/pending/' %}active{% endif %}" aria-controls="dashboardsExamples" role="button" aria-expanded="true">
+          <div class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-shop text-primary text-sm opacity-10"></i>
+          </div>
+          <span class="nav-link-text ms-1">Requests</span>
+        </a>
+        <div class="collapse show" id="dashboardsExamples" style="">
+          <ul class="nav ms-4">
+
+
+              <li class="nav-item ">
+                <a class="nav-link " data-bs-toggle="collapse" aria-expanded="false" href="#vrExamples">
+                <span class="sidenav-mini-icon"> V </span>
+                <span class="sidenav-normal"> IP Mark Removal <b class="caret"></b></span>
+                </a>
+                <div class="collapse " id="vrExamples">
+                    <ul class="nav nav-sm flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
+                            <span class="sidenav-mini-icon text-xs"> V </span>
+                            <span class="sidenav-normal"> Pending </span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                          <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
+                          <span class="sidenav-mini-icon text-xs"> V </span>
+                          <span class="sidenav-normal"> Processing </span>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                          <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
+                          <span class="sidenav-mini-icon text-xs"> V </span>
+                          <span class="sidenav-normal"> Approved </span>
+                          </a>
+                      </li>
+                    </ul>
+                </div>
+              </li>
+
+              <li class="nav-item ">
+                <a class="nav-link " data-bs-toggle="collapse" aria-expanded="false" href="#vrExamples2">
+                <span class="sidenav-mini-icon"> V </span>
+                <span class="sidenav-normal"> Leave request <b class="caret"></b></span>
+                </a>
+                <div class="collapse " id="vrExamples2">
+                    <ul class="nav nav-sm flex-column">
+                      <li class="nav-item">
+                          <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
+                          <span class="sidenav-mini-icon text-xs"> V </span>
+                          <span class="sidenav-normal"> Pending </span>
+                          </a>
+                      </li>
+                      <li class="nav-item">
+                        <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
+                        <span class="sidenav-mini-icon text-xs"> V </span>
+                        <span class="sidenav-normal"> Processing </span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
+                        <span class="sidenav-mini-icon text-xs"> V </span>
+                        <span class="sidenav-normal"> Approved </span>
+                        </a>
+                    </li>
+
+                    </ul>
+                </div>
+              </li>
+
+
+          </ul>
+        </div>
+    </li>
+
+
+    <li class="nav-item">
+        <a data-bs-toggle="collapse" href="#dashboardsExamples3" class="nav-link {% if request.path == '/students/' %} active {% endif %}" aria-controls="dashboardsExamples" role="button" aria-expanded="true">
+          <div class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="ni ni-shop text-primary text-sm opacity-10"></i>
+          </div>
+          <span class="nav-link-text ms-1">Department</span>
+        </a>
+        <div class="collapse show" id="dashboardsExamples3" style="">
+          <ul class="nav ms-4">
+              <li class="nav-item">
+                <a class="nav-link {% if request.path == '/request/pending/' %}active{% endif %}" href="{% url 'base:request-page' %}">
+                <span class="sidenav-mini-icon"> D </span>
+                <span class="sidenav-normal"> Files </span>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link " href="../../pages/dashboards/automotive.html">
+                <span class="sidenav-mini-icon"> A </span>
+                <span class="sidenav-normal"> Faculty </span>
+                </a>
+              </li>
+              <li class="nav-item ">
+                <a class="nav-link {% if request.path == '/students/' %}active{% endif %}" href="{% url 'base:students' %}">
+                <span class="sidenav-mini-icon"> A </span>
+                <span class="sidenav-normal"> Students </span>
+                </a>
+            </li>
+
+
+          </ul>
+        </div>
+    </li>
+
+    <li class="nav-item mt-3">
+      <h6 class="ps-4 ms-2 text-uppercase text-xs font-weight-bolder opacity-6">Account</h6>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link " href="./pages/profile.html">
+        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <i class="ni ni-single-02 text-dark text-sm opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">Profile</span>
+      </a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link " href="{% url 'authentication:logout-user' %}">
+        <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
+          <i class="ni ni-single-copy-04 text-warning text-sm opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">Sign Out</span>
+      </a>
+    </li>
+
+  </ul>

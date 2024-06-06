@@ -11,6 +11,8 @@ class Student(models.Model):
     avatar = models.ImageField(default='/avatars/avatar-default-icon.png',upload_to='avatars/', null=True, blank=True)
     proof_of_enrollment = models.FileField(upload_to='proofs/', null=True, blank=True)
 
+    date_created = models.DateTimeField(auto_now_add=True, null = True, blank = True)
+
     def __str__(self):
         return self.user.username
     
@@ -21,5 +23,7 @@ class Employee(models.Model):
     avatar = models.ImageField(default='/avatars/avatar-default-icon.png',upload_to='avatars/', null=True, blank=True)
     proof_of_employment = models.FileField(upload_to='proofs/', null=True, blank=True)
 
+    date_created = models.DateTimeField(auto_now_add=True, null = True, blank = True)
+    
     def __str__(self):
         return self.user.username

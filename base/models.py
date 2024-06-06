@@ -13,11 +13,13 @@ class IPMarkRemovalRequest(models.Model):
     sem_year = models.CharField(max_length=50)
 
     instructor = models.ForeignKey(Employee, on_delete=models.CASCADE)
-    dean = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True)
+    dean = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name='dean')
+    acad = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name='acad')
+    registrar = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name='registrar')
 
     approved_by_faculty = models.BooleanField(default=False)
     approved_by_dean = models.BooleanField(default=False)
-    approved_by_ACAD = models.BooleanField(default=True)
+    approved_by_ACAD = models.BooleanField(default=False)
     approved_by_registrar = models.BooleanField(default=False)
 
     STATUS_CHOICES = (

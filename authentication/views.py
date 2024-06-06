@@ -43,6 +43,8 @@ def login_user(request):
                     return redirect('base:student-dashboard')
                 elif user.groups.filter(name='faculty').exists():
                     return redirect('base:faculty-dashboard')
+                elif user.groups.filter(name='dean').exists():
+                    return redirect('base:dean-dashboard')
                 else:
                     # Handle unexpected scenario where user isn't in either group
                     messages.warning(request, 'Your account is not associated with a known group. Please contact the administrator.')

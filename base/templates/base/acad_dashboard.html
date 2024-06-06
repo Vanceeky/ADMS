@@ -1,0 +1,384 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ACAD Dashboard
+{% endblock %}
+
+
+{% block aside %}
+
+{% include 'base/includes/acad_aside.html' %}
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container-fluid py-4">
+
+    <div class="row">
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">IP Mark request</p>
+                                <h5 class="font-weight-bolder">
+                                    {{ IPrequest.count }} 3 
+                                </h5>
+                                <p class="mb-0">
+                                    <span class="text-success text-sm font-weight-bolder">+55%</span>
+                                    since yesterday
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-primary shadow-primary text-center rounded-circle">
+                                <i class="ni ni-money-coins text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Faculty Leave Request</p>
+                                <h5 class="font-weight-bolder">
+                                    3
+                                </h5>
+                                <p class="mb-0">
+                                    <span class="text-success text-sm font-weight-bolder">+3%</span>
+                                    since last week
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-danger shadow-danger text-center rounded-circle">
+                                <i class="ni ni-world text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Students</p>
+                                <h5 class="font-weight-bolder">
+                                    + {{ students.count }}
+                                </h5>
+                                <p class="mb-0">
+                                    <span class="text-danger text-sm font-weight-bolder">-2%</span>
+                                    since last quarter
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-success shadow-success text-center rounded-circle">
+                                <i class="ni ni-paper-diploma text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-3 col-sm-6">
+            <div class="card">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-8">
+                            <div class="numbers">
+                                <p class="text-sm mb-0 text-uppercase font-weight-bold">Faculty</p>
+                                <h5 class="font-weight-bolder">
+                                   + {{ employees.count }}
+                                </h5>
+                                <p class="mb-0">
+                                    <span class="text-success text-sm font-weight-bolder">+5%</span> than last month
+                                </p>
+                            </div>
+                        </div>
+                        <div class="col-4 text-end">
+                            <div class="icon icon-shape bg-gradient-warning shadow-warning text-center rounded-circle">
+                                <i class="ni ni-cart text-lg opacity-10" aria-hidden="true"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mt-4">
+
+        <div class="col-lg-9 mb-lg-0 mb-4">
+          <div class="card mb-4">
+            <div class="card-header pb-0">
+                <h6>IP Mark Removal Requests</h6>
+            </div>
+            <div class="card-body px-0 pt-0 pb-2">
+              <div class="table-responsive p-3">
+                <table class="table align-items-center mb-0">
+                  <thead>
+                    <tr>
+                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
+                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Student</th>
+                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Subject</th>
+                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Instructor</th>
+                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Dean</th>
+                      <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Remarks</th>
+
+                      <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
+                      <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    
+                    {% for ip in IPrequest %}
+                    {% if ip.approved_by_dean and ip.approved_by_faculty %}
+                    {% if not ip.approved_by_acad %}
+
+                        <tr>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-md">IP Mark Removal</h6>
+                                    <p class="text-md text-secondary mb-0">Ticket #{{ip.id}}</p>
+                            
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-md">{{ ip.student.user.last_name }}, {{ ip.student.user.first_name}}</h6>
+                                    <p class="text-md text-secondary mb-0">{{ ip.student.student_id}}</p>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-md">{{ip.subject_code}}</h6>
+                                    <p class="text-md text-secondary mb-0">{{ip.subject_name}}</p>
+                                </div>
+                            </td>
+                            <td>
+                                <p class="text-md text-secondary mb-0">Approved by:</p>
+                                <p class="text-md font-weight-bold mb-0">{{ ip.instructor.user.first_name }} {{ ip.instructor.user.last_name}}</p>
+                            </td>
+                            <td>
+                                <p class="text-md text-secondary mb-0">Approved by:</p>
+                                <p class="text-md font-weight-bold mb-0">{{ ip.dean.first_name }} {{ ip.dean.last_name}}</p>
+                            </td>
+
+                            <td>
+                                {% for ip_mark in ip.ipmark_set.all %}
+                                <p class="text-md font-weight-bold mb-0">{{ ip_mark.remarks }}</p>
+                                <p class="text-md text-secondary mb-0">Final Grade: {{ip_mark.final_grade}}</p>
+                               
+                                {% endfor %}
+                            </td>
+
+                            <td class="align-middle text-center text-md">
+                                {% if not ip.approved_by_acad %}
+                                    <span class="badge bg-gradient-warning">Pending</span>
+                                {% endif %}
+                            </td>
+                            <td class="text-md d-flex justify-content-center mt-3">
+                                {% if not ip.approved_by_acad %}
+                                    <a href="#" class="mx-2 process-button approve-link" data-request-id="{{ ip.id }}"
+                                        data-bs-toggle="tooltip" data-bs-title="Approve request">
+                                        <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                                    </a>
+                                {% endif %}
+                            </td>
+
+                            <!-- 
+                            <td>
+                                <ul>
+                                    {% for file in ip.additionalfile_set.all %}
+                                    <li>{{ file.file }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+
+                            --> 
+                        
+
+                        </tr>
+                    {% endif %}
+                    
+                    
+                    {% endif %}
+                {% endfor %}
+                
+    
+    
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+        <div class="col-lg-3">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                  <div class="card-header pb-0 p-3">
+                      <h6 class="mb-0">Requests</h6>
+                  </div>
+                  <div class="card-body p-3">
+                      <ul class="list-group">
+                          <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                              <div class="d-flex align-items-center">
+                                  <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                                      <i class="ni ni-mobile-button text-white opacity-10"></i>
+                                  </div>
+                                  <div class="d-flex flex-column">
+                                      <h6 class="mb-1 text-dark text-sm">IP Mark Removal Request</h6>
+                                      <span class="text-xs">{{ pending_dean.count }} in pending, <span class="font-weight-bold">{{ approved_dean.count }} approved</span></span>
+                                  </div>
+                              </div>
+                              <div class="d-flex">
+                                  <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
+                              </div>
+                          </li>
+                          <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                              <div class="d-flex align-items-center">
+                                  <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                                      <i class="ni ni-tag text-white opacity-10"></i>
+                                  </div>
+                                  <div class="d-flex flex-column">
+                                      <h6 class="mb-1 text-dark text-sm">Faculty Leave Request</h6>
+                                      <span class="text-xs">2 pending, <span class="font-weight-bold">1 approved</span></span>
+                                  </div>
+                              </div>
+                              <div class="d-flex">
+                                  <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
+                              </div>
+    
+                      </ul>
+                  </div>
+              </div>
+            </div>
+            
+            <div class="col-md-12 mt-3">
+              <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <h6>User Account Approval</h6>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                    <div class="table-responsive p-0">
+                        <table class="table align-items-center mb-0">
+                            <thead>
+                                <tr>
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User</th>
+                                    
+                                    <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date Created</th>
+                                    <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Proof</th>
+                                    <th class="text-secondary opacity-7"></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                              {% for stud in students %}
+                              {% if stud.user.is_active == False %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div>
+                                                <img src="{{ stud.avatar.url}}" class="avatar avatar-sm me-3" alt="user1">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ stud.user.last_name}}, {{ stud.user.first_name}} ({{ stud.student_id }})</h6>
+                                                <p class="text-xs text-secondary mb-0">{{ stud.user.email}}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-xs text-secondary mb-0">{{ stud.date_created|time}}</p>
+                                        <p class="text-xs font-weight-bold mb-0">{{ stud.date_created|date}}</p>
+                                    </td>
+        
+                                    <td class="align-middle text-center">
+                                        <a href="{{ stud.proof_of_enrollment.url }}" target="_blank"><span class="text-secondary text-xs font-weight-bold">{{ stud.proof_of_enrollment}}</span></a>
+                                    </td>
+    
+        
+                                  <td class="align-middle">
+                                   
+                                    
+                              
+                                      <a href="javascript:;" class="mx-2 accept-request" data-request-id="{{stud.user.id}}"
+                                      data-bs-toggle="tooltip" data-bs-title="Accept Request">
+                                      <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                                      </a>
+                                    
+        
+                                  </td>
+                                </tr>
+                                {% endif %}
+                              {% endfor %}
+                              
+                              {% for emp in employees %}
+                              {% if emp.user.is_active == False %}
+                                <tr>
+                                    <td>
+                                        <div class="d-flex px-2 py-1">
+                                            <div>
+                                                <img src="{{ emp.avatar.url }}" class="avatar avatar-sm me-3" alt="user1">
+                                            </div>
+                                            <div class="d-flex flex-column justify-content-center">
+                                                <h6 class="mb-0 text-sm">{{ emp.user.last_name }}, {{ emp.user.first_name }} ({{ emp.employee_id }})</h6>
+                                                <p class="text-xs text-secondary mb-0">{{ emp.user.email }}</p>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+                                      <p class="text-xs text-secondary mb-0">{{ emp.date_created|time}}</p>
+                                      <p class="text-xs font-weight-bold mb-0">{{ emp.date_created|date}}</p>
+                                    </td>
+                                    <td class="align-middle text-center">
+                                      <a href="{{ emp.proof_of_employment.url }}" target="_blank"><span class="text-secondary text-xs font-weight-bold">{{ emp.proof_of_employment}}</span></a>
+                                  </td>
+    
+        
+                                  <td class="align-middle">
+        
+                              
+                                      <a href="javascript:;" class="mx-2 accept-request" data-request-id="{{ emp.user.id}}"
+                                      data-bs-toggle="tooltip" data-bs-title="Accept Request">
+                                      <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                                      </a>
+        
+                                  </td>
+                                </tr>
+                              {% endif %}
+                              {% endfor %}
+        
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+    
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+{% endblock %}

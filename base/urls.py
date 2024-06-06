@@ -26,6 +26,15 @@ urlpatterns = [
 
     #DEAN URLS
     path('dean-dashboard/', views.dean_dashboard, name='dean-dashboard'),
+    path('students/', views.dean_students, name='students'),
+
+    path('approve-IPMarkRemoval-request/<int:request_id>/', views.approved_IP_request, name='approve-IPMarkRemoval-request'),
+    path('accept-user/<str:user_id>/', views.accept_user, name='accept-user'),
+
+
+    #ACAD URLS
+    path('acad/', views.acad_dashboard, name='acad-dashboard'),
+
 
 ]
 

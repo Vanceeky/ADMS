@@ -264,7 +264,7 @@ Faculty Dashboard
                             </a>
                             <a href="javascript:;" class="mx-2" data-bs-toggle="tooltip" data-bs-title="Decline">
                                 <i class="fas fa-trash text-secondary" aria-hidden="true"></i>
-                               </a>
+                              </a>
                             {% endif %}
 
 
@@ -309,7 +309,7 @@ Faculty Dashboard
             <form action="{% url 'base:submit-IP-Mark' %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
 
-                <input type="text" name="requestID" id="requestID" value="">
+                <input type="hidden" name="requestID" id="requestID" value="">
 
                 <div class="row text-center">
                     <div class="col-md-3">
@@ -373,7 +373,7 @@ Faculty Dashboard
 
 
 {% block javascripts %}
-<script>
+  <script>
     document.addEventListener("DOMContentLoaded", function() {
       var links = document.querySelectorAll("a[href*='/files/']"); 
       for (var i = 0; i < links.length; i++) {

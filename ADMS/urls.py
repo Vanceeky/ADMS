@@ -23,4 +23,7 @@ urlpatterns = [
     path('', include('authentication.urls')),
     path('', include('department.urls')),
 
+    path('accounts/two-factor/', include('allauth_2fa.urls')),
+    path('accounts/', include('allauth.urls')),
+
 ]

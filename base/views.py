@@ -7,6 +7,7 @@ from django.http import JsonResponse
 from django.db.models import Q
 from base.models import *
 from django.contrib import messages
+from django.core.mail import send_mail
 
 # Create your views here.
 
@@ -160,13 +161,103 @@ def submitIPMark(request):
 def dean_dashboard(request):
 
     department = Department.objects.get(dean = request.user)
-    courses = Course.objects.filter(department = department)
-    IPrequest = IPMarkRemovalRequest.objects.filter(dean = department.dean)
+    course = Course.objects.get(department = department)
+   # IPrequest = IPMarkRemovalRequest.objects.filter(dean = department.dean)
+    IPrequest = IPMarkRemovalRequest.objects.filter(dean=department.dean).prefetch_related('additionalfile_set', 'ipmark_set')
+
+    approved_dean = IPrequest.filter(approved_by_dean = True)
+    pending_dean = IPrequest.filter(approved_by_dean = False)
+
+
+    students = Student.objects.filter(course = course)
+    employees = Employee.objects.filter(department = department)
 
     context = {
         'IPrequest': IPrequest,
-        'courses': courses,
         'department': department,
+        'students': students,
+        'employees': employees,
+
+        'approved_dean': approved_dean,
+        'pending_dean': pending_dean
+
     }
 
     return render(request, 'base/dean_dashboard.html', context)
+
+
+def dean_faculty(request):
+    return render(request, 'base/dean_faculty.html')
+
+def dean_students(request):
+
+    department = Department.objects.get(dean = request.user)
+    course = Course.objects.get(department = department)
+    students = Student.objects.filter(course = course)
+    context = {
+        'students': students,
+    }
+    return render(request, 'base/students.html', context)
+
+
+def approved_IP_request(request, request_id):
+    IPrequest = IPMarkRemovalRequest.objects.get(id = request_id)
+    IPrequest.approved_by_dean = True
+    IPrequest.save()
+
+    return redirect('base:dean-dashboard')
+
+def accept_user(request, user_id):
+    user = User.objects.get(id = user_id)
+    user.is_active = True
+    user.save()
+
+    # Email notification content
+    subject = 'Lyceum Account Activated'
+    message = f"""
+    Hi {user.first_name} {user.last_name},
+
+    Your account at Lyceum has been successfully activated.
+
+    You can now log in using your credentials.
+    
+    
+    Username: {user.username}
+    Password: {user.username}
+    Email: {user.email}
+
+    Thank you for choosing Lyceum!
+
+    Sincerely,
+    Lyceum Registration Team
+    """
+
+    # Send email notification to the user
+    send_mail(
+        subject,
+        message,
+        'noreply@lyceum.edu.ph', 
+        [user.email],
+        fail_silently=False,
+    )
+    return redirect('base:dean-dashboard')
+
+
+
+
+
+
+
+
+
+##############################################################
+
+def acad_dashboard(request):
+    #IPrequest = IPMarkRemovalRequest.objects.all()
+
+    IPrequest = IPMarkRemovalRequest.objects.prefetch_related('additionalfile_set', 'ipmark_set').all()
+    
+    context = {
+        'IPrequest': IPrequest,
+    }
+    return render(request, 'base/acad_dashboard.html', context)
