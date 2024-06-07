@@ -158,6 +158,11 @@ def submitIPMark(request):
 ####################################################################################
 #DEAN Views
 
+
+def dean_profile(request):
+    return render(request, 'base/dean_profile.html')
+
+
 def dean_dashboard(request):
 
     department = Department.objects.get(dean = request.user)
@@ -256,8 +261,63 @@ def acad_dashboard(request):
     #IPrequest = IPMarkRemovalRequest.objects.all()
 
     IPrequest = IPMarkRemovalRequest.objects.prefetch_related('additionalfile_set', 'ipmark_set').all()
-    
+    pending_request = IPrequest.filter(approved_by_ACAD = False)
+    approved_request = IPrequest.filter(approved_by_ACAD = True)
+
     context = {
         'IPrequest': IPrequest,
+        'pending_request': pending_request,
+        'approved_request': approved_request
     }
     return render(request, 'base/acad_dashboard.html', context)
+
+
+import qrcode
+from io import BytesIO
+from datetime import datetime
+
+def approved_request_acad(request, request_id):
+
+    IPrequest = IPMarkRemovalRequest.objects.get(id=request_id)
+
+    # Update model fields
+    IPrequest.acad = request.user
+    IPrequest.approved_by_ACAD = True
+    IPrequest.status = 'Approved'
+
+    # Generate QR code data
+    acad_name = f"{IPrequest.acad.first_name} {IPrequest.acad.last_name}"  # Assuming first_name and last_name exist for User model
+    approved_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Formatted date and time
+    qr_data = f"IP Mark Removal Request Approved by: {acad_name} on {approved_datetime}"
+
+    # Create QR code image in memory
+    img_buffer = BytesIO()
+    qr = qrcode.QRCode(
+        version=1,  # Adjust version for complexity/size balance (optional)
+        error_correction=qrcode.constants.ERROR_CORRECT_L,  # Adjust error correction (optional)
+        box_size=10,  # Adjust box size for image size (optional)
+    )
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    img.save(img_buffer, format="PNG")
+
+    # Update IPrequest.qr with generated image data
+    IPrequest.qr_code.save(f"{approved_datetime}.png", BytesIO(img_buffer.getvalue()), save=False)
+
+    # Save updated model instance
+    IPrequest.save()
+
+    return redirect('base:acad-dashboard')
+
+
+def display_request_form(request, request_id):
+
+    IPrequest = IPMarkRemovalRequest.objects.get(id = request_id)
+    IPmarks = IPMark.objects.filter(request = IPrequest)
+    context = {
+        'ip': IPrequest,
+        'marks' : IPmarks
+    }
+    return render(request, 'base/includes/IPform.html', context)
+

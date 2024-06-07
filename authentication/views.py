@@ -11,12 +11,36 @@ from django.core.mail import send_mail
 from django.urls import reverse
 
 from django.contrib.auth import authenticate, login, logout
-
+from django.shortcuts import reverse
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseRedirect
 
 # Create your views here.
 
 def login_page(request):
     return render(request, 'authentication/sign-in.html')
+
+from django.urls import reverse
+
+@login_required
+def get_login_redirect_url(request):
+    user = request.user
+    if user.is_superuser:
+        return HttpResponseRedirect(reverse('admin:index'))
+    elif user.groups.filter(name='student').exists():
+        return HttpResponseRedirect(reverse('base:student-dashboard'))
+    elif user.groups.filter(name='faculty').exists():
+        return HttpResponseRedirect(reverse('base:faculty-dashboard'))
+    elif user.groups.filter(name='dean').exists():
+        return HttpResponseRedirect(reverse('base:dean-dashboard'))
+    elif user.groups.filter(name='acad').exists():
+        return HttpResponseRedirect(reverse('base:acad-dashboard'))
+    else:
+        return HttpResponseRedirect(reverse('base:default-dashboard'))
+    
+
+    
+    
 
 
 def login_user(request):
@@ -64,7 +88,7 @@ def login_user(request):
 
 def logout_user(request):
     logout(request)
-    return redirect('authentication:login-page')
+    return redirect('/account/login')
 
 def register_page(request):
     departments = Department.objects.all()

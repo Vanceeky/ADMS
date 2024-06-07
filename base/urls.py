@@ -25,6 +25,8 @@ urlpatterns = [
 
 
     #DEAN URLS
+    path('dean/account/profile/', views.dean_profile, name='dean-profile'),
+    
     path('dean-dashboard/', views.dean_dashboard, name='dean-dashboard'),
     path('students/', views.dean_students, name='students'),
 
@@ -34,8 +36,9 @@ urlpatterns = [
 
     #ACAD URLS
     path('acad/', views.acad_dashboard, name='acad-dashboard'),
+    path('approve-ip-mark-removal-request/<str:request_id>/', views.approved_request_acad, name='approve-ip-mark-removal-request'),
 
-
+    path('view/IP-approval-form/<str:request_id>/', views.display_request_form, name='view-approval-form'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
