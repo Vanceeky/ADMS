@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ ip }}</title>
+    <link href="/static/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="/static/assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="/static/assets/js/plugins/font-awesome.js" crossorigin="anonymous"></script>
+    <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+    <link id="pagestyle" href="/static/assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
+
+    <style>
+
+      /*
+        .form{
+            background: url('/static/assets/img/L-NU_LOGO.png');
+            background-repeat: repeat-y;
+            background-size: cover;
+          
+        }
+   */
+
+
+    </style>
+</head>
+<body>
+    
+
+    <div class="container">
+        <div class="row">
+
+
+                <div class="col-lg-12">
+                    <div class="">
+                     
+                        <div class="card-header">
+                            <div class="d-flex px-2 py-1 justify-content-center align-items-center">
+                                <div>
+                                <img src="/static/assets/img/L-NU_LOGO.png" class="avatar avatar-lg me-3">
+                                </div>
+                                <div class="d-flex mt-0 flex-column align-items-center justify-content-center">
+                                    <h5 class="mb-0">LYCEUM-NORTHWESTERN UNIVERSITY</h5>
+                                    <p class="text-md text-center text-secondary mb-0">Dagupan City</p>
+                                    <h6>IP MARK REMOVAL FORM</h6>
+                                 
+                                </div>
+                                <div>
+                                    <img src="/static/assets/img/L-NU_LOGO.png" class="avatar avatar-lg ms-3">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="card-body form">
+                            <div class="mb-0">
+                                <u><h5 class="mb-0 text-muted">{{ ip.student.user.last_name}}, {{ip.student.user.first_name}} </h5></u>
+                                <p class="mb-0 text-xs">Student number: {{ ip.student.student_id }}</p>
+                             </div>
+                             <div class="text-muted">
+                                 <p class="mb-0 text-xs">{{ ip.student.year_level}} - {{ ip.student.course.name }}</p>
+                        
+                                 <p class="text-xs"><i class="fa fa-envelope"></i>{{ ip.student.user.email}}</p>
+                             </div>
+
+                             <!--
+                            <p class="font-weight-bold text-lg">Subject Taken: </p>
+                            <div class="d-flex align-items-center justify-content-between p-3" style="margin: auto; width: 100%">
+
+                               
+                                <div class="d-flex mt-0 flex-column align-items-center justify-content-center">
+                                    <u><h5 class="mb-0">{{ ip.subject_code}}</h5></u>
+                                    <p class="text-md text-center text-secondary mb-0">Subject Code</p>
+                               
+                                 
+                                </div>
+                                <div class="d-flex mt-0 flex-column align-items-center justify-content-center">
+                                   <u> <h5 class="mb-0">{{ ip.subject_name }}</h5></u>
+                                    <p class="text-md text-center text-secondary mb-0">Descriptive Title</p>
+                                  
+                                 
+                                </div>
+                                <div class="d-flex mt-0 flex-column align-items-center justify-content-center">
+                                   <u> <h5 class="mb-0">{{ ip.units }} </h5></u>
+                                    <p class="text-md text-center text-secondary mb-0">Units</p>
+                                </div>
+                                <div class="d-flex mt-0 flex-column align-items-center justify-content-center">
+                                    <u><h5 class="mb-0">{{ ip.sem_year }} </h5></u>
+                                    <p class="text-md text-center text-secondary mb-0">Semester/Academic Year</p>
+                                </div>
+                            </div>
+
+                            -->
+
+                            <div class="">
+                                <p class="text-md font-weight-bold mb-0">Subject Taken:</p>
+        
+                                <div class="table-responsive">
+                                    <table class="table align-middle table-nowrap table-centered mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center text-xxs">Subject Code</th>
+                                                <th class="text-center text-xxs">Descriptive Title</th>
+                                                <th class="text-center text-xxs">Units</th>
+                                                <th class="text-center text-xxs">Semester/Academic Year</th>
+                                            </tr>
+                                        </thead><!-- end thead -->
+                                        <tbody>
+                                         
+                                            <tr>
+                                                <td class="text-center text-xxs">{{ip.subject_code}} </td>
+                                                <td class="text-center text-xxs">{{ip.subject_name}} </td>
+                                                <td class="text-center text-xxs"> {{ ip.units }}</td>
+                                                <td class="text-center text-xxs">{{ ip.sem_year }}</td>
+                                            </tr>
+                                       
+
+                
+                                            <!-- end tr -->
+                                        </tbody><!-- end tbody -->
+                                    </table><!-- end table -->
+                                </div><!-- end table responsive -->
+
+                            </div>
+
+                            <div class="">
+                             
+        
+                                <div class="table-responsive">
+                                    <p class="text-md font-weight-bold mb-0">Grade:</p>
+                                    <table class="table align-middle table-nowrap table-centered mb-0">
+                                        
+                                        <thead>
+                                            
+                                            <tr>
+                                                
+                                                <th class="text-center text-xxs">Pre-lim</th>
+                                                <th class="text-center text-xxs">Midterm</th>
+                                                <th class="text-center text-xxs">Semi-Final</th>
+                                                <th class="text-center text-xxs">Finals</th>
+                                                <th class="text-center text-xxs">Final Grade</th>
+                                                <th class="text-center text-xxs">Remarks</th>
+
+                                            </tr>
+                                        </thead><!-- end thead -->
+                                        <tbody>
+                                         {% for m in marks %}
+                                            <tr>
+                                                <td class="text-center text-xxs">{{m.prelim}} </td>
+                                                <td class="text-center text-xxs">{{m.midterm}} </td>
+                                                <td class="text-center text-xxs"> {{ m.semis }}</td>
+                                                <td class="text-center text-xxs">{{ m.finals }}</td>
+                                                <td class="text-center text-xxs font-weight-bold">{{ m.final_grade }}</td>
+                                                <td class="text-center text-xxs">{{ m.remarks }}</td>
+                                            </tr>
+                                        {% endfor %}
+                                       
+
+                
+                                            <!-- end tr -->
+                                        </tbody><!-- end tbody -->
+                                    </table><!-- end table -->
+                                </div><!-- end table responsive -->
+
+                            </div>
+
+                            <hr class="dark horizontal">
+                            <br>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div>
+                                        <p class="text-xxs text-secondary mb-0">Approved by:</p>
+                                        <u><h6 class="mb-0">{{ ip.instructor.user.first_name }} {{ ip.instructor.user.last_name}}</h6></u>
+                                        <p class="text-xxs text-secondary mb-0">Instructor</p>
+                                    </div>
+                                    <br>
+                                    <div>
+                                        <p class="text-xxs text-secondary mb-0">Approved by:</p>
+                                        <u><h6 class="mb-0">{{ ip.dean.first_name }} {{ ip.dean.last_name}}</h6></u>
+                                        <p class="text-xxs text-secondary mb-0">Dean</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+
+                                    <div>
+                                        <p class="text-xxs text-secondary mb-0">Approved by:</p>
+                                        <u><h6 class="mb-0">{{ ip.acad.first_name}} {{ ip.acad.last_name }}</h6></u>
+                                        <p class="text-xxs text-secondary mb-0">VP, Academic Affairs</p>
+                                        <img class="" style="width: 100px" src="{{ ip.qr_code.url }}">
+                                        </div>
+                                        <br>
+                                      
+                                </div>
+
+                                <div class="col-md-4">
+                                    <div>
+                                        <p class="text-xxs text-secondary mb-0">Recieved by: </p>
+                                        <u><h6 class="mb-0">{{ ip.registrar.first_name }} {{ ip.registrar.last_name }}</h6></u>
+                                        <p class="text-xxs text-secondary mb-0">Registrar </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                  
+
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="py-2">
+
+                                <div class="d-print-none mt-4">
+                                    <div class="float-end">
+                                        <a href="javascript:window.print()" class="btn btn-success me-1"><i class="fa fa-print"></i>Print</a>
+                                        <a href="#" class="btn btn-primary w-md">Save</a>
+                                    </div>
+                                </div>
+                            </div>
+                </div><!-- end col -->
+            </div>
+        </div>
+
+</body>
+
+<script>
+
+  
+    // Insert date and time into HTML
+
+    function formatDateTime(dateTime) {
+  // Ensure dateTime is a valid Date object
+    if (!(dateTime instanceof Date)) {
+        dateTime = new Date(dateTime);  // Try converting it to a Date
+    }
+
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    const day = dateTime.getDate();
+    const month = monthNames[dateTime.getMonth()];
+    const year = dateTime.getFullYear();
+    const hour = dateTime.getHours() % 12 || 12;  // Convert to 12-hour format
+    const minutes = dateTime.getMinutes().toString().padStart(2, '0');
+    const meridian = dateTime.getHours() < 12 ? 'AM' : 'PM';
+
+    return `${day}, ${month} ${year} ${hour}:${minutes} ${meridian}`;
+    }
+
+    // Example usage
+    const dateTime = new Date();  // Or replace with your actual datetime object
+    const formattedDateTime = formatDateTime(dateTime);
+    console.log(formattedDateTime);
+    document.getElementById("datetime").innerHTML = formattedDateTime;
+
+  </script>
+</html>

@@ -1,0 +1,146 @@
+<div class="card-body pt-4 p-3">
+    <h6 class="text-uppercase text-body text-xs font-weight-bolder mb-3">Newest</h6>
+    <ul class="list-group">
+
+      {% for ip in approval_statuses.approved_by_registrar_today %}
+      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+          <div class="d-flex align-items-center">
+              <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-check" aria-hidden="true"></i></button>
+              <div class="d-flex flex-column">
+                  <h6 class="mb-1 text-dark text-sm">{{ ip.registrar.first_name }} {{ ip.registrar.last_name }} Received your IP Mark Removal Request in {{ ip.subject_name }}</h6>
+                  <span class="text-xs">{{ ip.date_updated }} </span>
+              </div>
+          </div>
+          <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+              Completed
+          </div>
+      </li>
+      {% endfor %}
+
+
+      {% for ip in approval_statuses.approved_by_ACAD_today %}
+      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+          <div class="d-flex align-items-center">
+              <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-check" aria-hidden="true"></i></button>
+              <div class="d-flex flex-column">
+                  <h6 class="mb-1 text-dark text-sm">{{ ip.acad.first_name }} {{ ip.acad.last_name }} approved your IP Mark Removal Request in {{ ip.subject_name }}</h6>
+                  <span class="text-xs">{{ ip.date_updated }} </span>
+              </div>
+          </div>
+          <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+              Approved
+          </div>
+      </li>
+      {% endfor %}
+
+
+      {% for ip in approval_statuses.approved_by_dean_today %}
+      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+          <div class="d-flex align-items-center">
+              <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-spinner" aria-hidden="true"></i></button>
+              <div class="d-flex flex-column">
+                  <h6 class="mb-1 text-dark text-sm">{{ ip.dean.first_name }} {{ ip.dean.last_name }} approved your IP Mark Removal Request in {{ ip.subject_name }}</h6>
+                  <span class="text-xs">{{ ip.date_updated }} </span>
+              </div>
+          </div>
+          <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+              Processing
+          </div>
+      </li>
+      {% endfor %}
+
+      {% for ip in approval_statuses.approved_by_faculty_today %}
+      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+          <div class="d-flex align-items-center">
+              <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+              <div class="d-flex flex-column">
+                  <h6 class="mb-1 text-dark text-sm">{{ ip.instructor.user.first_name }} {{ ip.instructor.user.last_name }} processed your IP Mark Removal Request in {{ ip.subject_name }}</h6>
+                  <span class="text-xs">{{ ip.date_updated }} </span>
+              </div>
+          </div>
+          <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+              Processing
+          </div>
+      </li>
+      {% endfor %}
+
+      
+      
+
+
+      
+
+    </ul>
+    <h6 class="text-uppercase text-body text-xs font-weight-bolder my-3">Yesterday</h6>
+    <ul class="list-group">
+
+      {% for ip in approval_statuses.approved_by_registrar_yesterday %}
+      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+          <div class="d-flex align-items-center">
+              <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-check" aria-hidden="true"></i></button>
+              <div class="d-flex flex-column">
+                  <h6 class="mb-1 text-dark text-sm">{{ ip.registrar.first_name }} {{ ip.registrar.last_name }} Received your IP Mark Removal Request in {{ ip.subject_name }}</h6>
+                  <span class="text-xs">{{ ip.date_updated }} </span>
+              </div>
+          </div>
+          <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+              Completed
+          </div>
+      </li>
+      {% endfor %}
+
+
+      {% for ip in approval_statuses.approved_by_ACAD_yesterday %}
+      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+          <div class="d-flex align-items-center">
+              <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-check" aria-hidden="true"></i></button>
+              <div class="d-flex flex-column">
+                  <h6 class="mb-1 text-dark text-sm">{{ ip.acad.first_name }} {{ ip.acad.last_name }} approved your IP Mark Removal Request in {{ ip.subject_name }}</h6>
+                  <span class="text-xs">{{ ip.date_updated }} </span>
+              </div>
+          </div>
+          <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+              Approved
+          </div>
+      </li>
+      {% endfor %}
+
+
+      {% for ip in approval_statuses.approved_by_dean_yesterday %}
+      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+          <div class="d-flex align-items-center">
+              <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-spinner" aria-hidden="true"></i></button>
+              <div class="d-flex flex-column">
+                  <h6 class="mb-1 text-dark text-sm">{{ ip.dean.first_name }} {{ ip.dean.last_name }} approved your IP Mark Removal Request in {{ ip.subject_name }}</h6>
+                  <span class="text-xs">{{ ip.date_updated }} </span>
+              </div>
+          </div>
+          <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+              Processing
+          </div>
+      </li>
+      {% endfor %}
+
+      {% for ip in approval_statuses.approved_by_faculty_yesterday %}
+      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+          <div class="d-flex align-items-center">
+              <button class="btn btn-icon-only btn-rounded btn-outline-success mb-0 me-3 btn-sm d-flex align-items-center justify-content-center"><i class="fas fa-arrow-up" aria-hidden="true"></i></button>
+              <div class="d-flex flex-column">
+                  <h6 class="mb-1 text-dark text-sm">{{ ip.instructor.user.first_name }} {{ ip.instructor.user.last_name }} processed your IP Mark Removal Request in {{ ip.subject_name }}</h6>
+                  <span class="text-xs">{{ ip.date_updated }} </span>
+              </div>
+          </div>
+          <div class="d-flex align-items-center text-success text-gradient text-sm font-weight-bold">
+              Processing
+          </div>
+      </li>
+      {% endfor %}
+
+      
+      
+
+
+      
+
+    </ul>
+ </div>

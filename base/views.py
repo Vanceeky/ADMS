@@ -1,4 +1,4 @@
-from datetime import timezone
+
 from django.forms import ValidationError
 from django.shortcuts import render, redirect
 
@@ -8,31 +8,133 @@ from django.db.models import Q
 from base.models import *
 from django.contrib import messages
 from django.core.mail import send_mail
-
+from django.http import HttpResponse
+import json
+from datetime import datetime, timedelta, timezone
 # Create your views here.
+from django.utils.timezone import now
 
 
 #STUDENT VIEWS
+
+
+def recent_activities(request, student):
+
+    today = now().date()
+
+    yesterday = today - timedelta(days=1)
+
+    approval_statuses = {
+        'approved_by_faculty_today': IPMarkRemovalRequest.objects.filter(
+            student=student,
+            approved_by_faculty=True,
+            date_updated__date=today
+        ),
+        'approved_by_faculty_yesterday': IPMarkRemovalRequest.objects.filter(
+            student=student,
+            approved_by_faculty=True,
+            date_updated__date=yesterday
+        ),
+
+        'approved_by_dean_today': IPMarkRemovalRequest.objects.filter(
+            student=student,
+            approved_by_dean=True,
+            date_updated__date=today
+        ),
+        'approved_by_dean_yesterday': IPMarkRemovalRequest.objects.filter(
+            student=student,
+            approved_by_dean=True,
+            date_updated__date=yesterday
+        ),
+
+        'approved_by_ACAD_today': IPMarkRemovalRequest.objects.filter(
+            student=student,
+            approved_by_ACAD=True,
+            date_updated__date=today
+        ),
+        'approved_by_ACAD_yesterday': IPMarkRemovalRequest.objects.filter(
+            student=student,
+            approved_by_ACAD=True,
+            date_updated__date=yesterday
+        ),
+
+        'approved_by_registrar_today': IPMarkRemovalRequest.objects.filter(
+            student=student,
+            approved_by_registrar=True,
+            date_updated__date=today
+        ),
+        'approved_by_registrar_yesterday': IPMarkRemovalRequest.objects.filter(
+            student=student,
+            approved_by_registrar=True,
+            date_updated__date=yesterday
+        ),
+    }
+
+    return approval_statuses
+
+
 def dashboard(request):
     student = Student.objects.get(user = request.user)
     IPrequest = IPMarkRemovalRequest.objects.filter(student = student)
 
+    approval_statuses = recent_activities(request, student)
+    
     context = {
         'IPrequest': IPrequest,
+        'approval_statuses': approval_statuses
     }
 
-    return render(request, 'base/dashboard.html', context)
+    return render(request, 'base/student/base.html', context)
+
+def request_home(request):
+    student = Student.objects.get(user = request.user)
+    IPrequest = IPMarkRemovalRequest.objects.filter(student = student)
+
+    approval_statuses = recent_activities(request, student)
+    
+    context = {
+        'IPrequest': IPrequest,
+        'approval_statuses': approval_statuses
+    }
+
+    return render(request, 'base/student/home.html', context)
+
+
 
 def request_page(request):
 
-    return render(request, 'base/request_page.html')
+    student = Student.objects.get(user = request.user)
+    IPrequest = IPMarkRemovalRequest.objects.filter(student = student, status = 'Pending')
+    approval_statuses = recent_activities(request, student)
+    
+    context = {
+        'IPrequest': IPrequest,
+        'approval_statuses': approval_statuses
+    }
+    return render(request, 'base/student/request_page.html', context)
 
 
 def request_process_page(request):
-    return render(request, 'base/request_process.html')
+    student = Student.objects.get(user = request.user)
+    IPrequest = IPMarkRemovalRequest.objects.filter(student = student, status = 'Processing')
+    approval_statuses = recent_activities(request, student)
+    
+    context = {
+        'IPrequest': IPrequest,
+        'approval_statuses': approval_statuses
+    }
+    return render(request, 'base/student/request_process.html', context)
 
 def request_approved_page(request):
-    return render(request, 'base/request_approved.html')
+    student = Student.objects.get(user = request.user)
+    IPrequest = IPMarkRemovalRequest.objects.filter(student = student, status = 'Approved' and 'Completed')
+    approval_statuses = recent_activities(request, student)
+    
+    context = {
+        'IPrequest': IPrequest,
+        'approval_statuses': approval_statuses
+    }
+    return render(request, 'base/student/request_approved.html', context)
 
 
 def user_dashboard(request):
@@ -96,7 +198,13 @@ def requestIPMarkRemoval(request):
                 # Create an AdditionalFile object for each uploaded file
                 AdditionalFile.objects.create(request=request_object, file=uploaded_file)
 
-        return redirect('base:request-page')
+
+        return HttpResponse(json.dumps({"message": "Request submitted successfully"}), content_type="application/json")
+    else:
+        return HttpResponse(json.dumps({"error": "Invalid request method"}), status=400, content_type="application/json")
+
+
+
 
     
 
@@ -105,21 +213,61 @@ def requestIPMarkRemoval(request):
 #FACULTY VIEWS
 def faculty_dashboard(request):
     faculty = Employee.objects.get(user = request.user)
-    IPrequest = IPMarkRemovalRequest.objects.filter(instructor = faculty)
-    additionalFile = AdditionalFile.objects.filter(request__in = IPrequest)
-
+   # IPrequest = IPMarkRemovalRequest.objects.filter(instructor = faculty)
+   # additionalFile = AdditionalFile.objects.filter(request__in = IPrequest)
+    IPrequest = IPMarkRemovalRequest.objects.filter(instructor = faculty ).prefetch_related('additionalfile_set', 'ipmark_set')
+    myRequest = FacultyLeaveOfAbsence.objects.filter(faculty = faculty)
 
 
     context = {
         'IPrequest': IPrequest,
-        'additionalFiles': additionalFile
+        'myRequest': myRequest,
+      #  'additionalFiles': additionalFile
     }
 
 
+    return render(request, 'base/faculty/faculty_dashboard.html', context)
+
+def submit_leave_request(request):
+    faculty = Employee.objects.get(user=request.user)
+    department = faculty.department
+    dean = department.dean
+
+    if request.method == 'POST':
+        purpose_of_absence = request.POST.get('purpose_of_absence')
+        start_date = request.POST.get('from_date')
+        end_date = request.POST.get('to_date')
+        number_of_days = request.POST.get('number_of_days')
+        reason = request.POST.get('reason')
+       # is_there_substitute = request.POST.get('is_there_substitute')
+        is_there_substitute = request.POST.get('is_there_substitute') == "true"  # Compare with "true" (case-sensitive)
+
+        # If the checkbox is checked, retrieve the substitute reason
+        substitute_reason = None
+        if is_there_substitute == True:
+            substitute_reason = request.POST.get('substitute_reason')
+
+        myRequest = FacultyLeaveOfAbsence.objects.create(
+            faculty=faculty,
+            purpose=purpose_of_absence,
+            from_date=start_date,
+            to_date=end_date,
+            number_of_days=number_of_days,
+            reason=reason,
+            is_there_substitute=is_there_substitute,  # Save the checkbox value
+            reason_for_substitute=substitute_reason,  # Save the substitute reason
+            dean=dean,
+            department=department,
+        )
+
+        myRequest.save()
+
+        return redirect('base:faculty-dashboard')
 
 
-    return render(request, 'base/faculty_dashboard.html', context)
+def faculty_pending_request(request):
 
+    pass 
 
 
 def submitIPMark(request):
@@ -157,6 +305,11 @@ def submitIPMark(request):
 
 ####################################################################################
 #DEAN Views
+
+
+def dean_profile(request):
+    return render(request, 'base/dean_profile.html')
+
 
 def dean_dashboard(request):
 
@@ -256,8 +409,63 @@ def acad_dashboard(request):
     #IPrequest = IPMarkRemovalRequest.objects.all()
 
     IPrequest = IPMarkRemovalRequest.objects.prefetch_related('additionalfile_set', 'ipmark_set').all()
-    
+    pending_request = IPrequest.filter(approved_by_ACAD = False)
+    approved_request = IPrequest.filter(approved_by_ACAD = True)
+
     context = {
         'IPrequest': IPrequest,
+        'pending_request': pending_request,
+        'approved_request': approved_request
     }
     return render(request, 'base/acad_dashboard.html', context)
+
+
+import qrcode
+from io import BytesIO
+from datetime import datetime
+
+def approved_request_acad(request, request_id):
+
+    IPrequest = IPMarkRemovalRequest.objects.get(id=request_id)
+
+    # Update model fields
+    IPrequest.acad = request.user
+    IPrequest.approved_by_ACAD = True
+    IPrequest.status = 'Approved'
+
+    # Generate QR code data
+    acad_name = f"{IPrequest.acad.first_name} {IPrequest.acad.last_name}"  # Assuming first_name and last_name exist for User model
+    approved_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Formatted date and time
+    qr_data = f"IP Mark Removal Request Approved by: {acad_name} on {approved_datetime}"
+
+    # Create QR code image in memory
+    img_buffer = BytesIO()
+    qr = qrcode.QRCode(
+        version=1,  # Adjust version for complexity/size balance (optional)
+        error_correction=qrcode.constants.ERROR_CORRECT_L,  # Adjust error correction (optional)
+        box_size=10,  # Adjust box size for image size (optional)
+    )
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    img.save(img_buffer, format="PNG")
+
+    # Update IPrequest.qr with generated image data
+    IPrequest.qr_code.save(f"{approved_datetime}.png", BytesIO(img_buffer.getvalue()), save=False)
+
+    # Save updated model instance
+    IPrequest.save()
+
+    return redirect('base:acad-dashboard')
+
+
+def display_request_form(request, request_id):
+
+    IPrequest = IPMarkRemovalRequest.objects.get(id = request_id)
+    IPmarks = IPMark.objects.filter(request = IPrequest)
+    context = {
+        'ip': IPrequest,
+        'marks' : IPmarks
+    }
+    return render(request, 'base/includes/IPform.html', context)
+

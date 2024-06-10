@@ -38,6 +38,14 @@
   <!-- CSS Files -->
   <link id="pagestyle" href="/static/assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
 
+  <style>
+
+    
+    body {
+      background: url('/static/assets/img/BGDESKTOP.jpg') !important;
+    }
+
+  </style>
 
 </head>
 
@@ -57,7 +65,7 @@
         <div class="container">
           <div class="row">
             <div class="col-lg-6 col-md-4 d-flex flex-column mx-lg-0  mx-auto">
-              <div class="card card-plain">
+              <div class="card">
                 <div class="card-header pb-0 text-start">
                   <h4 class="font-weight-bolder">Register Account</h4>
                   
@@ -174,18 +182,13 @@
                 <div class="card-footer text-center pt-0 px-lg-2 px-1">
                   <p class="mb-4 text-sm mx-auto">
                     Already have an account?
-                    <a href="{% url 'authentication:login-page' %}" class="text-primary text-gradient font-weight-bold">Sign in</a>
+                    <a href="/account/login/" class="text-primary text-gradient font-weight-bold">Sign in</a>
                   </p>
                 </div>
               </div>
             </div>
             <div class="col-6 d-lg-flex d-none h-100 my-auto pe-0 position-absolute top-0 end-0 text-center justify-content-center flex-column">
-              <div class="position-relative bg-gradient-primary h-100 m-3 px-7 border-radius-lg d-flex flex-column justify-content-center overflow-hidden" style="background-image: url('/static/assets/img/lnu-bg-2.jpg');
-          background-size: cover;">
-                <span class="mask bg-gradient-primary opacity-2"></span>
-                <h4 class="mt-5 text-white font-weight-bolder position-relative">Automated Document Management System</h4>
-                <p class="text-white position-relative">Lyceum-Northwestern University ACAD Office</p>
-              </div>
+           
             </div>
           </div>
         </div>

@@ -34,6 +34,12 @@
   <!-- CSS Files -->
   <link id="pagestyle" href="/static/assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
 
+  <style>
+
+    body {
+      background: url('/static/assets/img/BGDESKTOP.jpg') !important;
+    }
+  </style>
 
 </head>
 
@@ -74,6 +80,8 @@
                 <p class="text-sm font-weight-bold mb-2 text-secondary text-border d-inline z-index-2 bg-white">
                   Login to your account
                 </p>
+                <ul class="errorlist nonfield"><li></li></ul>
+
                 {% if messages %}
                 {% for message in messages %}
 
@@ -94,20 +102,25 @@
             </div>
             <div class="card-body">
 
-              <form role="form" action="{% url 'authentication:login-user' %}" method="POST">
+              <form role="form" action="{% url 'authentication:login-user' %}" method="post">
                 {% csrf_token %}
                 <div class="mb-3">
-                  <input type="text" name="username" class="form-control" placeholder="Username" aria-label="Name">
+                  <input type="text" name="username" class="form-control" autocomplete="username" placeholder="Username" maxlength="150" required id="id_login">
                 </div>
 
                 <div class="mb-3">
-                  <input type="password" name="password" class="form-control" placeholder="Password" aria-label="Password">
+                  <input type="password" name="password" class="form-control" autocomplete="current-password" placeholder="Password" required id="id_password" aria-label="Password">
                 </div>
+
+                <p>
+                  <label for="id_remember">Remember Me:</label>
+                  <input type="checkbox" name="remember" id="id_remember">
+                </p>
 
                 <div class="text-center">
                   <button type="submit" class="btn bg-gradient-info w-100 my-4 mb-2">Login account</button>
                 </div>
-                <p class="text-sm mt-3 mb-0">Forgotten your password? <a href="{% url 'authentication:reset-password' %}" class="text-dark font-weight-bolder">click here</a></p>
+                <p class="text-sm mt-3 mb-0">Forgotten your password? <a href="/accounts/password/reset/" class="text-dark font-weight-bolder">click here</a></p>
               </form>
 
             </div>

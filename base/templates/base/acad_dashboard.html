@@ -186,17 +186,28 @@ ACAD Dashboard
                             </td>
 
                             <td class="align-middle text-center text-md">
-                                {% if not ip.approved_by_acad %}
+                                {% if not ip.approved_by_ACAD %}
                                     <span class="badge bg-gradient-warning">Pending</span>
+                                {% elif ip.approved_by_ACAD %}
+
+                                <span class="badge bg-gradient-success">Approved</span>
+
                                 {% endif %}
                             </td>
+
                             <td class="text-md d-flex justify-content-center mt-3">
-                                {% if not ip.approved_by_acad %}
-                                    <a href="#" class="mx-2 process-button approve-link" data-request-id="{{ ip.id }}"
+                                {% if not ip.approved_by_ACAD %}
+                                    <a href="javascript:;" class="mx-2 accept-request" data-request-id="{{ ip.id }}"
                                         data-bs-toggle="tooltip" data-bs-title="Approve request">
                                         <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
                                     </a>
+                                {% else %}
+                                    <a href="{% url 'base:view-approval-form' request_id=ip.id %}" target="_blank" class="mx-2 view-form"
+                                    data-bs-toggle="tooltip" data-bs-title="View request">
+                                    <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                                    </a>
                                 {% endif %}
+
                             </td>
 
                             <!-- 
@@ -243,7 +254,7 @@ ACAD Dashboard
                                   </div>
                                   <div class="d-flex flex-column">
                                       <h6 class="mb-1 text-dark text-sm">IP Mark Removal Request</h6>
-                                      <span class="text-xs">{{ pending_dean.count }} in pending, <span class="font-weight-bold">{{ approved_dean.count }} approved</span></span>
+                                      <span class="text-xs">{{ pending_request.count }} pending, <span class="font-weight-bold">{{ approved_request.count }} approved</span></span>
                                   </div>
                               </div>
                               <div class="d-flex">
@@ -380,5 +391,70 @@ ACAD Dashboard
 
 
 {% block javascripts %}
+
+<script>
+    $(document).ready(function() {
+      
+      $('.accept-request').on('click', function(event) {
+        event.preventDefault(); 
+        var requestId = $(this).data('request-id');
+        
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'You are about to approve this request. This action cannot be undone.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, approve',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+          
+            Swal.fire({
+              title: 'Loading',
+              html: '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div><p>Please wait while we process your request...</p>',
+             
+              allowOutsideClick: false,
+              showConfirmButton: false, 
+              onBeforeOpen: () => {
+                Swal.showLoading();
+              }
+            });
+  
+          
+            $.ajax({
+              url: `/approve-ip-mark-removal-request/${requestId}/`,
+              success: function(data) {
+              
+                Swal.close();
+  
+              
+                Swal.fire({
+                  title: 'Approved!',
+                  text: 'The request has been successfully approved.',
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+                }).then(() => {
+                  
+                  window.location.href = '/acad/';
+                });
+              },
+              error: function(xhr, textStatus, errorThrown) {
+               
+                Swal.close();
+  
+               
+                Swal.fire({
+                  title: 'Error',
+                  text: 'An error occurred while processing your request. Please try again later.',
+                  icon: 'error',
+                  confirmButtonText: 'OK'
+                });
+              }
+            });
+          }
+        });
+      });
+    });
+  </script>
 
 {% endblock %}

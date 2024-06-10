@@ -8,15 +8,19 @@ app_name = 'base'
 urlpatterns = [
 
     #Student URLS
-    path('student-dashboard/', views.dashboard, name='student-dashboard'),
-    path('request/pending/', views.request_page, name='request-page'),
-    path('request/process/', views.request_process_page, name='request-process-page'),
+    path('dashboard/', views.dashboard, name='student-dashboard'),
+    path('request/dashboard/', views.request_home, name='request-home-page'),
+    path('request/pending/', views.request_page, name='request-pending-page'),
+    path('request/processing/', views.request_process_page, name='request-process-page'),
     path('request/approved/', views.request_approved_page, name='request-approved-page'),
 
     path('requestIPMarkRemoval/', views.requestIPMarkRemoval, name='requestIPMarkRemoval'),
 
+
+
     #Faculty URLS
     path('faculty-dashboard/', views.faculty_dashboard, name='faculty-dashboard'),
+    path('submit/leave-request/', views.submit_leave_request, name='submit-leave-request'),
     path('submit-IP-Mark/', views.submitIPMark, name='submit-IP-Mark'),
 
 
@@ -24,7 +28,11 @@ urlpatterns = [
     path('instructors-autocomplete/', views.instructors_autocomplete, name='instructors-autocomplete'),
 
 
+
+
     #DEAN URLS
+    path('dean/account/profile/', views.dean_profile, name='dean-profile'),
+    
     path('dean-dashboard/', views.dean_dashboard, name='dean-dashboard'),
     path('students/', views.dean_students, name='students'),
 
@@ -34,8 +42,9 @@ urlpatterns = [
 
     #ACAD URLS
     path('acad/', views.acad_dashboard, name='acad-dashboard'),
+    path('approve-ip-mark-removal-request/<str:request_id>/', views.approved_request_acad, name='approve-ip-mark-removal-request'),
 
-
+    path('view/IP-approval-form/<str:request_id>/', views.display_request_form, name='view-approval-form'),
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

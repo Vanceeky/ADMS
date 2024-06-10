@@ -1,0 +1,290 @@
+{% extends 'base.html'%}
+
+{% block title %}
+Dashboard
+{% endblock %}
+
+
+{% block aside %}
+
+{% include 'base/student/aside.html' %}
+
+{% endblock %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+    <div class="row mt-4">
+      <div class="col-lg-7 h-100 mb-lg-0 mb-4">
+        <div class="card z-index-2 h-100">
+            <div class="card-header pb-0 p-3">
+                <div class="row">
+                    <div class="col-6 d-flex align-items-center">
+                        
+                        <div class="d-flex flex-column">
+                            <h5 class="mb-0">Requests</h5>
+
+                            <span class="text-md">Tickets submitted</span>
+                        </div>
+                    </div>
+                    
+                    <div class="col-6 text-end">
+                        <a class="btn bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modal-request"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Submit Request</a>
+                    </div>
+                    </div>
+                </div>
+          <div class="card-body p-3">
+           
+                <div class="table-responsive">
+                  <table class="table align-items-center mb-0">
+                    <thead>
+                      <tr>
+                        <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
+                        <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Sent</th>
+                        <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Instructor</th>
+                        <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {% for ip in IPrequest %}
+                      <tr>
+                        <td>
+                            <div class="d-flex flex-column justify-content-center">
+                              <h6 class="mb-0 text-md">IP Mark Removal</h6>
+                              <p class="text-md text-secondary mb-0">Ticket #{{ip.id}}</p>
+                            </div>
+                          
+                        </td>
+
+                        <td>
+                          <p class="text-md font-weight-bold mb-0">{{ip.date_requested|timesince}} ago</p>
+                          <p class="text-md text-secondary mb-0">{{ip.date_requested.date}}</p>
+                        </td>
+                        <td>
+                          <p class="text-md font-weight-bold mb-0">{{ip.instructor.user.first_name}} {{ ip.instructor.user.last_name}}</p>
+                      
+                        </td>
+                        <td class="align-middle text-center text-md">
+                            <span class="badge bg-gradient-success">{{ ip.status }}</span>
+                        </td>
+
+                      </tr>
+                      {% endfor %}
+
+
+                    </tbody>
+                  </table>
+                </div>
+              
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-5">
+        <div class="card mb-4">
+           <div class="card-header pb-0 px-3">
+              <div class="row">
+                 <div class="col-md-6">
+                    <h6 class="mb-0">Recent Activities</h6>
+                 </div>
+                 <div class="col-md-6 d-flex justify-content-end align-items-center">
+                    <i class="far fa-calendar-alt me-2" aria-hidden="true"></i>
+                    <small>23 - 30 March 2020</small>
+                 </div>
+              </div>
+           </div>
+
+           {% include 'base/student/recent_activities.html' %}
+
+
+        </div>
+     </div>
+      
+    </div>
+
+
+    <!--
+    {% include 'includes/footer.html' %}
+    -->
+
+</div>
+
+
+
+<div class="col-md-4">
+
+    <div class="modal fade" id="modal-request" tabindex="-1" role="dialog" aria-labelledby="modal-default" aria-hidden="true">
+      <div class="modal-dialog modal- modal-dialog-centered modal-" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h6 class="modal-title" id="modal-title-default">Submit Request</h6>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+              <span aria-hidden="true">×</span>
+            </button>
+          </div>
+          <div class="modal-body">
+            <form id="ip-removal-form" action="{% url 'base:requestIPMarkRemoval' %}" method="POST" enctype="multipart/form-data">
+              {% csrf_token %}
+
+              <input type="hidden" name="student" value="{{ request.user.student.id }}">
+              <input type="hidden" name="department" value="{{ request.user.student.course.department.id }}">
+
+                <div class="form-group">
+                    <label for="exampleFormControlSelect1">Select Form</label>
+                    <select class="form-control" id="exampleFormControlSelect1">
+                      <option>IP Mark Removal</option>
+                    </select>
+                </div>
+
+                <h5> Subject Taken: </h5>
+                <div class="row">
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="example-text-input" class="form-control-label">Subject Code:</label>
+                            <input class="form-control" name="subject_code" type="text" placeholder="IT-MM" id="example-text-input">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="example-text-input" class="form-control-label">Descriptive Title:</label>
+                            <input class="form-control" name="subject_name" type="text" placeholder="Multimedia" id="example-text-input">
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="form-group">
+                            <label for="example-text-input" class="form-control-label">Units:</label>
+                            <input class="form-control" name="units" type="text" placeholder="3" id="example-text-input">
+                        </div>
+                    </div>
+                    <div class="col-md-8">
+                        <div class="form-group">
+                            <label for="example-text-input" class="form-control-label">Semester/Academic Year:</label>
+                            <input class="form-control" name="sem_year" type="text" placeholder="2nd / 2023 - 2024" id="example-text-input">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                      <label for="example-text-input" class="form-control-label">Additional Requirements: </label>
+                      <input class="form-control" name="additional_file" type="file" id="example-text-input" multiple>
+                    </div>
+                </div>
+
+
+
+                <div class="form-group">
+                    <label for="instructor_name" class="form-control-label">Search Instructor:</label>
+                    <input class="form-control" name="instructor_name" value="" type="text" placeholder="Mislang, Bryan" id="instructor_name">
+                    <li class="list-group-item cursor-pointer" id="instructor_suggestions"></li>
+                    <input type="hidden" name="instructor_id" id="instructor_id">
+                </div>
+                <div class="modal-footer">
+                  <button type="submit" class="btn bg-gradient-primary">Save changes</button>
+                  <button type="button" class="btn btn-link  ml-auto" data-bs-dismiss="modal">Close</button>
+                </div>
+            </form>
+          </div>
+
+        </div>
+      </div>
+    </div>
+</div>
+
+
+
+{% endblock %}
+
+{% block javascripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+      const form = document.getElementById('ip-removal-form');
+      form.addEventListener('submit', function (event) {
+          event.preventDefault();
+          const formData = new FormData(form);
+
+          fetch(form.action, {
+              method: 'POST',
+              body: formData,
+              headers: {
+                  'X-CSRFToken': '{{ csrf_token }}'
+              }
+          })
+          .then(response => response.json())
+          .then(data => {
+              if (data.message) {
+                  Swal.fire({
+                      icon: 'success',
+                      title: 'Success!',
+                      text: data.message
+                  }).then((result) => {
+                      if (result.isConfirmed) {
+                          window.location.href = "{% url 'base:request-pending-page' %}";
+                      }
+                  });
+              } else if (data.error) {
+                  Swal.fire({
+                      icon: 'error',
+                      title: 'Oops...',
+                      text: data.error
+                  });
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              Swal.fire({
+                  icon: 'error',
+                  title: 'Oops...',
+                  text: 'Something went wrong!'
+              });
+          });
+      });
+  });
+</script>
+
+<script>
+    $(document).ready(function() {
+        $('#instructor_name').keyup(function() {
+          const searchTerm = $(this).val().trim();
+      
+          if (searchTerm.length >= 2) {  
+            $.ajax({
+              url: '{% url "base:instructors-autocomplete" %}',  
+              type: 'GET',
+              dataType: 'json',
+              data: { term: searchTerm },  
+              beforeSend: function(xhr) {
+                xhr.setRequestHeader('X-CSRFToken', $('meta[name="csrf-token"]').attr('content'));
+              },
+              success: function(response) {
+                const suggestionsList = $('#instructor_suggestions');  
+                suggestionsList.empty();  
+            
+                if (response.length > 0) {
+                    suggestionsList.show();  
+                    for (const suggestion of response) {
+                        const suggestionItem = $('<li>').text(suggestion.name);  
+                        suggestionItem.click(function() {  
+                            $('#instructor_name').val(suggestion.name); 
+                            $('#instructor_id').val(suggestion.id);  
+                            suggestionsList.hide(); 
+                        });
+                        suggestionsList.append(suggestionItem); 
+                    }
+                } else {
+                    suggestionsList.hide();  
+                }
+                },
+            
+              error: function(xhr, errmsg, err) {
+                console.error('Error fetching suggestions:', errmsg, err);
+              }
+            });
+          } else {
+            $('#instructor_suggestions').hide();  
+          }
+        });
+      });
+      
+    
+</script>
+
+{% endblock %}

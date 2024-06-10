@@ -11,7 +11,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
-
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -26,8 +26,12 @@ SECRET_KEY = 'django-insecure-_i$s#s3(hdm624=3d=(ofj_)c=w049$fy&8vh75z*-9qc)dok4
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
+DEBUG404 = True
+
 
 ALLOWED_HOSTS = []
+
+#CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1']
 
 
 # Application definition
@@ -46,14 +50,17 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'whitenoise.runserver_nostatic',
 
     'django_otp',
     'django_otp.plugins.otp_totp',
     'django_otp.plugins.otp_static',
+    'two_factor',
 
-    'allauth',
-    'allauth.account',
-    'allauth_2fa',
+   # 'allauth',
+   # 'allauth.account',
+   # 'allauth_2fa',
+  #  'allauth.socialaccount',
 
     'authentication.apps.AuthenticationConfig',
     'base.apps.BaseConfig',
@@ -65,6 +72,7 @@ INSTALLED_APPS = [
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
+    "whitenoise.middleware.WhiteNoiseMiddleware",
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -75,11 +83,23 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 
-    'allauth.account.middleware.AccountMiddleware',
+   # 'allauth.account.middleware.AccountMiddleware',
+    # entering two-factor credentials.
+   # 'allauth_2fa.middleware.AllauthTwoFactorMiddleware',
 
 ]
 
 ROOT_URLCONF = 'ADMS.urls'
+
+
+
+# Set the allauth adapter to be the 2FA adapter.
+#ACCOUNT_ADAPTER = 'allauth_2fa.adapter.OTPAdapter'
+LOGIN_URL = '/account/login/'
+LOGIN_REDIRECT_URL = '/get_login_redirect_url/'
+LOGOUT_REDIRECT_URL = '/account/login/'
+
+
 
 TEMPLATES = [
     {
@@ -150,8 +170,12 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = [
-    BASE_DIR / 'static'
+    #BASE_DIR / 'static'
+    os.path.join(BASE_DIR, 'static'),
 ]
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Adjust path if needed
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 MEDIA_ROOT = BASE_DIR / 'media'
 MEDIA_URL = '/media/'
@@ -163,11 +187,11 @@ MEDIA_URL = '/media/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-
+""""
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
-]
+]"""
 
 """ 
 SOCIALACCOUNT_PROVIDERS = {}
@@ -186,3 +210,5 @@ EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
 EMAIL_HOST_USER = '6d6a5edefc2f28'
 EMAIL_HOST_PASSWORD = '9a75c3728d6594'
 EMAIL_PORT = '2525'
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend' #smtp

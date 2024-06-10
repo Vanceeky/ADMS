@@ -18,3 +18,6 @@ class IPMarkRemovalRequestAdmin(admin.ModelAdmin):
 
 admin.site.register(AdditionalFile)
 admin.site.register(IPMark)
+
+
+admin.site.register(FacultyLeaveOfAbsence)

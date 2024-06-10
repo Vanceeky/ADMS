@@ -1,0 +1,63 @@
+
+    <div class="card z-index-2 h-100">
+        <div class="card-header pb-0 p-3">
+            <div class="row">
+                <div class="col-6 d-flex align-items-center">
+                    
+                    <div class="d-flex flex-column">
+                        <h5 class="mb-0">Pending Requests</h5>
+
+                        <span class="text-md">Tickets submitted</span>
+                    </div>
+                </div>
+                
+                <div class="col-6 text-end">
+                    <a class="btn bg-gradient-dark mb-0" data-bs-toggle="modal" data-bs-target="#modal-request"><i class="fas fa-plus" aria-hidden="true"></i>&nbsp;&nbsp;Submit Request</a>
+                </div>
+                </div>
+            </div>
+      <div class="card-body p-3">
+       
+            <div class="table-responsive">
+              <table class="table align-items-center mb-0">
+                <thead>
+                  <tr>
+                    <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
+                    <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Sent</th>
+                    <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Instructor</th>
+                    <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for ip in IPrequest %}
+                  <tr>
+                    <td>
+                        <div class="d-flex flex-column justify-content-center">
+                          <h6 class="mb-0 text-md">IP Mark Removal</h6>
+                          <p class="text-md text-secondary mb-0">Ticket #{{ip.id}}</p>
+                        </div>
+                      
+                    </td>
+
+                    <td>
+                      <p class="text-md font-weight-bold mb-0">{{ip.date_requested|timesince}} ago</p>
+                      <p class="text-md text-secondary mb-0">{{ip.date_requested.date}}</p>
+                    </td>
+                    <td>
+                      <p class="text-md font-weight-bold mb-0">{{ip.instructor.user.first_name}} {{ ip.instructor.user.last_name}}</p>
+                  
+                    </td>
+                    <td class="align-middle text-center text-md">
+                        <span class="badge bg-gradient-success">{{ ip.status }}</span>
+                    </td>
+
+                  </tr>
+                  {% endfor %}
+
+
+                </tbody>
+              </table>
+            </div>
+          
+      </div>
+    </div>

@@ -31,7 +31,7 @@ class IPMarkRemovalRequest(models.Model):
     status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="Pending")
 
     date_requested = models.DateTimeField(auto_now_add=True)
-
+    date_updated = models.DateTimeField(auto_now=True)  # Add this line
     qr_code = models.ImageField(upload_to='qrcodes/', null=True, blank=True)
 
     def __str__(self):
@@ -57,3 +57,47 @@ class IPMark(models.Model):
     
     def __str__(self):
         return f"IP Mark - {self.request.student} - {self.request.subject_code} - Final Grade: {self.final_grade}"
+    
+
+
+class FacultyLeaveOfAbsence(models.Model):
+    faculty = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    lengthOfService = models.CharField(max_length=50)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE)
+    
+    purposes_choices = (
+        ('Sick Leave', 'Sick Leave'),
+        ('Vacation Leave', 'Vacation Leave'),
+        ('Official Business', 'Official Business'),
+      
+    )
+    purpose = models.CharField(max_length=50, choices=purposes_choices)
+    from_date = models.DateField()
+    to_date = models.DateField()
+    number_of_days = models.CharField(max_length=50)
+    reason = models.TextField()
+
+    is_there_substitute = models.BooleanField(default=False)
+    reason_for_substitute = models.TextField(null=True, blank=True)
+
+    dean = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name='dean_fac')
+    acad = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name='acad_fac')
+
+    approved_by_dean = models.BooleanField(default=False)
+    approved_by_ACAD = models.BooleanField(default=False)
+
+    qr_code = models.ImageField(upload_to='qrcodes/', null=True, blank=True)
+
+
+    date_requested = models.DateTimeField(auto_now_add=True)
+    date_updated = models.DateTimeField(auto_now=True)  # Add this line
+
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    )
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="Pending")
+
+    def __str__(self):
+        return f"Faculty Leave of Absence - {self.faculty} - {self.from_date} - {self.to_date} - {self.purpose}"
