@@ -26,7 +26,7 @@ Dean Dashboard
                         <div class="numbers">
                             <p class="text-sm mb-0 text-uppercase font-weight-bold">IP Mark request</p>
                             <h5 class="font-weight-bolder">
-                                {{ IPrequest.count }}
+                                + {{ IPrequest.count }}
                             </h5>
                             <p class="mb-0">
                                 <span class="text-success text-sm font-weight-bolder">+55%</span>
@@ -51,7 +51,7 @@ Dean Dashboard
                         <div class="numbers">
                             <p class="text-sm mb-0 text-uppercase font-weight-bold">Faculty Leave Request</p>
                             <h5 class="font-weight-bolder">
-                                3
+                                + {{ leaveRequest.count }}
                             </h5>
                             <p class="mb-0">
                                 <span class="text-success text-sm font-weight-bolder">+3%</span>
@@ -194,8 +194,110 @@ Dean Dashboard
                     </tr>
                 {% endif %}
                 {% endif %}
+
+
             {% endfor %}
             
+
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+            <h6>Faculty Leave of Absence Requests</h6>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-3">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
+                  <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Date</th>
+                  <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">No. of Days</th>
+                  
+                  <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Reason</th>
+
+           
+
+
+                  <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Sent</th>
+
+              
+                  <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
+                  <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Actions</th>
+                </tr>
+              </thead>
+               
+              <tbody>
+                {% for ip in leaveRequest %}
+                <tr>
+                <td>
+                    <div class="d-flex flex-column justify-content-center">
+                        <h6 class="mb-0 text-md">{{ ip.purpose }}</h6>
+                        <p class="text-md text-secondary mb-0">Ticket #{{ip.id}}</p>
+                    </div>
+                    
+                </td>
+
+                <td>
+                    <div class="d-flex flex-column justify-content-center">
+                     <p class="text-md text-secondary mb-0">From: {{ ip.from_date }}</p>
+                     <p class="text-md text-secondary mb-0">To: {{ ip.to_date }}</p>
+                    </div>
+                
+                </td>
+
+                <td class="text-center">
+                    <h6 class="mb-0 text-md">{{ip.number_of_days}}</h6>
+                    
+                
+                </td>
+
+                <td>
+                  <p class="text-xs text-secondary mb-0">{{ip.reason}}</p>
+                </td>
+
+            
+
+                <td>
+                    <p class="text-md font-weight-bold mb-0">{{ip.date_requested|timesince}} ago</p>
+                    <p class="text-md text-secondary mb-0">{{ip.date_requested}}</p>
+                </td>
+
+             
+           
+
+        
+                <td class="align-middle text-center text-md">
+                  {% if ip.approved_by_dean %}
+                    <span class="badge bg-gradient-success">Approved</span>
+                    {% else %}
+
+                    <span class="badge bg-gradient-warning">Pending</span>
+                  {% endif %}
+                </td>
+
+                <td class="text-md align-middle text-center">
+
+                  {% if not ip.approved_by_dean %}
+                  <a href="#" class="mx-2 process-button approve-leave-link" data-request-id="{{ ip.id }}"
+                      data-bs-toggle="tooltip" data-bs-title="Approve request">
+                      <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                  </a>
+                    <a href="javascript:;" class="mx-2" data-bs-toggle="tooltip" data-bs-title="Cancel Request">
+                      <i class="fas fa-trash text-secondary" aria-hidden="true"></i>
+                  </a>
+                {% endif %}
+
+                </td>
+                    
+
+                </tr>
+                {% endfor %}
 
 
               </tbody>
@@ -235,7 +337,7 @@ Dean Dashboard
                               </div>
                               <div class="d-flex flex-column">
                                   <h6 class="mb-1 text-dark text-sm">Faculty Leave Request</h6>
-                                  <span class="text-xs">2 pending, <span class="font-weight-bold">1 approved</span></span>
+                                  <span class="text-xs">{{ leave_pending.count }} pending, <span class="font-weight-bold">{{ leave_approved.count }} approved</span></span>
                               </div>
                           </div>
                           <div class="d-flex">
@@ -459,7 +561,71 @@ Dean Dashboard
   });
 </script>
 
+<script>
+  $(document).ready(function() {
+    
+    $('.approve-leave-link').on('click', function(event) {
+      event.preventDefault(); 
+      var requestId = $(this).data('request-id');
+      
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to approve this request. This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, approve',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+        
+          Swal.fire({
+            title: 'Loading',
+            html: '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div><p>Please wait while we process your request...</p>',
+           
+            allowOutsideClick: false,
+            showConfirmButton: false, 
+            onBeforeOpen: () => {
+              Swal.showLoading();
+            }
+          });
 
+        
+          $.ajax({
+            url: `/approve-leave-request/dean/${requestId}/`,
+        
+            success: function(data) {
+            
+              Swal.close();
+
+            
+              Swal.fire({
+                title: 'Approved!',
+                text: 'The request has been successfully approved.',
+                icon: 'success',
+                confirmButtonText: 'OK'
+              }).then(() => {
+                
+                window.location.href = '/dean-dashboard/';
+              });
+            },
+            error: function(xhr, textStatus, errorThrown) {
+             
+              Swal.close();
+
+             
+              Swal.fire({
+                title: 'Error',
+                text: 'An error occurred while processing your request. Please try again later.',
+                icon: 'error',
+                confirmButtonText: 'OK'
+              });
+            }
+          });
+        }
+      });
+    });
+  });
+</script>
 
 
 

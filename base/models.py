@@ -78,13 +78,17 @@ class FacultyLeaveOfAbsence(models.Model):
     reason = models.TextField()
 
     is_there_substitute = models.BooleanField(default=False)
+    name_of_sustitute = models.CharField(max_length=50, null=True, blank=True)
     reason_for_substitute = models.TextField(null=True, blank=True)
 
     dean = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name='dean_fac')
     acad = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name='acad_fac')
+    hr = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name='hr_fac')
+
 
     approved_by_dean = models.BooleanField(default=False)
     approved_by_ACAD = models.BooleanField(default=False)
+    approved_by_HR = models.BooleanField(default=False)
 
     qr_code = models.ImageField(upload_to='qrcodes/', null=True, blank=True)
 

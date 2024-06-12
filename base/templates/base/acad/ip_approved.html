@@ -1,0 +1,114 @@
+<div class="card mb-4">
+    <div class="card-header pb-0">
+        <h6>IP Mark Removal Requests</h6>
+    </div>
+    <div class="card-body px-0 pt-0 pb-2">
+      <div class="table-responsive p-3">
+        <table class="table align-items-center mb-0">
+          <thead>
+            <tr>
+              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
+              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Student</th>
+              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Subject</th>
+              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Instructor</th>
+              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Dean</th>
+              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Remarks</th>
+
+              <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
+              <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            
+            {% for ip in IPrequest %}
+            {% if ip.approved_by_dean and ip.approved_by_faculty %}
+            {% if ip.approved_by_ACAD %}
+
+                <tr>
+                    <td>
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-md">IP Mark Removal</h6>
+                            <p class="text-md text-secondary mb-0">Ticket #{{ip.id}}</p>
+                    
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-md">{{ ip.student.user.last_name }}, {{ ip.student.user.first_name}}</h6>
+                            <p class="text-md text-secondary mb-0">{{ ip.student.student_id}}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-md">{{ip.subject_code}}</h6>
+                            <p class="text-md text-secondary mb-0">{{ip.subject_name}}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <p class="text-md text-secondary mb-0">Approved by:</p>
+                        <p class="text-md font-weight-bold mb-0">{{ ip.instructor.user.first_name }} {{ ip.instructor.user.last_name}}</p>
+                    </td>
+                    <td>
+                        <p class="text-md text-secondary mb-0">Approved by:</p>
+                        <p class="text-md font-weight-bold mb-0">{{ ip.dean.first_name }} {{ ip.dean.last_name}}</p>
+                    </td>
+
+                    <td>
+                        {% for ip_mark in ip.ipmark_set.all %}
+                        <p class="text-md font-weight-bold mb-0">{{ ip_mark.remarks }}</p>
+                        <p class="text-md text-secondary mb-0">Final Grade: {{ip_mark.final_grade}}</p>
+                       
+                        {% endfor %}
+                    </td>
+
+                    <td class="align-middle text-center text-md">
+                        {% if not ip.approved_by_ACAD %}
+                            <span class="badge bg-gradient-warning">Pending</span>
+                        {% elif ip.approved_by_ACAD %}
+
+                        <span class="badge bg-gradient-success">Approved</span>
+
+                        {% endif %}
+                    </td>
+
+                    <td class="text-md d-flex justify-content-center mt-3">
+                        {% if not ip.approved_by_ACAD %}
+                            <a href="javascript:;" class="mx-2 accept-request" data-request-id="{{ ip.id }}"
+                                data-bs-toggle="tooltip" data-bs-title="Approve request">
+                                <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                            </a>
+                        {% else %}
+                            <a href="{% url 'base:view-approval-form' request_id=ip.id %}" target="_blank" class="mx-2 view-form"
+                            data-bs-toggle="tooltip" data-bs-title="View request">
+                            <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                            </a>
+                        {% endif %}
+
+                    </td>
+
+                    <!-- 
+                    <td>
+                        <ul>
+                            {% for file in ip.additionalfile_set.all %}
+                            <li>{{ file.file }}</li>
+                            {% endfor %}
+                        </ul>
+                    </td>
+
+                    --> 
+                
+
+                </tr>
+            {% endif %}
+            
+            
+            {% endif %}
+        {% endfor %}
+        
+
+
+          </tbody>
+        </table>
+      </div>
+    </div>
+</div>

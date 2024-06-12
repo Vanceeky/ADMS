@@ -1,0 +1,382 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ACAD Dashboard
+{% endblock %}
+
+
+{% block aside %}
+
+{% include 'base/includes/acad_aside.html' %}
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container-fluid py-4">
+
+    
+
+    <div class="row mt-4">
+
+        <div class="col-lg-9 mb-lg-0 mb-4">
+
+            <div class="sub-content-area">
+                <div class="card mb-4">
+                    <div class="card-header pb-0">
+                        <h6>IP Mark Removal Requests</h6>
+                    </div>
+                    <div class="card-body px-0 pt-0 pb-2">
+                      <div class="table-responsive p-3">
+                        <table class="table align-items-center mb-0">
+                          <thead>
+                            <tr>
+                              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
+                              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Student</th>
+                              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Subject</th>
+                              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Instructor</th>
+                              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Dean</th>
+                              <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Remarks</th>
+        
+                              <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
+                              <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Actions</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            
+                            {% for ip in IPrequest %}
+                            {% if ip.approved_by_dean and ip.approved_by_faculty %}
+                       
+        
+                                <tr>
+                                    <td>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0 text-md">IP Mark Removal</h6>
+                                            <p class="text-md text-secondary mb-0">Ticket #{{ip.id}}</p>
+                                    
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0 text-md">{{ ip.student.user.last_name }}, {{ ip.student.user.first_name}}</h6>
+                                            <p class="text-md text-secondary mb-0">{{ ip.student.student_id}}</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="d-flex flex-column justify-content-center">
+                                            <h6 class="mb-0 text-md">{{ip.subject_code}}</h6>
+                                            <p class="text-md text-secondary mb-0">{{ip.subject_name}}</p>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <p class="text-md text-secondary mb-0">Approved by:</p>
+                                        <p class="text-md font-weight-bold mb-0">{{ ip.instructor.user.first_name }} {{ ip.instructor.user.last_name}}</p>
+                                    </td>
+                                    <td>
+                                        <p class="text-md text-secondary mb-0">Approved by:</p>
+                                        <p class="text-md font-weight-bold mb-0">{{ ip.dean.first_name }} {{ ip.dean.last_name}}</p>
+                                    </td>
+        
+                                    <td>
+                                        {% for ip_mark in ip.ipmark_set.all %}
+                                        <p class="text-md font-weight-bold mb-0">{{ ip_mark.remarks }}</p>
+                                        <p class="text-md text-secondary mb-0">Final Grade: {{ip_mark.final_grade}}</p>
+                                       
+                                        {% endfor %}
+                                    </td>
+        
+                                    <td class="align-middle text-center text-md">
+                                        {% if not ip.approved_by_ACAD %}
+                                            <span class="badge bg-gradient-warning">Pending</span>
+                                        {% elif ip.approved_by_ACAD %}
+        
+                                        <span class="badge bg-gradient-success">Approved</span>
+        
+                                        {% endif %}
+                                    </td>
+        
+                                    <td class="text-md d-flex justify-content-center mt-3">
+                                        {% if not ip.approved_by_ACAD %}
+                                            <a href="javascript:;" class="mx-2 accept-request" data-request-id="{{ ip.id }}"
+                                                data-bs-toggle="tooltip" data-bs-title="Approve request">
+                                                <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                                            </a>
+                                        {% else %}
+                                            <a href="{% url 'base:view-approval-form' request_id=ip.id %}" target="_blank" class="mx-2 view-form"
+                                            data-bs-toggle="tooltip" data-bs-title="View request">
+                                            <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                                            </a>
+                                        {% endif %}
+        
+                                    </td>
+        
+                                    <!-- 
+                                    <td>
+                                        <ul>
+                                            {% for file in ip.additionalfile_set.all %}
+                                            <li>{{ file.file }}</li>
+                                            {% endfor %}
+                                        </ul>
+                                    </td>
+        
+                                    --> 
+                                
+        
+                                </tr>
+                        
+                            
+                            
+                            {% endif %}
+                        {% endfor %}
+                        
+            
+            
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                </div>
+            </div>
+
+    
+        </div>
+    
+        <div class="col-lg-3">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="card">
+                  <div class="card-header pb-0 p-3">
+                      <h6 class="mb-0">Requests</h6>
+                  </div>
+                  <div class="card-body p-3">
+                      <ul class="list-group">
+                          <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                              <div class="d-flex align-items-center">
+                                  <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                                      <i class="ni ni-mobile-button text-white opacity-10"></i>
+                                  </div>
+                                  <div class="d-flex flex-column">
+                                      <h6 class="mb-1 text-dark text-sm">IP Mark Removal Request</h6>
+                                      <span class="text-xs">{{ pending_request.count }} pending, <span class="font-weight-bold">{{ approved_request.count }} approved</span></span>
+                                  </div>
+                              </div>
+                              <div class="d-flex">
+                                  <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
+                              </div>
+                          </li>
+                          <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                              <div class="d-flex align-items-center">
+                                  <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                                      <i class="ni ni-tag text-white opacity-10"></i>
+                                  </div>
+                                  <div class="d-flex flex-column">
+                                      <h6 class="mb-1 text-dark text-sm">Faculty Leave Request</h6>
+                                      <span class="text-xs">{{ leave_pending.count }} pending, <span class="font-weight-bold">{{ leave_approved.count }} approved</span></span>
+                                  </div>
+                              </div>
+                              <div class="d-flex">
+                                  <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
+                              </div>
+    
+                      </ul>
+                  </div>
+              </div>
+            </div>
+         
+          </div>
+        </div>
+
+    
+    
+    </div>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+<script>
+    $(document).ready(function() {
+      
+      $('.accept-request').on('click', function(event) {
+        event.preventDefault(); 
+        var requestId = $(this).data('request-id');
+        
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'You are about to approve this request. This action cannot be undone.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, approve',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+          
+            Swal.fire({
+              title: 'Loading',
+              html: '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div><p>Please wait while we process your request...</p>',
+             
+              allowOutsideClick: false,
+              showConfirmButton: false, 
+              onBeforeOpen: () => {
+                Swal.showLoading();
+              }
+            });
+  
+          
+            $.ajax({
+              url: `/approve-ip-mark-removal-request/${requestId}/`,
+              success: function(data) {
+              
+                Swal.close();
+  
+              
+                Swal.fire({
+                  title: 'Approved!',
+                  text: 'The request has been successfully approved.',
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+                }).then(() => {
+                  
+                  window.location.href = '/acad/';
+                });
+              },
+              error: function(xhr, textStatus, errorThrown) {
+               
+                Swal.close();
+  
+               
+                Swal.fire({
+                  title: 'Error',
+                  text: 'An error occurred while processing your request. Please try again later.',
+                  icon: 'error',
+                  confirmButtonText: 'OK'
+                });
+              }
+            });
+          }
+        });
+      });
+    });
+</script>
+
+
+<script>
+    $(document).ready(function() {
+      
+      $('.accept-leave-request').on('click', function(event) {
+        event.preventDefault(); 
+        var requestId = $(this).data('request-id');
+        
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'You are about to approve this request. This action cannot be undone.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, approve',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+          
+            Swal.fire({
+              title: 'Loading',
+              html: '<div class="spinner-border" role="status"><span class="sr-only">Loading...</span></div><p>Please wait while we process your request...</p>',
+             
+              allowOutsideClick: false,
+              showConfirmButton: false, 
+              onBeforeOpen: () => {
+                Swal.showLoading();
+              }
+            });
+  
+          
+            $.ajax({
+              url: `/approve-leave-request/acad/${requestId}/`,
+              success: function(data) {
+              
+                Swal.close();
+  
+              
+                Swal.fire({
+                  title: 'Approved!',
+                  text: 'The request has been successfully approved.',
+                  icon: 'success',
+                  confirmButtonText: 'OK'
+                }).then(() => {
+                  
+                  window.location.href = '/acad/';
+                });
+              },
+              error: function(xhr, textStatus, errorThrown) {
+               
+                Swal.close();
+  
+               
+                Swal.fire({
+                  title: 'Error',
+                  text: 'An error occurred while processing your request. Please try again later.',
+                  icon: 'error',
+                  confirmButtonText: 'OK'
+                });
+              }
+            });
+          }
+        });
+      });
+    });
+</script>
+
+
+
+<script>
+    
+  document.addEventListener("DOMContentLoaded", function() {
+  // Check if the current URL matches the target URL
+  var currentUrl = window.location.href;
+  var targetUrl = "http://127.0.0.1:8000/acad/requests/ip/"; // Replace with your actual template tag
+
+  if (currentUrl === targetUrl) {
+    // Show the collapse element
+    var collapseElement = document.getElementById("vrExamples");
+    collapseElement.classList.add("show");
+  }
+});
+
+</script>
+
+
+<script>
+    $(document).ready(function () {
+        $('a.ajax-link').on('click', function(event) {
+            event.preventDefault();
+            $('a.nav-link').removeClass('active');
+        
+            // Add the active class to the clicked navigation link
+            $(this).addClass('active');
+            var href = $(this).attr('href');
+            var page = href.split('/').filter(Boolean).pop();// Extract the last part of the URL
+            console.log("Page:", page);
+            $.ajax({
+                url: '/acad/requests/ip/' + page + '/',
+                success: function (data) {
+                    $('.sub-content-area').html(data);
+                    $(".ip-link").addClass('active');
+                    
+                    
+                },
+                error: function (xhr, status, error) {
+                    console.error(error);
+                }
+            });
+        });
+    });
+</script>
+
+
+
+{% endblock %}

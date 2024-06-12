@@ -10,10 +10,13 @@ from django.contrib import messages
 from django.core.mail import send_mail
 from django.http import HttpResponse
 import json
-from datetime import datetime, timedelta, timezone
+from datetime import datetime, timedelta
 # Create your views here.
 from django.utils.timezone import now
 
+import qrcode
+from io import BytesIO
+#from datetime import datetime
 
 #STUDENT VIEWS
 
@@ -127,7 +130,7 @@ def request_process_page(request):
 
 def request_approved_page(request):
     student = Student.objects.get(user = request.user)
-    IPrequest = IPMarkRemovalRequest.objects.filter(student = student, status = 'Approved' and 'Completed')
+    IPrequest = IPMarkRemovalRequest.objects.filter(student = student, status = 'Approved')
     approval_statuses = recent_activities(request, student)
     
     context = {
@@ -211,6 +214,7 @@ def requestIPMarkRemoval(request):
 ####################################################################################
 
 #FACULTY VIEWS
+
 def faculty_dashboard(request):
     faculty = Employee.objects.get(user = request.user)
    # IPrequest = IPMarkRemovalRequest.objects.filter(instructor = faculty)
@@ -227,6 +231,58 @@ def faculty_dashboard(request):
 
 
     return render(request, 'base/faculty/faculty_dashboard.html', context)
+
+
+def faculty_student_requests_base(request):
+    faculty = Employee.objects.get(user = request.user)
+    IPrequest = IPMarkRemovalRequest.objects.filter(instructor = faculty).prefetch_related('additionalfile_set', 'ipmark_set')
+
+    context = {
+        'IPrequest': IPrequest
+    }
+    return render(request, 'base/faculty/base.html', context)
+    
+
+
+def get_ip_requests_by_status(request, status):
+  faculty = Employee.objects.get(user=request.user)
+  IPrequest = IPMarkRemovalRequest.objects.filter(instructor=faculty, status=status).prefetch_related('additionalfile_set', 'ipmark_set')
+  return IPrequest
+
+def faculty_student_requests_pending(request):
+  IPrequest = get_ip_requests_by_status(request, 'Pending')
+  context = {'IPrequest': IPrequest}
+  return render(request, 'base/faculty/pending.html', context)
+
+def faculty_student_requests_processing(request):
+  IPrequest = get_ip_requests_by_status(request, 'Processing')
+  context = {'IPrequest': IPrequest}
+  return render(request, 'base/faculty/processing.html', context)
+
+def faculty_student_requests_approved(request):
+  IPrequest = get_ip_requests_by_status(request, 'Approved')
+  context = {'IPrequest': IPrequest}
+  return render(request, 'base/faculty/approved.html', context)
+
+
+def faculty_leave_request(request):
+    faculty = Employee.objects.get(user=request.user)
+    LeaveRequest = FacultyLeaveOfAbsence.objects.filter(faculty = faculty)
+    context = {
+        'LeaveRequest': LeaveRequest
+    }
+    return render(request, 'base/faculty/leave_request.html', context)
+
+def faculty_leave_request_pending(request):
+    return render(request, 'base/faculty/leave_pending.html')
+
+def faculty_leave_request_processing(request):
+    return render(request, 'base/faculty/leave_processing.html')
+
+def faculty_leave_request_approved(request):
+    return render(request, 'base/faculty/leave_approved.html')
+
+
 
 def submit_leave_request(request):
     faculty = Employee.objects.get(user=request.user)
@@ -317,9 +373,15 @@ def dean_dashboard(request):
     course = Course.objects.get(department = department)
    # IPrequest = IPMarkRemovalRequest.objects.filter(dean = department.dean)
     IPrequest = IPMarkRemovalRequest.objects.filter(dean=department.dean).prefetch_related('additionalfile_set', 'ipmark_set')
+    leaveRequest = FacultyLeaveOfAbsence.objects.filter(dean = department.dean)
+
 
     approved_dean = IPrequest.filter(approved_by_dean = True)
     pending_dean = IPrequest.filter(approved_by_dean = False)
+
+    leave_pending = leaveRequest.filter(approved_by_dean = False)
+    leave_approved = leaveRequest.filter(approved_by_dean = True)
+
 
 
     students = Student.objects.filter(course = course)
@@ -327,12 +389,17 @@ def dean_dashboard(request):
 
     context = {
         'IPrequest': IPrequest,
+        'leaveRequest': leaveRequest,
+
         'department': department,
         'students': students,
         'employees': employees,
 
         'approved_dean': approved_dean,
-        'pending_dean': pending_dean
+        'pending_dean': pending_dean,
+
+        'leave_pending': leave_pending,
+        'leave_approved': leave_approved,
 
     }
 
@@ -357,6 +424,13 @@ def approved_IP_request(request, request_id):
     IPrequest = IPMarkRemovalRequest.objects.get(id = request_id)
     IPrequest.approved_by_dean = True
     IPrequest.save()
+
+    return redirect('base:dean-dashboard')
+
+def approve_leave_request_dean(request, request_id):
+    leaveRequest = FacultyLeaveOfAbsence.objects.get(id = request_id)
+    leaveRequest.approved_by_dean = True
+    leaveRequest.save()
 
     return redirect('base:dean-dashboard')
 
@@ -409,20 +483,22 @@ def acad_dashboard(request):
     #IPrequest = IPMarkRemovalRequest.objects.all()
 
     IPrequest = IPMarkRemovalRequest.objects.prefetch_related('additionalfile_set', 'ipmark_set').all()
-    pending_request = IPrequest.filter(approved_by_ACAD = False)
-    approved_request = IPrequest.filter(approved_by_ACAD = True)
+    pending_request = IPrequest.filter(approved_by_dean = True, approved_by_ACAD = False)
+    approved_request = IPrequest.filter(approved_by_dean = True, approved_by_ACAD = True)
+
+    leaveRequest = FacultyLeaveOfAbsence.objects.all()
 
     context = {
         'IPrequest': IPrequest,
         'pending_request': pending_request,
-        'approved_request': approved_request
+        'approved_request': approved_request,
+
+        'leave_pending': leaveRequest.filter(approved_by_ACAD = False, approved_by_dean = True),
+        'leave_approved': leaveRequest.filter(approved_by_ACAD = True, approved_by_dean = True),
+
+        'leaveRequest': leaveRequest
     }
-    return render(request, 'base/acad_dashboard.html', context)
-
-
-import qrcode
-from io import BytesIO
-from datetime import datetime
+    return render(request, 'base/acad/acad_dashboard.html', context)
 
 def approved_request_acad(request, request_id):
 
@@ -458,6 +534,38 @@ def approved_request_acad(request, request_id):
 
     return redirect('base:acad-dashboard')
 
+def approve_leave_request(request, request_id):
+
+    leaveRequest = FacultyLeaveOfAbsence.objects.get(id=request_id)
+    leaveRequest.acad = request.user
+    leaveRequest.approved_by_ACAD = True
+    leaveRequest.status = 'Approved'
+
+    # Generate QR code data
+    acad_name = f"{leaveRequest.acad.first_name} {leaveRequest.acad.last_name}"  # Assuming first_name and last_name exist for User model
+    approved_datetime = datetime.now().strftime("%Y-%m-%d %H:%M:%S")  # Formatted date and time
+    qr_data = f"Faculty Leave of Absence Approved by: {acad_name} on {approved_datetime}"
+
+    # Create QR code image in memory
+    img_buffer = BytesIO()
+    qr = qrcode.QRCode(
+        version=1,  # Adjust version for complexity/size balance (optional)
+        error_correction=qrcode.constants.ERROR_CORRECT_L,  # Adjust error correction (optional)
+        box_size=10,  # Adjust box size for image size (optional)
+    )
+    qr.add_data(qr_data)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white")
+    img.save(img_buffer, format="PNG")
+
+    # Update IPrequest.qr with generated image data
+    leaveRequest.qr_code.save(f"{approved_datetime}.png", BytesIO(img_buffer.getvalue()), save=False)
+
+    # Save updated model instance
+    leaveRequest.save()
+
+    return redirect('base:acad-dashboard')
+
 
 def display_request_form(request, request_id):
 
@@ -468,4 +576,131 @@ def display_request_form(request, request_id):
         'marks' : IPmarks
     }
     return render(request, 'base/includes/IPform.html', context)
+
+
+"""
+def ip_base(request):
+    IPrequest = IPMarkRemovalRequest.objects.prefetch_related('additionalfile_set', 'ipmark_set').all()
+    pending_request = IPrequest.filter(approved_by_dean = True, approved_by_ACAD = False)
+    approved_request = IPrequest.filter(approved_by_dean = True, approved_by_ACAD = True)
+
+    leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_dean = True)
+
+    context = {
+        'IPrequest': IPrequest,
+        'pending_request': pending_request,
+        'approved_request': approved_request,
+
+        'leave_pending': leaveRequest.filter(approved_by_ACAD = False, approved_by_dean = True),
+        'leave_approved': leaveRequest.filter(approved_by_ACAD = True, approved_by_dean = True),
+    }
+    return render(request, 'base/acad/ip_base.html', context)
+
+def ip_pending(request):
+    IPrequest = IPMarkRemovalRequest.objects.prefetch_related('additionalfile_set', 'ipmark_set').all()
+    pending_request = IPrequest.filter(approved_by_ACAD = False)
+    approved_request = IPrequest.filter(approved_by_ACAD = True)
+
+    context = {
+        'IPrequest': IPrequest,
+        'pending_request': pending_request,
+        'approved_request': approved_request,
+    }
+    return render(request, 'base/acad/ip_pending.html', context)
+
+def ip_approved(request):
+    IPrequest = IPMarkRemovalRequest.objects.prefetch_related('additionalfile_set', 'ipmark_set').all()
+    pending_request = IPrequest.filter(approved_by_ACAD = False)
+    approved_request = IPrequest.filter(approved_by_ACAD = True)
+
+    context = {
+        'IPrequest': IPrequest,
+        'pending_request': pending_request,
+        'approved_request': approved_request,
+
+
+    }
+    return render(request, 'base/acad/ip_approved.html', context)
+"""
+
+def get_ip_requests(request, approved_by_acad=None):
+  filters = {'approved_by_dean': True}
+  if approved_by_acad is not None:
+    filters['approved_by_ACAD'] = approved_by_acad
+  IPrequest = IPMarkRemovalRequest.objects.prefetch_related('additionalfile_set', 'ipmark_set').filter(**filters)
+  return IPrequest
+
+def ip_base(request):
+  IPrequest = get_ip_requests(request)  # All (approved by Dean)
+  pending_request = get_ip_requests(request, approved_by_acad=False)
+  approved_request = get_ip_requests(request, approved_by_acad=True)
+
+  leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_dean=True)
+
+  context = {
+      'IPrequest': IPrequest,
+      'pending_request': pending_request,
+      'approved_request': approved_request,
+      'leave_pending': leaveRequest.filter(approved_by_ACAD=False, approved_by_dean=True),
+      'leave_approved': leaveRequest.filter(approved_by_ACAD=True, approved_by_dean=True),
+  }
+  return render(request, 'base/acad/ip_base.html', context)
+
+def ip_pending(request):
+  IPrequest = get_ip_requests(request, approved_by_acad=False)
+  pending_request = IPrequest
+  approved_request = []  # Empty list for approved
+
+  context = {
+      'IPrequest': IPrequest,
+      'pending_request': pending_request,
+      'approved_request': approved_request,
+  }
+  return render(request, 'base/acad/ip_pending.html', context)
+
+def ip_approved(request):
+  IPrequest = get_ip_requests(request, approved_by_acad=True)
+  pending_request = []  # Empty list for pending
+  approved_request = IPrequest
+
+  context = {
+      'IPrequest': IPrequest,
+      'pending_request': pending_request,
+      'approved_request': approved_request,
+  }
+  return render(request, 'base/acad/ip_approved.html', context)
+
+
+def get_leave_requests(request, approved_by_acad=None):
+  filters = {'approved_by_dean': True}
+  if approved_by_acad is not None:
+    filters['approved_by_ACAD'] = approved_by_acad
+  leaveRequest = FacultyLeaveOfAbsence.objects.filter(**filters)
+  return leaveRequest
+
+
+
+def leave_base(request):
+  leaveRequest = get_leave_requests(request)  # All (approved by Dean)
+  context = {
+      'leaveRequest': leaveRequest,
+      'leave_pending': get_leave_requests(request, approved_by_acad=False),
+      'leave_approved': get_leave_requests(request, approved_by_acad=True),
+  }
+  return render(request, 'base/acad/leave_base.html', context)
+
+def leave_pending(request):
+  leaveRequest = get_leave_requests(request, approved_by_acad=False)
+  context = {
+      'leaveRequest': leaveRequest,
+  }
+  return render(request, 'base/acad/leave_pending.html', context)
+
+def leave_approved(request):
+  leaveRequest = get_leave_requests(request, approved_by_acad=True)
+  context = {
+      'leaveRequest': leaveRequest,
+  }
+  return render(request, 'base/acad/leave_approved.html', context)
+
 

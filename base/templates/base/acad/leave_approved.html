@@ -1,0 +1,147 @@
+<div class="card mb-4">
+    <div class="card-header pb-0">
+        <h6>Faculty Leave of Absence Requests</h6>
+    </div>
+    <div class="card-body px-0 pt-0 pb-2">
+    <div class="table-responsive p-3">
+        <table class="table align-items-center mb-0">
+        <thead>
+            <tr>
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Faculty</th>
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Date</th>
+            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">No. of Days</th>
+            
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Reason</th>
+
+    
+
+
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Recommended by:</th>
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Substitute</th>
+
+        
+            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
+            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Actions</th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for ip in leaveRequest %}
+            {% if ip.approved_by_dean %}
+                <tr>
+
+                    <td>
+
+                        <div class="d-flex px-2 py-1">
+                            <div>
+                            <img src="{{ ip.faculty.avatar.url}}" class="avatar avatar-sm me-3" alt="user1">
+                            </div>
+                            <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-md">{{ ip.faculty.user.first_name }} {{ ip.faculty.user.last_name }}</h6>
+                            <p class="text-xs text-secondary mb-0">{{ ip.faculty.department }}</p>
+                            </div>
+                        </div>
+
+                            
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-md">{{ ip.purpose }}</h6>
+                            <p class="text-md text-secondary mb-0">Ticket #{{ip.id}}</p>
+                        </div>
+                        
+                    </td>
+
+                    <td>
+                        <div class="d-flex flex-column justify-content-center">
+                        <p class="text-md text-secondary mb-0">From: {{ ip.from_date }}</p>
+                        <p class="text-md text-secondary mb-0">To: {{ ip.to_date }}</p>
+                        </div>
+                    
+                    </td>
+
+                    <td class="text-center">
+                        <h6 class="mb-0 text-md">{{ip.number_of_days}}</h6>
+                        
+                    
+                    </td>
+
+                    <td>
+                    <p class="text-xs text-secondary mb-0">{{ip.reason}}</p>
+                    </td>
+
+                
+
+                    <td>
+
+                        {% if ip.approved_by_dean %}
+
+                            <div class="d-flex flex-column">
+                                <div class="form-check mb-0">
+                                    <input class="form-check-input" name="is_there_substitute" type="checkbox" value="true" id="fcustomCheck1" checked disabled>
+                                    <label class="text-secondary" for="customCheck1">Approved</label>
+                                </div>
+                                <p class="mb-0 text-center font-weight-bold text-md"><u>{{ ip.dean.first_name }} {{ ip.dean.last_name }}</u></p>
+                                <p class="text-xs text-secondary mb-0 text-center">Dean</p>
+                            </div>
+                 
+                    
+                        {% endif %}
+                    
+                    </td>
+
+                    {% if ip.is_there_substitute == True %}
+                    <td>
+                        <p class="text-md text-secondary mb-0">{{ip.name_of_sustitute }} </p>
+                        <p class="text-md font-weight-bold mb-0">{{ ip.reason_for_substitute }}</p>
+                    
+                    </td>
+
+                    {% else %}
+
+                    <td class="">
+                
+                        <p class="text-md font-weight-bold mb-0">N/A</p>
+                    
+                    </td>
+                    {% endif %}
+
+                
+            
+
+            
+                    <td class="align-middle text-center text-md">
+                    {% if ip.approved_by_ACAD %}
+                        <span class="badge bg-gradient-success">Approved</span>
+                        {% else %}
+
+                        <span class="badge bg-gradient-warning">Pending</span>
+                    {% endif %}
+                    </td>
+
+                    <td class="text-md align-middle text-center">
+
+                    {% if not ip.approved_by_ACAD %}
+                    <a href="#" class="mx-2 process-button accept-leave-request" data-request-id="{{ ip.id }}"
+                        data-bs-toggle="tooltip" data-bs-title="Approve request">
+                        <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                    </a>
+                        <a href="javascript:;" class="mx-2" data-bs-toggle="tooltip" data-bs-title="Cancel Request">
+                        <i class="fas fa-trash text-secondary" aria-hidden="true"></i>
+                    </a>
+                    {% endif %}
+
+                    </td>
+                        
+
+                </tr>
+            {% endif %}
+            {% endfor %}
+
+
+        </tbody>
+        </table>
+    </div>
+    </div>
+</div>
