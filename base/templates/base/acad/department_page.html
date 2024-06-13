@@ -1,0 +1,266 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ACAD Dashboard
+{% endblock %}
+
+
+{% block aside %}
+
+{% include 'base/includes/acad_aside.html' %}
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container-fluid py-4">
+
+    
+
+    <div class="card shadow-lg mx-4">
+        <div class="card-body p-3">
+          <div class="row ">
+            <div class="col-auto">
+              <div class="avatar avatar-xl position-relative">
+                <img src="{{ department.logo.url }}" alt="profile_image" class="w-100 border-radius-lg">
+              </div>
+            </div>
+            <div class="col-auto my-auto">
+              <div class="h-100">
+                <h5 class="mb-1">
+                  {{ department.name }}
+                </h5>
+              </div>
+            </div>
+            <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
+              <div class="nav-wrapper position-relative end-0">
+                <ul class="nav nav-pills nav-fill p-1" role="tablist">
+                  <li class="nav-item">
+                    <a class="nav-link mb-0 px-0 py-1 active d-flex align-items-center justify-content-center " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="true">
+                      <i class="fa fa-book"></i>
+                      <span class="ms-2">Course Guides</span>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="false">
+                      <i class="fa fa-group"></i>
+                      <span class="ms-2">Students</span>
+                    </a>
+                  </li>
+
+                  <li class="nav-item">
+                    <a class="nav-link mb-0 px-0 py-1 d-flex align-items-center justify-content-center " data-bs-toggle="tab" href="javascript:;" role="tab" aria-selected="false">
+                      <i class="fa fa-user"></i>
+                      <span class="ms-2">Faculty</span>
+                    </a>
+                  </li>
+
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="container-fluid py-4">
+        <div class="row">
+          <div class="col-md-8">
+            <div class="card mb-4">
+                <div class="card-header pb-0">
+                    <div class=" d-flex justify-content-between align-items-center">
+                                    
+                        <div class="d-flex flex-column">
+                            <h5 class="mb-0">Course Guides</h5>
+        
+                            <span class="text-md">{{ request.user.department }}</span>
+                        </div>
+        
+                        
+                        <a href="" class="btn bg-gradient-secondary" data-bs-toggle="modal" data-bs-target="#modal-form">Others</a>
+                    </div>
+                </div>
+                <div class="card-body px-0 pt-0 pb-2">
+                  <div class="table-responsive p-3">
+                    <table class="table align-items-center mb-0" id="myTable_course_guides">
+                      <thead>
+                        <tr>
+                            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Faculty</th>
+                            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Subject</th>
+                            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Semester</th>
+                            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Year</th>
+                            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">File</th>
+        
+                            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
+                            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2"></th>
+                          </tr> 
+                      </thead>
+                      <tbody>
+                        {% for cg in course_guides %}
+                        {% if cg.approved_by_dean %}
+                      
+                        <tr>
+        
+                            <td>
+                                <div class="d-flex px-2 py-1">
+                                    <div>
+                                    <img src="{{ cg.faculty.avatar.url}}" class="avatar avatar-sm me-3" alt="user1">
+                                    </div>
+                                    <div class="d-flex flex-column justify-content-center">
+                                    <h6 class="mb-0 text-xs">{{ cg.faculty.user.first_name }} {{ cg.faculty.user.last_name }}</h6>
+                                    <p class="text-xs text-secondary mb-0">{{ cg.faculty.employee_id }}</p>
+                                    </div>
+                                </div>
+                              
+                            </td>
+                          <td>
+                              <div class="d-flex flex-column justify-content-center">
+                                <p class="text-xs text-secondary mb-0">{{cg.subject_code}}</p>
+                                <h6 class="mb-0 text-xs">{{ cg.subject_name }}</h6>
+                                
+                              </div>
+                            
+                          </td>
+        
+                          <td class="text-center">
+                            <div class="d-flex flex-column justify-content-center">
+                              <h6 class="mb-0 text-xs">{{ cg.semester}}</h6>
+                            </div>
+                          
+                          </td>
+        
+                          <td class="text-center">
+                            <div class="d-flex flex-column justify-content-center">
+                              <h6 class="mb-0 text-xs">{{cg.year}}</h6>
+                            </div>
+                          
+                          </td>
+        
+                          <td class="text-center">
+                       
+                              <div class="d-flex flex-column justify-content-center">
+                               
+                                  <a data-bs-toggle="tooltip" data-bs-title="View File" href="{{ cg.file.url }}" target="_blank"class="btn btn-link text-dark text-xs mb-0 px-0 ms-4">
+                                      
+                                      {{ cg.file}}
+                                  </a>
+                              </div>
+                          
+                           
+                             
+                          </td>
+        
+                      
+                          <td class="align-middle text-center text-xs">
+                            {% if cg.approved_by_ACAD %}
+        
+                              <span class="badge bg-gradient-success">Approved</span>
+                                {% else %}
+        
+                                <span class="badge bg-gradient-warning">Pending </span>
+                              {% endif %}
+                          </td>
+                          
+        
+                          <td>
+        
+                            {% if not cg.approved_by_ACAD %}
+
+                            <a href="{% url 'base:acad-approve-course-guide' cg.id %}" class="mx-2 process-button approve-link" data-request-id="{{ cg.id }}"
+                            data-bs-toggle="tooltip" data-bs-title="Approve request">
+                            <i class="fas fa-paper-plane text-secondary" aria-hidden="true"></i>
+                            </a>
+
+                            {% elif cg.approved_by_ACAD %}
+
+                            <a href="#" class="mx-2 process-button approve-link" data-request-id="{{ cg.id }}"
+                            data-bs-toggle="tooltip" data-bs-title="Request Approved">
+                            <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                            </a>
+
+                            {% endif %}
+
+
+                          </td>
+        
+                       
+        
+                        </tr>
+                        {% endif %}
+                        
+                        {% endfor %}
+        
+        
+                      </tbody>
+                    </table>
+                  </div>
+                </div>
+              </div>
+          </div>
+
+
+          <div class="col-md-4">
+            <div class="card card-profile">
+              <img src="/static/assets/img/lnu-bg-2.jfif" alt="Image placeholder" class="card-img-top">
+              <div class="row justify-content-center">
+                <div class="col-4 col-lg-4 order-lg-2">
+                  <div class="mt-n4 mt-lg-n6 mb-4 mb-lg-0">
+                    <a href="javascript:;">
+                      <img src="{{ department.logo.url }}" class="rounded-circle img-fluid border border-2 border-white">
+                    </a>
+                  </div>
+                </div>
+              </div>
+  
+              <div class="card-body pt-0 mt-3 ">
+                <div class="row">
+                  <div class="col">
+                    <div class="d-flex justify-content-center">
+                      <div class="d-grid text-center">
+                        <span class="text-lg font-weight-bolder">{{ students.count }} </span>
+                        <span class="text-sm opacity-8">Students</span>
+                      </div>
+                      <div class="d-grid text-center mx-4">
+                        <span class="text-lg font-weight-bolder">{{ employees.count }}</span>
+                        <span class="text-sm opacity-8">Faculty</span>
+                      </div>
+                      <div class="d-grid text-center">
+                        <span class="text-lg font-weight-bolder">{{ courses.count }}</span>
+                        <span class="text-sm opacity-8">Courses</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div class="text-center mt-4">
+                  <div>
+                    <h6>{{ department.name }}</h6>
+                  
+                    {% for course in courses %}
+
+                        {{ course.name  }} <br>
+                       
+                    {% endfor %}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+
+<script>
+let table = new DataTable('#myTable_course_guides')
+</script>
+
+
+{% endblock %}

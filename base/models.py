@@ -77,8 +77,9 @@ class FacultyLeaveOfAbsence(models.Model):
     number_of_days = models.CharField(max_length=50)
     reason = models.TextField()
 
+
     is_there_substitute = models.BooleanField(default=False)
-    name_of_sustitute = models.CharField(max_length=50, null=True, blank=True)
+    name_of_substitute = models.CharField(max_length=50, null=True, blank=True)
     reason_for_substitute = models.TextField(null=True, blank=True)
 
     dean = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name='dean_fac')
@@ -105,3 +106,37 @@ class FacultyLeaveOfAbsence(models.Model):
 
     def __str__(self):
         return f"Faculty Leave of Absence - {self.faculty} - {self.from_date} - {self.to_date} - {self.purpose}"
+    
+
+
+
+class CourseGuide(models.Model):
+    faculty = models.ForeignKey(Employee, on_delete=models.CASCADE)
+    department = models.ForeignKey(Department, on_delete=models.CASCADE, null = True, blank=True)
+    subject_name = models.CharField(max_length=100)
+    subject_code = models.CharField(max_length=12)
+    year = models.CharField(max_length=15)
+    semester = models.CharField(max_length=50)
+    file = models.FileField(upload_to='files/')
+
+    dean = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name='dean_cg')
+    acad = models.ForeignKey(User, on_delete=models.CASCADE, null = True, blank = True, related_name='acad_cg')
+
+    approved_by_dean = models.BooleanField(default=False)
+    approved_by_ACAD = models.BooleanField(default=False)
+
+    qr_code = models.ImageField(upload_to='qrcodes/', null=True, blank=True)
+
+    STATUS_CHOICES = (
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    )
+    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="Pending")
+
+    date_created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Course Guide - {self.faculty} - {self.subject_name} - {self.subject_code} - {self.year} - {self.semester}"
+
+

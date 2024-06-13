@@ -21,3 +21,5 @@ admin.site.register(IPMark)
 
 
 admin.site.register(FacultyLeaveOfAbsence)
+
+admin.site.register(CourseGuide)

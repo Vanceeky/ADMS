@@ -1,0 +1,72 @@
+{% extends 'base.html' %}
+
+{% block title %}
+ACAD Dashboard
+{% endblock %}
+
+
+{% block aside %}
+
+{% include 'base/includes/acad_aside.html' %}
+
+{% endblock %}
+
+
+{% block content %}
+
+
+<div class="container-fluid py-4">
+
+    
+
+    <div class="row mt-lg-4 mt-2">
+        {% for dept in department_data %}
+        <div class="col-lg-4 col-md-6 mb-4">
+           <div class="card">
+              <div class="card-body p-3">
+                 <div class="d-flex">
+                    <div class="avatar avatar-xl bg-gradient-secondary border-radius-md p-2">
+                       <img src="{{ dept.department.logo.url }}" alt="slack_logo">
+                    </div>
+                    <div class="ms-3 my-auto">
+                       <h6><a href="{% url 'base:acad-department-detail' dept.department.id %}">{{ dept.department.name }}</a></h6>
+                   
+           
+                            <div class="d-flex flex-column justify-content-center">
+                               <u> <h6 class="mb-0 text-sm">{{ dept.department.dean.first_name }} {{ dept.department.dean.last_name }}</h6></u>
+                                <p class="text-xs text-secondary mb-0">Dean</p>
+                            </div>
+                    </div>
+               
+                 </div>
+    
+                 <hr class="horizontal dark">
+                 <div class="row">
+                    <div class="col-6">
+            
+                   
+                       <p class="text-secondary text-sm font-weight-bold mb-0">Number of Faculty members: {{ dept.num_employees }}</p>
+                    </div>
+                    <div class="col-6 text-end">
+                       
+                       <p class="text-secondary text-sm font-weight-bold mb-0">Number of Students: {{ dept.num_students }}</p>
+                    </div>
+                 </div>
+              </div>
+           </div>
+        </div>
+        {% endfor %}
+
+     </div>
+
+</div>
+
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+
+
+{% endblock %}

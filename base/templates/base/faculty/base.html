@@ -29,7 +29,7 @@ Faculty Dashboard
                             <div class="col-6 d-flex align-items-center">
                                 
                                 <div class="d-flex flex-column">
-                                    <h5 class="mb-0">Pending Requests</h5>
+                                    <h5 class="mb-0"> Requests</h5>
         
                                     <span class="text-md">Student IP Mark Removal Requests</span>
                                 </div>
@@ -352,17 +352,20 @@ Faculty Dashboard
             event.preventDefault();
             $('a.nav-link').removeClass('active');
         
-            // Add the active class to the clicked navigation link
+          
             $(this).addClass('active');
             var href = $(this).attr('href');
-            var page = href.split('/').filter(Boolean).pop();// Extract the last part of the URL
+            var page = href.split('/').filter(Boolean).pop();
             console.log("Page:", page);
             $.ajax({
                 url: '/faculty/student-requests/' + page + '/',
                 success: function (data) {
                     $('.sub-content-area').html(data);
                     $(".sr-nav-link").addClass('active');
-                    
+                 
+                    let table_pending = new DataTable('#myTable_pending')
+                    let table_approved = new DataTable('#myTable_approved')
+                    let table_processing = new DataTable('#myTable_processing')
                     
                 },
                 error: function (xhr, status, error) {
@@ -373,13 +376,13 @@ Faculty Dashboard
     });
 </script>
 
-
-
-
-
 <script>
   let table = new DataTable('#myTable');
 </script>
+
+
+
+
 
   <script>
     document.addEventListener("DOMContentLoaded", function() {
@@ -407,7 +410,7 @@ Faculty Dashboard
       }
     }
   
-    // Attach event listener to final grade input for dynamic updates
+   
     document.getElementById("final_grade").addEventListener("keyup", updateRemarks);
   
 
@@ -427,9 +430,7 @@ Faculty Dashboard
 
   <script>
     $(document).ready(function() {
-      // Show/hide input field based on selected option in dropdown
-  
-      // Show/hide textarea based on checkbox state
+
       $('#fcustomCheck1').change(function() {
         if ($(this).is(':checked')) {
           $('.substitute-reason').show();

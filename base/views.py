@@ -8,7 +8,7 @@ from django.db.models import Q
 from base.models import *
 from django.contrib import messages
 from django.core.mail import send_mail
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 import json
 from datetime import datetime, timedelta
 # Create your views here.
@@ -233,6 +233,40 @@ def faculty_dashboard(request):
     return render(request, 'base/faculty/faculty_dashboard.html', context)
 
 
+def faculty_course_guide(request):
+   faculty = Employee.objects.get(user = request.user)
+   course_guides = CourseGuide.objects.filter(faculty = faculty )
+
+   context = {
+      'course_guides': course_guides
+   }
+   return render(request, 'base/faculty/course_guide.html', context)
+
+
+def faculty_submit_course_guide(request):
+
+    faculty = Employee.objects.get(user = request.user)
+    if request.method == 'POST':
+       subject_name = request.POST.get('subject_name')
+       subject_code = request.POST.get('subject_code')
+       year = request.POST.get('year')
+       semester = request.POST.get('semester')
+       file = request.FILES.get('file')
+
+       CourseGuide.objects.create(
+          faculty = faculty, 
+          department = faculty.department,
+          subject_name = subject_name, 
+          subject_code = subject_code, 
+          year = year, 
+          semester = semester, 
+          file = file,
+          dean = faculty.department.dean
+        )
+
+    return redirect('base:faculty-course-guide')
+
+
 def faculty_student_requests_base(request):
     faculty = Employee.objects.get(user = request.user)
     IPrequest = IPMarkRemovalRequest.objects.filter(instructor = faculty).prefetch_related('additionalfile_set', 'ipmark_set')
@@ -273,14 +307,6 @@ def faculty_leave_request(request):
     }
     return render(request, 'base/faculty/leave_request.html', context)
 
-def faculty_leave_request_pending(request):
-    return render(request, 'base/faculty/leave_pending.html')
-
-def faculty_leave_request_processing(request):
-    return render(request, 'base/faculty/leave_processing.html')
-
-def faculty_leave_request_approved(request):
-    return render(request, 'base/faculty/leave_approved.html')
 
 
 
@@ -295,9 +321,10 @@ def submit_leave_request(request):
         end_date = request.POST.get('to_date')
         number_of_days = request.POST.get('number_of_days')
         reason = request.POST.get('reason')
+        lengthOfService = request.POST.get('lengthOfService')
        # is_there_substitute = request.POST.get('is_there_substitute')
         is_there_substitute = request.POST.get('is_there_substitute') == "true"  # Compare with "true" (case-sensitive)
-
+        name_of_substitute = request.POST.get('name_of_substitute')
         # If the checkbox is checked, retrieve the substitute reason
         substitute_reason = None
         if is_there_substitute == True:
@@ -310,7 +337,9 @@ def submit_leave_request(request):
             to_date=end_date,
             number_of_days=number_of_days,
             reason=reason,
+            lengthOfService=lengthOfService,
             is_there_substitute=is_there_substitute,  # Save the checkbox value
+            name_of_substitute=name_of_substitute,
             reason_for_substitute=substitute_reason,  # Save the substitute reason
             dean=dean,
             department=department,
@@ -318,7 +347,7 @@ def submit_leave_request(request):
 
         myRequest.save()
 
-        return redirect('base:faculty-dashboard')
+        return redirect('base:faculty-leave-requests')
 
 
 def faculty_pending_request(request):
@@ -472,7 +501,22 @@ def accept_user(request, user_id):
 
 
 
+def dean_course_guide(request):
+    dean = request.user
+    department = Department.objects.get(dean = dean)
+    course_guides = CourseGuide.objects.filter(department = department)
+    context = {
+        'course_guides': course_guides
+    }
+    return render(request, 'base/dean/course_guide.html', context)
 
+def dean_approve_course_guide(request, request_id):
+    course_guide = CourseGuide.objects.get(id = request_id)
+    course_guide.approved_by_dean = True
+    course_guide.status = 'Approved'
+    course_guide.save()
+
+    return redirect('base:dean-course-guide')
 
 
 
@@ -704,3 +748,55 @@ def leave_approved(request):
   return render(request, 'base/acad/leave_approved.html', context)
 
 
+def acad_departments(request):
+    departments = Department.objects.all()
+    # Fetch related models for each department
+    department_data = []
+    for department in departments:
+        courses = department.course_set.all()
+        employees = department.employee_set.all()
+        
+        # Fetch students through courses
+        students = Student.objects.filter(course__in=courses)
+
+        department_data.append({
+            'department': department,
+            'courses': courses,
+
+            'num_employees': employees.count(),  # Count of employees
+            'num_students': students.count(),    # Count of students
+        })
+
+    context = {
+        'department_data': department_data
+    }
+    
+    return render(request, 'base/acad/departments.html', context)
+
+def department_page(request, dept_id):
+    department = Department.objects.get(pk=dept_id)
+    
+    # Retrieve related models
+    courses = department.course_set.all()
+    course_guides = department.courseguide_set.all()
+    employees = department.employee_set.all()
+
+    # Fetch students through courses
+    students = Student.objects.filter(course__in=courses)
+
+    context = {
+        'department': department,
+        'courses': courses,
+        'course_guides': course_guides,
+        'employees': employees,
+        'students': students,
+    }
+    return render(request, 'base/acad/department_page.html', context)
+
+def acad_approve_course_guide(request, course_guide_id):
+    course_guide = CourseGuide.objects.get(pk=course_guide_id)
+    course_guide.approved_by_ACAD = True
+    course_guide.acad = request.user
+    course_guide.status = 'Approved'
+    course_guide.save()
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])

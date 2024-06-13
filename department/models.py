@@ -6,6 +6,7 @@ from django.contrib.auth.models import User
 
 class Department(models.Model):
     name = models.CharField(max_length=100)
+    logo = models.ImageField(upload_to='logos/', null = True, blank = True)
     dean = models.OneToOneField(User, on_delete=models.CASCADE, null = True, blank = True)
 
     def __str__(self):

@@ -26,13 +26,16 @@ Faculty Dashboard
                 <div class="card z-index-2 h-100">
                     <div class="card-header pb-0 p-3">
                         <div class="row">
-                            <div class="col-6 d-flex align-items-center">
+                            <div class=" d-flex justify-content-between align-items-center">
                                 
                                 <div class="d-flex flex-column">
                                     <h5 class="mb-0">My Requests</h5>
         
                                     <span class="text-md">Leave of Absence</span>
                                 </div>
+
+
+                                <button class="btn bg-gradient-info" data-bs-toggle="modal" data-bs-target="#modal-form">Submit Request</button>
                             </div>
                             
                 
@@ -91,13 +94,13 @@ Faculty Dashboard
                                     {% if ip.approved_by_dean %}
 
                                     <div class="form-check">
-                                        <input class="form-check-input" name="is_there_substitute" type="checkbox" value="true" id="fcustomCheck1" checked disabled>
+                                        <input class="form-check-input" name="is_there_substitute" type="checkbox" value="true"  checked disabled>
                                         <label class="text-secondary" for="customCheck1">Approved</label>
                                     </div>
                                     {% else %}
 
                                     <div class="form-check mb-0">
-                                        <input class="form-check-input" name="is_there_substitute" type="checkbox" value="true" id="fcustomCheck1" disabled>
+                                        <input class="form-check-input" name="is_there_substitute" type="checkbox" value="true"  disabled>
                                         <label class="text-secondary" for="customCheck1">Approved</label>
                                     </div>
 
@@ -121,13 +124,13 @@ Faculty Dashboard
                                     {% if ip.approved_by_ACAD %}
 
                                     <div class="form-check">
-                                        <input class="form-check-input" name="is_there_substitute" type="checkbox" value="true" id="fcustomCheck1" checked disabled>
+                                        <input class="form-check-input" name="is_there_substitute" type="checkbox" value="true"  checked disabled>
                                         <label class="text-secondary" for="customCheck1">Approved</label>
                                     </div>
                                     {% else %}
 
                                     <div class="form-check mb-0">
-                                        <input class="form-check-input" name="is_there_substitute" type="checkbox" value="true" id="fcustomCheck1" disabled>
+                                        <input class="form-check-input" name="is_there_substitute" type="checkbox" value="true"  disabled>
                                         <label class="text-secondary" for="customCheck1">Approved</label>
                                     </div>
 
@@ -203,90 +206,105 @@ Faculty Dashboard
 
 <!-- MODALS -->
 
+
+
 <div class="col-md-4">
-    <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
-      <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h6 class="modal-title" id="modal-title-notification">Faculty Leave of Absence</h6>
-            
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">×</span>
-              
-            </button>
-          </div>
-          <div class="modal-body">
-            <form action="{% url 'base:submit-leave-request' %}" method="POST" enctype="multipart/form-data">
-              {% csrf_token %}
-              <div class="row">
-                <div class="col-md-6">
-                  <div class="form-group">
-                    <label for="exampleFormControlSelect1">Purpose of Absence: </label>
-                    <select class="form-control" name="purpose_of_absence" id="purpose_of_absence">
-                      <option value="Vacation Leave">Vacation Leave</option>
-                      <option value="Sick Leave"> Sick Leave </option>
-                      <option value="Official Business"> Official Business </option>
-            
-                    </select>
-    
-                  </div>
-                </div>
+  <div class="modal fade" id="modal-form" tabindex="-1" role="dialog" aria-labelledby="modal-notification" aria-hidden="true">
+    <div class="modal-dialog modal-danger modal-dialog-centered modal-" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h6 class="modal-title" id="modal-title-notification">Faculty Leave of Absence</h6>
           
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+            
+          </button>
+        </div>
+        <div class="modal-body">
+          <form action="{% url 'base:submit-leave-request' %}" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="row">
+              <div class="col-md-6">
+                <div class="form-group">
+                  <label for="exampleFormControlSelect1">Purpose of Absence: </label>
+                  <select class="form-control" name="purpose_of_absence" id="purpose_of_absence">
+                    <option value="Vacation Leave">Vacation Leave</option>
+                    <option value="Sick Leave"> Sick Leave </option>
+                    <option value="Official Business"> Official Business </option>
+          
+                  </select>
+  
+                </div>
+              </div>
+
+              
+              <div class="col-md-6">
+                <div class="form-group">
+                    <label for="example-text-input" class="form-control-label">Length of service: </label>
+                    <input class="form-control" name="lengthOfService" type="text" placeholder="" id="example-text-input">
+                </div>
+            </div>
+        
+            </div>
+
+
+
+          <div class="row">
+              <div class="col-md-4">
+                  <div class="form-group">
+                      <label for="example-text-input" class="form-control-label">From</label>
+                      <input class="form-control" name="from_date" type="date" placeholder="IT-MM" id="example-text-input">
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="form-group">
+                      <label for="example-text-input" class="form-control-label">To:</label>
+                      <input class="form-control" name="to_date" type="date" placeholder="Multimedia" id="example-text-input">
+                  </div>
+              </div>
+              <div class="col-md-4">
+                  <div class="form-group">
+                      <label for="example-text-input" class="form-control-label">No. Of Days</label>
+                      <input class="form-control" name="number_of_days" type="num" placeholder="3" id="example-text-input">
+                  </div>
+              </div>
+
+              <div class="form-group">
+                <label for="exampleFormControlTextarea1">Reason/Purpose</label>
+                <textarea class="form-control" name="reason" id="exampleFormControlTextarea1" rows="2"></textarea>
+              </div>
+            
+              <div class="form-check mx-3">
+                <input class="form-check-input" name="is_there_substitute" type="checkbox" value="true" id="fcustomCheck1">
+                <label class="custom-control-label" for="customCheck1">Do you need a substitute?</label>
+              </div>
+              
+              <div class="form-group name_of_substitute" style="display: none;">
+                <input class="form-control" name="name_of_substitute" type="text" placeholder="Name of Substitute">
               </div>
 
 
-
-            <div class="row">
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="example-text-input" class="form-control-label">From</label>
-                        <input class="form-control" name="from_date" type="date" placeholder="IT-MM" id="example-text-input">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="example-text-input" class="form-control-label">To:</label>
-                        <input class="form-control" name="to_date" type="date" placeholder="Multimedia" id="example-text-input">
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="form-group">
-                        <label for="example-text-input" class="form-control-label">No. Of Days</label>
-                        <input class="form-control" name="number_of_days" type="num" placeholder="3" id="example-text-input">
-                    </div>
-                </div>
-
-                <div class="form-group">
-                  <label for="exampleFormControlTextarea1">Reason/Purpose</label>
-                  <textarea class="form-control" name="reason" id="exampleFormControlTextarea1" rows="2"></textarea>
-                </div>
               
-                <div class="form-check mx-3">
-                  <input class="form-check-input" name="is_there_substitute" type="checkbox" value="true" id="fcustomCheck1">
-                  <label class="custom-control-label" for="customCheck1">Do you need a substitute?</label>
-                </div>
-                
-                <div class="form-group substitute-reason" style="display: none;">
-                  <label for="exampleFormControlTextarea2">Reason for a substitute:</label>
-                  <textarea class="form-control" name="substitute_reason" id="exampleFormControlTextarea2" rows="2"></textarea>
-                </div>
+              <div class="form-group substitute-reason" style="display: none;">
+                <label for="exampleFormControlTextarea2">Reason for a substitute:</label>
+                <textarea class="form-control" name="substitute_reason" id="exampleFormControlTextarea2" rows="2"></textarea>
+              </div>
 
-      
-            </div>
-
-            <div class="modal-footer mb-0">
-              <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-              <button type="submit" class="btn bg-gradient-primary">Save changes</button>
-            </div>
-
-            </form>
+    
           </div>
 
+          <div class="modal-footer mb-0">
+            <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn bg-gradient-primary">Save changes</button>
+          </div>
+
+          </form>
         </div>
+
       </div>
     </div>
+  </div>
 </div>
-
 
 
 
@@ -296,117 +314,44 @@ Faculty Dashboard
 
 
 {% block javascripts %}
-
-<script>
-    
-    document.addEventListener("DOMContentLoaded", function() {
-    // Check if the current URL matches the target URL
-    var currentUrl = window.location.href;
-    var targetUrl = "http://127.0.0.1:8000/faculty/student-requests/"; // Replace with your actual template tag
-  
-    if (currentUrl === targetUrl) {
-      // Show the collapse element
-      var collapseElement = document.getElementById("dashboardsExamples");
-      collapseElement.classList.add("show");
-    }
-  });
-  
-  </script>
-  
-<script>
-    $(document).ready(function () {
-        $('a.ajax-link').on('click', function(event) {
-            event.preventDefault();
-            $('a.nav-link').removeClass('active');
-        
-            // Add the active class to the clicked navigation link
-            $(this).addClass('active');
-            var href = $(this).attr('href');
-            var page = href.split('/').filter(Boolean).pop();// Extract the last part of the URL
-            console.log("Page:", page);
-            $.ajax({
-                url: '/faculty/student-requests/' + page + '/',
-                success: function (data) {
-                    $('.sub-content-area').html(data);
-                    $(".sr-nav-link").addClass('active');
-                    
-                    
-                },
-                error: function (xhr, status, error) {
-                    console.error(error);
-                }
-            });
-        });
-    });
-</script>
-
-
-
-
+<script src="/static/assets/js/core/jquery.js"></script>
 
 <script>
   let table = new DataTable('#myTable');
 </script>
 
-  <script>
-    document.addEventListener("DOMContentLoaded", function() {
-      var links = document.querySelectorAll("a[href*='/files/']"); 
-      for (var i = 0; i < links.length; i++) {
-        var link = links[i];
-        var filename = link.textContent.trim().split('/').pop(); 
-        link.textContent = filename; 
-      }
 
-      
-    });
-  </script>
-
-  <script>
-    function updateRemarks() {
-      var finalGradeInput = document.getElementById("final_grade");
-      var remarksInput = document.getElementById("remarks");
-  
-      if (finalGradeInput.value) {
-        var finalGrade = parseFloat(finalGradeInput.value);
-        remarksInput.value = finalGrade > 74.9 ? "PASSED" : "FAILED";
-      } else {
-        remarksInput.value = ""; 
-      }
-    }
-  
-    // Attach event listener to final grade input for dynamic updates
-    document.getElementById("final_grade").addEventListener("keyup", updateRemarks);
-  
-
-    window.onload = updateRemarks;
-  </script>
-
-
-  <script>
-
-    var modal = document.getElementById('modal-process');
-    modal.addEventListener('show.bs.modal', function (event) {
-      var button = event.relatedTarget;
-      var requestId = button.getAttribute('data-request-id');
-      document.getElementById('requestID').value = requestId;
-    });
-  </script>
+ 
 
   <script>
     $(document).ready(function() {
-      // Show/hide input field based on selected option in dropdown
-  
       // Show/hide textarea based on checkbox state
       $('#fcustomCheck1').change(function() {
         if ($(this).is(':checked')) {
           $('.substitute-reason').show();
+          $('.name_of_substitute').show();
         } else {
           $('.substitute-reason').hide();
+          $('.name_of_substitute').hide();
         }
       });
     });
+    
   </script>
   
+
+  <script>
+    // Get today's date
+    var today = new Date().toISOString().split('T')[0];
+  
+    // Set the minimum value for the 'from_date' input field
+    document.getElementsByName("from_date")[0].setAttribute('min', today);
+  
+    // Set the minimum value for the 'to_date' input field
+    document.getElementsByName("to_date")[0].setAttribute('min', today);
+  </script>
+  
+
 
 
 {% endblock %}
