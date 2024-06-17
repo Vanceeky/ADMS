@@ -1,0 +1,96 @@
+<div class="card mb-4">
+    <div class="card-header pb-0">
+        <h6>Faculty Leave of Absence Requests</h6>
+    </div>
+    <div class="card-body px-0 pt-0 pb-2">
+    <div class="table-responsive p-3">
+        <table class="table align-items-center mb-0" id="myTable_approved">
+        <thead>
+            <tr>
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Date</th>
+            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">No. of Days</th>
+            
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Reason</th>
+
+    
+
+
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Sent</th>
+
+        
+            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
+            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2"></th>
+            </tr>
+        </thead>
+        
+        <tbody>
+            {% for ip in leaveRequest %}
+            <tr>
+            <td>
+                <div class="d-flex flex-column justify-content-center">
+                    <h6 class="mb-0 text-md">{{ ip.purpose }}</h6>
+                    <p class="text-md text-secondary mb-0">Ticket #{{ip.id}}</p>
+                </div>
+                
+            </td>
+
+            <td>
+                <div class="d-flex flex-column justify-content-center">
+                <p class="text-md text-secondary mb-0">From: {{ ip.from_date }}</p>
+                <p class="text-md text-secondary mb-0">To: {{ ip.to_date }}</p>
+                </div>
+            
+            </td>
+
+            <td class="text-center">
+                <h6 class="mb-0 text-md">{{ip.number_of_days}}</h6>
+                
+            
+            </td>
+
+            <td>
+            <p class="text-xs text-secondary mb-0">{{ip.reason}}</p>
+            </td>
+
+        
+
+            <td>
+                <p class="text-md font-weight-bold mb-0">{{ip.date_requested|timesince}} ago</p>
+                <p class="text-md text-secondary mb-0">{{ip.date_requested}}</p>
+            </td>
+
+        
+    
+
+    
+            <td class="align-middle text-center text-md">
+            {% if ip.approved_by_dean %}
+                <span class="badge bg-gradient-success">Approved</span>
+                {% else %}
+
+                <span class="badge bg-gradient-warning">Pending</span>
+            {% endif %}
+            </td>
+
+            <td class="text-md align-middle text-center">
+
+            {% if ip.status == 'Approved' %}
+            <a href="#" class="mx-2 process-button approve-leave-link" data-request-id="{{ ip.id }}"
+                data-bs-toggle="tooltip" data-bs-title="Approve request">
+                <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+            </a>
+            {% endif %}
+
+            </td>
+                
+
+            </tr>
+            {% endfor %}
+
+
+        </tbody>
+        </table>
+    </div>
+    </div>
+</div>

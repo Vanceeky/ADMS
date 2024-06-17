@@ -26,17 +26,20 @@ Dean Dashboard
                             
                 <div class="d-flex flex-column">
                     <h5 class="mb-0">Course Guides</h5>
+           
 
                     <span class="text-md">{{ request.user.department }}</span>
                 </div>
 
-                
-                <a href="" class="btn bg-gradient-secondary" data-bs-toggle="modal" data-bs-target="#modal-form">Others</a>
+                <div class="">
+                  <a href="" class="btn btn-sm bg-gradient-secondary" data-bs-toggle="modal" data-bs-target="#modal-upload">Upload File</a>
+                  <a href="{% url 'base:dean-files' %}" class="btn btn-sm bg-gradient-secondary">Department Files</a>
+                </div>
             </div>
         </div>
         <div class="card-body px-0 pt-0 pb-2">
           <div class="table-responsive p-3">
-            <table class="table align-items-center mb-0">
+            <table class="table align-items-center mb-0" id="myTable">
               <thead>
                 <tr>
                     <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Faculty</th>
@@ -181,105 +184,7 @@ Dean Dashboard
           </div>
         </div>
         
-        <div class="col-md-12 mt-3">
-          <div class="card mb-4">
-            <div class="card-header pb-0">
-                <h6>User Account Approval</h6>
-            </div>
-            <div class="card-body px-0 pt-0 pb-2">
-                <div class="table-responsive p-0">
-                    <table class="table align-items-center mb-0">
-                        <thead>
-                            <tr>
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">User</th>
-                                
-                                <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Date Created</th>
-                                <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Proof</th>
-                                <th class="text-secondary opacity-7"></th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                          {% for stud in students %}
-                          {% if stud.user.is_active == False %}
-                            <tr>
-                                <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div>
-                                            <img src="{{ stud.avatar.url}}" class="avatar avatar-sm me-3" alt="user1">
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="mb-0 text-sm">{{ stud.user.last_name}}, {{ stud.user.first_name}} ({{ stud.student_id }})</h6>
-                                            <p class="text-xs text-secondary mb-0">{{ stud.user.email}}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                    <p class="text-xs text-secondary mb-0">{{ stud.date_created|time}}</p>
-                                    <p class="text-xs font-weight-bold mb-0">{{ stud.date_created|date}}</p>
-                                </td>
-    
-                                <td class="align-middle text-center">
-                                    <a href="{{ stud.proof_of_enrollment.url }}" target="_blank"><span class="text-secondary text-xs font-weight-bold">{{ stud.proof_of_enrollment}}</span></a>
-                                </td>
-
-    
-                              <td class="align-middle">
-                               
-                                
-                          
-                                  <a href="javascript:;" class="mx-2 accept-request" data-request-id="{{stud.user.id}}"
-                                  data-bs-toggle="tooltip" data-bs-title="Accept Request">
-                                  <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
-                                  </a>
-                                
-    
-                              </td>
-                            </tr>
-                            {% endif %}
-                          {% endfor %}
-                          
-                          {% for emp in employees %}
-                          {% if emp.user.is_active == False %}
-                            <tr>
-                                <td>
-                                    <div class="d-flex px-2 py-1">
-                                        <div>
-                                            <img src="{{ emp.avatar.url }}" class="avatar avatar-sm me-3" alt="user1">
-                                        </div>
-                                        <div class="d-flex flex-column justify-content-center">
-                                            <h6 class="mb-0 text-sm">{{ emp.user.last_name }}, {{ emp.user.first_name }} ({{ emp.employee_id }})</h6>
-                                            <p class="text-xs text-secondary mb-0">{{ emp.user.email }}</p>
-                                        </div>
-                                    </div>
-                                </td>
-                                <td>
-                                  <p class="text-xs text-secondary mb-0">{{ emp.date_created|time}}</p>
-                                  <p class="text-xs font-weight-bold mb-0">{{ emp.date_created|date}}</p>
-                                </td>
-                                <td class="align-middle text-center">
-                                  <a href="{{ emp.proof_of_employment.url }}" target="_blank"><span class="text-secondary text-xs font-weight-bold">{{ emp.proof_of_employment}}</span></a>
-                              </td>
-
-    
-                              <td class="align-middle">
-    
-                          
-                                  <a href="javascript:;" class="mx-2 accept-request" data-request-id="{{ emp.user.id}}"
-                                  data-bs-toggle="tooltip" data-bs-title="Accept Request">
-                                  <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
-                                  </a>
-    
-                              </td>
-                            </tr>
-                          {% endif %}
-                          {% endfor %}
-    
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-          </div>
-        </div>
+ 
       </div>
     </div>
 
@@ -291,11 +196,16 @@ Dean Dashboard
 
 
 <!-- MOdal -->
+{% include 'base/modals/upload_file.html' %}
 
 {% endblock %}
 
 
 {% block javascripts %}
+
+<script>
+let table = new DataTable('#myTable')
+</script>
 <script>
   $(document).ready(function() {
     

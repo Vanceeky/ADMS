@@ -35,6 +35,7 @@
                 <div class="col-lg-12">
                     <div class="">
                      
+                        <br>
                         <div class="card-header">
                             <div class="d-flex px-2 py-1 justify-content-center align-items-center">
                                 <div>
@@ -46,11 +47,14 @@
                                     <h6>IP MARK REMOVAL FORM</h6>
                                  
                                 </div>
+
                                 <div>
-                                    <img src="/static/assets/img/L-NU_LOGO.png" class="avatar avatar-lg ms-3">
+                                    <img src="/static/assets/img/ACAD.png" class="avatar avatar-lg ms-3">
                                 </div>
                             </div>
                         </div>
+                        <br>
+                        <br>
                         <div class="card-body form">
                             <div class="mb-0">
                                 <u><h5 class="mb-0 text-muted">{{ ip.student.user.last_name}}, {{ip.student.user.first_name}} </h5></u>
@@ -98,19 +102,19 @@
                                     <table class="table align-middle table-nowrap table-centered mb-0">
                                         <thead>
                                             <tr>
-                                                <th class="text-center text-xxs">Subject Code</th>
-                                                <th class="text-center text-xxs">Descriptive Title</th>
-                                                <th class="text-center text-xxs">Units</th>
-                                                <th class="text-center text-xxs">Semester/Academic Year</th>
+                                                <th class="text-center text-xs">Subject Code</th>
+                                                <th class="text-center text-xs">Descriptive Title</th>
+                                                <th class="text-center text-xs">Units</th>
+                                                <th class="text-center text-xs">Semester/Academic Year</th>
                                             </tr>
                                         </thead><!-- end thead -->
                                         <tbody>
                                          
                                             <tr>
-                                                <td class="text-center text-xxs">{{ip.subject_code}} </td>
-                                                <td class="text-center text-xxs">{{ip.subject_name}} </td>
-                                                <td class="text-center text-xxs"> {{ ip.units }}</td>
-                                                <td class="text-center text-xxs">{{ ip.sem_year }}</td>
+                                                <td class="text-center text-xs">{{ip.subject_code}} </td>
+                                                <td class="text-center text-xs">{{ip.subject_name}} </td>
+                                                <td class="text-center text-xs"> {{ ip.units }}</td>
+                                                <td class="text-center text-xs">{{ ip.sem_year }}</td>
                                             </tr>
                                        
 
@@ -133,24 +137,24 @@
                                             
                                             <tr>
                                                 
-                                                <th class="text-center text-xxs">Pre-lim</th>
-                                                <th class="text-center text-xxs">Midterm</th>
-                                                <th class="text-center text-xxs">Semi-Final</th>
-                                                <th class="text-center text-xxs">Finals</th>
-                                                <th class="text-center text-xxs">Final Grade</th>
-                                                <th class="text-center text-xxs">Remarks</th>
+                                                <th class="text-center text-xs">Pre-lim</th>
+                                                <th class="text-center text-xs">Midterm</th>
+                                                <th class="text-center text-xs">Semi-Final</th>
+                                                <th class="text-center text-xs">Finals</th>
+                                                <th class="text-center text-xs">Final Grade</th>
+                                                <th class="text-center text-xs">Remarks</th>
 
                                             </tr>
                                         </thead><!-- end thead -->
                                         <tbody>
                                          {% for m in marks %}
                                             <tr>
-                                                <td class="text-center text-xxs">{{m.prelim}} </td>
-                                                <td class="text-center text-xxs">{{m.midterm}} </td>
-                                                <td class="text-center text-xxs"> {{ m.semis }}</td>
-                                                <td class="text-center text-xxs">{{ m.finals }}</td>
-                                                <td class="text-center text-xxs font-weight-bold">{{ m.final_grade }}</td>
-                                                <td class="text-center text-xxs">{{ m.remarks }}</td>
+                                                <td class="text-center text-xs">{{m.prelim}} </td>
+                                                <td class="text-center text-xs">{{m.midterm}} </td>
+                                                <td class="text-center text-xs"> {{ m.semis }}</td>
+                                                <td class="text-center text-xs">{{ m.finals }}</td>
+                                                <td class="text-center text-xs font-weight-bold">{{ m.final_grade }}</td>
+                                                <td class="text-center text-xs">{{ m.remarks }}</td>
                                             </tr>
                                         {% endfor %}
                                        
@@ -170,13 +174,13 @@
                                 <div class="col-md-4">
                                     <div>
                                         <p class="text-xxs text-secondary mb-0">Approved by:</p>
-                                        <u><h6 class="mb-0">{{ ip.instructor.user.first_name }} {{ ip.instructor.user.last_name}}</h6></u>
+                                        <u><h6 class="mb-0 text-xs">{{ ip.instructor.user.first_name }} {{ ip.instructor.user.last_name}}</h6></u>
                                         <p class="text-xxs text-secondary mb-0">Instructor</p>
                                     </div>
                                     <br>
                                     <div>
                                         <p class="text-xxs text-secondary mb-0">Approved by:</p>
-                                        <u><h6 class="mb-0">{{ ip.dean.first_name }} {{ ip.dean.last_name}}</h6></u>
+                                        <u><h6 class="mb-0 text-xs">{{ ip.dean.first_name }} {{ ip.dean.last_name}}</h6></u>
                                         <p class="text-xxs text-secondary mb-0">Dean</p>
                                     </div>
                                 </div>
@@ -185,20 +189,36 @@
 
                                     <div>
                                         <p class="text-xxs text-secondary mb-0">Approved by:</p>
-                                        <u><h6 class="mb-0">{{ ip.acad.first_name}} {{ ip.acad.last_name }}</h6></u>
+                                        <u><h6 class="mb-0 text-xs">{{ ip.acad.first_name}} {{ ip.acad.last_name }}</h6></u>
                                         <p class="text-xxs text-secondary mb-0">VP, Academic Affairs</p>
-                                        <img class="" style="width: 100px" src="{{ ip.qr_code.url }}">
+                                        <img class="mt-3" style="width: 120px; border: 2px solid red" src="{{ ip.qr_code.url }}">
+                                      
                                         </div>
                                         <br>
                                       
                                 </div>
 
                                 <div class="col-md-4">
-                                    <div>
-                                        <p class="text-xxs text-secondary mb-0">Recieved by: </p>
-                                        <u><h6 class="mb-0">{{ ip.registrar.first_name }} {{ ip.registrar.last_name }}</h6></u>
-                                        <p class="text-xxs text-secondary mb-0">Registrar </p>
-                                    </div>
+
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <p class="text-xs text-secondary mb-0">Received By:</p>
+                                        
+                                        <h6 class="mb-0 text-xs"><u>{{ ip.registrar.first_name }} {{ ip.registrar.last_name}}</u></h6>
+                                        
+                                        <p class="text-xxs text-secondary mb-0">Office of Registrar</p>
+                                        
+                                        <br>
+                            
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm text-secondary">{{ ip.date_updated }}</p>
+                                            <p class="text-sm text-secondary">IP Mark Removal Request #{{ ip.id }}</p>
+                                            <p class="mt-0 text-danger text-sm font-weight-bold">( Document not Valid without QR Code )</p>
+                                        </div>
+
+                                        </div>
+
+
+                               
                                 </div>
                             </div>
 

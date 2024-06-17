@@ -1,6 +1,6 @@
 <ul class="navbar-nav">
     <li class="nav-item">
-      <a class="nav-link {% if request.path == '/dean-dashboard/' %}active{% endif %}" href="{% url 'base:dean-dashboard' %}">
+      <a class="nav-link {% if request.path == '/dean/' %}active{% endif %}" href="{% url 'base:dean-dashboard' %}">
         <div class="icon icon-shape icon-sm border-radius-md text-center me-2 d-flex align-items-center justify-content-center">
           <i class="ni ni-tv-2 text-primary text-sm opacity-10"></i>
         </div>
@@ -8,83 +8,73 @@
       </a>
     </li>
     <li class="nav-item">
-        <a data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link {% if request.path == '/request/pending/' %}active{% endif %}" aria-controls="dashboardsExamples" role="button" aria-expanded="true">
-          <div class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="ni ni-shop text-primary text-sm opacity-10"></i>
-          </div>
-          <span class="nav-link-text ms-1">Requests</span>
-        </a>
-        <div class="collapse show" id="dashboardsExamples" style="">
-          <ul class="nav ms-4">
+      <a data-bs-toggle="collapse" href="#dashboardsExamples" class="nav-link request-link {% if request.path == '/dean/requests/ip/' %}active {% elif request.path == '/dean/requests/leave/'%} active {% endif %}" id="request-link" aria-controls="dashboardsExamples" role="button" aria-expanded="true">
+        <div class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
+            <i class="fa fa-paper-plane text-primary text-sm opacity-10"></i>
+        </div>
+        <span class="nav-link-text ms-1">Requests</span>
+      </a>
+      <div class="collapse show" id="dashboardsExamples" style="">
+        <ul class="nav ms-4">
 
 
-              <li class="nav-item ">
-                <a class="nav-link " data-bs-toggle="collapse" aria-expanded="false" href="#vrExamples">
-                <span class="sidenav-mini-icon"> V </span>
-                <span class="sidenav-normal"> IP Mark Removal <b class="caret"></b></span>
-                </a>
-                <div class="collapse " id="vrExamples">
-                    <ul class="nav nav-sm flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
-                            <span class="sidenav-mini-icon text-xs"> V </span>
-                            <span class="sidenav-normal"> Pending </span>
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                          <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
-                          <span class="sidenav-mini-icon text-xs"> V </span>
-                          <span class="sidenav-normal"> Processing </span>
-                          </a>
-                      </li>
-                      <li class="nav-item">
-                          <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
-                          <span class="sidenav-mini-icon text-xs"> V </span>
-                          <span class="sidenav-normal"> Approved </span>
-                          </a>
-                      </li>
-                    </ul>
-                </div>
-              </li>
-
-              <li class="nav-item ">
-                <a class="nav-link " data-bs-toggle="collapse" aria-expanded="false" href="#vrExamples2">
-                <span class="sidenav-mini-icon"> V </span>
-                <span class="sidenav-normal"> Leave request <b class="caret"></b></span>
-                </a>
-                <div class="collapse " id="vrExamples2">
-                    <ul class="nav nav-sm flex-column">
-                      <li class="nav-item">
-                          <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
-                          <span class="sidenav-mini-icon text-xs"> V </span>
+            <li class="nav-item ">
+              <a class="nav-link ip-link {% if request.path == '/dean/requests/ip/' %}active{% endif %}" aria-expanded="false" href="{% url 'base:dean-request-ip' %}">
+                <i class="fa fa-chevron-right text-primary text-sm opacity-10"></i>
+              <span class="sidenav-normal"> IP Mark Removal <b class="caret"></b></span>
+              </a>
+              <div class="collapse" id="vrExamples">
+                  <ul class="nav nav-sm flex-column">
+                      <li class="nav-item mx-3">
+                          <a class="nav-link ajax-link" href="{% url 'base:dean-request-ip-pending' %}" data-page="pending">
+                       
+                          <i class="fa fa-clock text-primary text-sm opacity-10"></i>
                           <span class="sidenav-normal"> Pending </span>
                           </a>
                       </li>
-                      <li class="nav-item">
-                        <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
-                        <span class="sidenav-mini-icon text-xs"> V </span>
-                        <span class="sidenav-normal"> Processing </span>
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link " href="../../pages/dashboards/vr/vr-default.html">
-                        <span class="sidenav-mini-icon text-xs"> V </span>
-                        <span class="sidenav-normal"> Approved </span>
-                        </a>
-                    </li>
+                    
+                      <li class="nav-item mx-3">
+                          <a class="nav-link ajax-link" href="{% url 'base:dean-request-ip-approved' %}" data-page="approved">
+                            <i class="fa fa-check-circle text-primary text-sm opacity-10"></i>
+                          <span class="sidenav-normal"> Approved </span>
+                          </a>
+                      </li>
+                  </ul>
+              </div>
+            </li>
 
-                    </ul>
-                </div>
-              </li>
+            <li class="nav-item ">
+              <a class="nav-link leave-link {% if request.path == '/dean/requests/leave/' %}active{% endif %}" aria-expanded="false" href="{% url 'base:dean-request-leave' %}">
+              <i class="fa fa-chevron-right text-primary text-sm opacity-10"></i>
+              <span class="sidenav-normal"> Leave request <b class="caret"></b></span>
+              </a>
+              <div class="collapse " id="vrExamples2">
+                  <ul class="nav nav-sm flex-column">
+                      <li class="nav-item mx-3">
+                          <a class="nav-link ajax-link2" href="{% url 'base:dean-request-leave-pending' %}" data-page="pending">
+                          <i class="fa fa-clock text-primary text-sm opacity-10"></i>
+                          <span class="sidenav-normal"> Pending </span>
+                          </a>
+                      </li>
+                      <li class="nav-item mx-3">
+                          <a class="nav-link ajax-link2" href="{% url 'base:dean-request-leave-approved' %}" data-page="approved">
+                          <i class="fa fa-check-circle text-primary text-sm opacity-10"></i>
+                          <span class="sidenav-normal"> Approved </span>
+                          </a>
+                      </li>
+
+                  </ul>
+              </div>
+            </li>
 
 
-          </ul>
-        </div>
-    </li>
+        </ul>
+      </div>
+  </li>
 
 
     <li class="nav-item">
-        <a data-bs-toggle="collapse" href="#dashboardsExamples3" class="nav-link {% if request.path == '/students/' %} active {% endif %}" aria-controls="dashboardsExamples" role="button" aria-expanded="true">
+        <a data-bs-toggle="collapse" href="#dashboardsExamples3" class="nav-link {% if request.path == '/dean/department/files/' %} active {% endif %}" aria-controls="dashboardsExamples" role="button" aria-expanded="true">
           <div class="icon icon-shape icon-sm text-center me-2 d-flex align-items-center justify-content-center">
               <i class="ni ni-shop text-primary text-sm opacity-10"></i>
           </div>
@@ -93,20 +83,20 @@
         <div class="collapse show" id="dashboardsExamples3" style="">
           <ul class="nav ms-4">
               <li class="nav-item">
-                <a class="nav-link {% if request.path == '/dean/course-guides/' %}active{% endif %}" href="{% url 'base:dean-course-guide' %}">
-                <span class="sidenav-mini-icon"> D </span>
+                <a class="nav-link {% if request.path == '/dean/department/files/' %}active{% endif %}" href="{% url 'base:dean-files' %}">
+                <i class="fa fa-file text-primary text-sm opacity-10"></i>
                 <span class="sidenav-normal"> Files </span>
                 </a>
               </li>
               <li class="nav-item ">
                 <a class="nav-link " href="../../pages/dashboards/automotive.html">
-                <span class="sidenav-mini-icon"> A </span>
+                  <i class="fa fa-user text-primary text-sm opacity-10"></i>
                 <span class="sidenav-normal"> Faculty </span>
                 </a>
               </li>
               <li class="nav-item ">
                 <a class="nav-link {% if request.path == '/students/' %}active{% endif %}" href="{% url 'base:students' %}">
-                <span class="sidenav-mini-icon"> A </span>
+                  <i class="fa fa-group text-primary text-sm opacity-10"></i>
                 <span class="sidenav-normal"> Students </span>
                 </a>
             </li>

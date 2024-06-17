@@ -35,6 +35,10 @@ def get_login_redirect_url(request):
         return HttpResponseRedirect(reverse('base:dean-dashboard'))
     elif user.groups.filter(name='acad').exists():
         return HttpResponseRedirect(reverse('base:acad-dashboard'))
+    elif user.groups.filter(name='registrar').exists():
+        return HttpResponseRedirect(reverse('base:registrar-home'))
+    elif user.groups.filter(name='hr').exists():
+        return HttpResponseRedirect(reverse('base:hr-home'))
     else:
         return HttpResponseRedirect(reverse('base:default-dashboard'))
     

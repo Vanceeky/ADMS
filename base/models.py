@@ -140,3 +140,4 @@ class CourseGuide(models.Model):
         return f"Course Guide - {self.faculty} - {self.subject_name} - {self.subject_code} - {self.year} - {self.semester}"
 
 
+

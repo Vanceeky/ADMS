@@ -21,6 +21,16 @@ Faculty Dashboard
 
         <div class="col-lg-12 h-100 mb-lg-0 mb-4">
 
+          {% for message in messages %}
+          <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+            <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+            <span class="alert-text">{{ message }}</span>
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+        {% endfor %}
+        
             <div class="sub-content-area">
 
                 <div class="card z-index-2 h-100">
@@ -55,7 +65,7 @@ Faculty Dashboard
                                     <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">ACAD </th>
                                 
                                     <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
-                                    <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Actions</th>
+                                    <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -169,9 +179,7 @@ Faculty Dashboard
                                     </a>
 
                                     {% elif ip.status == 'Approved' %}
-                                    <a href="{% url 'base:view-approval-form' request_id=ip.id %}" target="_blank" class="mx-2" data-bs-toggle="tooltip" data-bs-title="Print">
-                                    <i class="fas fa-print text-secondary" aria-hidden="true"></i>
-                                    </a>
+                                    <a href="{% url 'base:faculty-leave-request-form' ip.id %}" target="_blank" class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i class="fas fa-file-pdf text-lg me-1" aria-hidden="true"></i> PDF</a>
                                 
                                     {% endif %}
 
@@ -227,7 +235,7 @@ Faculty Dashboard
               <div class="col-md-6">
                 <div class="form-group">
                   <label for="exampleFormControlSelect1">Purpose of Absence: </label>
-                  <select class="form-control" name="purpose_of_absence" id="purpose_of_absence">
+                  <select class="form-control" name="purpose_of_absence" required id="purpose_of_absence">
                     <option value="Vacation Leave">Vacation Leave</option>
                     <option value="Sick Leave"> Sick Leave </option>
                     <option value="Official Business"> Official Business </option>
@@ -241,7 +249,7 @@ Faculty Dashboard
               <div class="col-md-6">
                 <div class="form-group">
                     <label for="example-text-input" class="form-control-label">Length of service: </label>
-                    <input class="form-control" name="lengthOfService" type="text" placeholder="" id="example-text-input">
+                    <input class="form-control" name="lengthOfService" type="text" required placeholder="" id="example-text-input">
                 </div>
             </div>
         
@@ -253,25 +261,25 @@ Faculty Dashboard
               <div class="col-md-4">
                   <div class="form-group">
                       <label for="example-text-input" class="form-control-label">From</label>
-                      <input class="form-control" name="from_date" type="date" placeholder="IT-MM" id="example-text-input">
+                      <input class="form-control" name="from_date" type="date" required placeholder="IT-MM" id="example-text-input">
                   </div>
               </div>
               <div class="col-md-4">
                   <div class="form-group">
                       <label for="example-text-input" class="form-control-label">To:</label>
-                      <input class="form-control" name="to_date" type="date" placeholder="Multimedia" id="example-text-input">
+                      <input class="form-control" name="to_date" type="date" required placeholder="Multimedia" id="example-text-input">
                   </div>
               </div>
               <div class="col-md-4">
                   <div class="form-group">
                       <label for="example-text-input" class="form-control-label">No. Of Days</label>
-                      <input class="form-control" name="number_of_days" type="num" placeholder="3" id="example-text-input">
+                      <input class="form-control" name="number_of_days" type="num" required placeholder="3" id="example-text-input">
                   </div>
               </div>
 
               <div class="form-group">
                 <label for="exampleFormControlTextarea1">Reason/Purpose</label>
-                <textarea class="form-control" name="reason" id="exampleFormControlTextarea1" rows="2"></textarea>
+                <textarea class="form-control" name="reason" required id="exampleFormControlTextarea1" rows="2"></textarea>
               </div>
             
               <div class="form-check mx-3">
@@ -295,7 +303,7 @@ Faculty Dashboard
 
           <div class="modal-footer mb-0">
             <button type="button" class="btn bg-gradient-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn bg-gradient-primary">Save changes</button>
+            <button type="submit" class="btn bg-gradient-primary">Submit request</button>
           </div>
 
           </form>

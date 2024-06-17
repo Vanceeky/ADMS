@@ -45,7 +45,7 @@ Faculty Dashboard
                           <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Additional File</th>
                           <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Sent</th>
                           <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
-                          <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Actions</th>
+                          <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2"></th>
                         </tr>
                       </thead>
                       <tbody>
@@ -102,10 +102,7 @@ Faculty Dashboard
                           <td class="text-md align-middle text-center">
 
                             {% if ip.status == 'Processing' %}
-                            <a href="javascript:;" class="mx-2 process-button" data-request-id="{{ ip.id }}"
-                            data-bs-toggle="tooltip" data-bs-title="View request">
-                            <i class="fas fa-eye text-secondary" aria-hidden="true"></i>
-                            </a>
+                          
                             {% elif ip.status == 'Pending' %}
 
                             <a href="javascript:;" class="mx-2 process-button" data-request-id="{{ ip.id }}"

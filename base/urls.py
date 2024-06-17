@@ -15,6 +15,7 @@ urlpatterns = [
     path('request/approved/', views.request_approved_page, name='request-approved-page'),
 
     path('requestIPMarkRemoval/', views.requestIPMarkRemoval, name='requestIPMarkRemoval'),
+    path('student/account/', views.student_profile, name="student-profile"),
 
 
 
@@ -44,7 +45,7 @@ urlpatterns = [
     #DEAN URLS
     path('dean/account/profile/', views.dean_profile, name='dean-profile'),
     
-    path('dean-dashboard/', views.dean_dashboard, name='dean-dashboard'),
+    path('dean/', views.dean_dashboard, name='dean-dashboard'),
     path('students/', views.dean_students, name='students'),
 
     path('approve-IPMarkRemoval-request/<int:request_id>/', views.approved_IP_request, name='approve-IPMarkRemoval-request'),
@@ -52,8 +53,21 @@ urlpatterns = [
     path('accept-user/<str:user_id>/', views.accept_user, name='accept-user'),
 
 
+
+    path('dean/requests/ip/', views.dean_ip_base, name="dean-request-ip"),
+    path('dean/requests/ip/pending/', views.dean_ip_pending, name="dean-request-ip-pending"),
+    path('dean/requests/ip/approved/', views.dean_ip_approved, name="dean-request-ip-approved"),
+
+
+    path('dean/requests/leave/', views.dean_leave_base, name="dean-request-leave"),
+    path('dean/requests/leave/pending/', views.dean_leave_pending, name="dean-request-leave-pending"),
+    path('dean/requests/leave/approved/', views.dean_leave_approved, name="dean-request-leave-approved"),
+
     path('dean/course-guides/', views.dean_course_guide, name='dean-course-guide'),
     path('dean/approve-course-guide/<str:request_id>/', views.dean_approve_course_guide, name='dean-approve-course-guide'),
+    path('dean/department/files/', views.dean_files, name='dean-files'),
+    path('dean/department/file/upload/', views.upload_dept_file, name='upload-dept-file'),
+    path('dean/delete-file/<str:request_id>/', views.dean_delete_file, name='dean-delete-file'),
 
     #ACAD URLS
     path('acad/', views.acad_dashboard, name='acad-dashboard'),
@@ -73,6 +87,20 @@ urlpatterns = [
 
     path('acad/departments/', views.acad_departments, name="acad-departments"),
     path('acad/deparment/<str:dept_id>/', views.department_page, name="acad-department-detail"),
+
+    path('registrar/', views.registrar_home, name='registrar-home'),
+    path('registrar/pending/ip-mark-removal/', views.registrar_pending_ip, name='registrar-pending'),
+    path('registrar/receieve/ip-mark-removal/', views.registrar_received_ip, name='registrar-received'),
+    path('registrar/receieve/ip-mark-removal-request/<str:request_id>/', views.registrar_receive_ip_request, name='registrar-receive-ip-request'),
+
+
+    #HR URLS
+    path('hr/', views.hr_home, name='hr-home'),
+    path('hr/pending/leave/', views.hr_pending_leave, name='hr-pending-leave'),
+    path('hr/approved/leave/', views.hr_approved_leave, name='hr-approved-leave'),
+    path('hr/approve/leave/<str:request_id>/', views.hr_approve_leave_request, name='hr-approve-leave-request'),
+    path('faculty/leave/request/<str:request_id>/', views.display_leave_request_form, name='faculty-leave-request-form'),
+    
 ]
 
 urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)

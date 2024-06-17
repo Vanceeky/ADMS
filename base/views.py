@@ -13,9 +13,11 @@ import json
 from datetime import datetime, timedelta
 # Create your views here.
 from django.utils.timezone import now
-
+from department.models import File
 import qrcode
 from io import BytesIO
+
+from django.contrib.messages import success
 #from datetime import datetime
 
 #STUDENT VIEWS
@@ -76,9 +78,18 @@ def recent_activities(request, student):
     return approval_statuses
 
 
+def student_profile(request):
+    student = Student.objects.get(user = request.user)
+    context = {
+        'student': student
+    }
+    return render(request, 'base/student/profile.html', context)
+
+
+
 def dashboard(request):
     student = Student.objects.get(user = request.user)
-    IPrequest = IPMarkRemovalRequest.objects.filter(student = student)
+    IPrequest = IPMarkRemovalRequest.objects.filter(student = student).prefetch_related('additionalfile_set', 'ipmark_set')
 
     approval_statuses = recent_activities(request, student)
     
@@ -139,9 +150,6 @@ def request_approved_page(request):
     }
     return render(request, 'base/student/request_approved.html', context)
 
-
-def user_dashboard(request):
-    return render(request, 'base/user_dashboard.html')
 
 
 def is_ajax(request):
@@ -244,27 +252,36 @@ def faculty_course_guide(request):
 
 
 def faculty_submit_course_guide(request):
+    faculty = Employee.objects.get(user=request.user)
 
-    faculty = Employee.objects.get(user = request.user)
     if request.method == 'POST':
-       subject_name = request.POST.get('subject_name')
-       subject_code = request.POST.get('subject_code')
-       year = request.POST.get('year')
-       semester = request.POST.get('semester')
-       file = request.FILES.get('file')
+        subject_name = request.POST.get('subject_name')
+        subject_code = request.POST.get('subject_code')
+        year = request.POST.get('year')
+        semester = request.POST.get('semester')
+        file = request.FILES.get('file')
 
-       CourseGuide.objects.create(
-          faculty = faculty, 
-          department = faculty.department,
-          subject_name = subject_name, 
-          subject_code = subject_code, 
-          year = year, 
-          semester = semester, 
-          file = file,
-          dean = faculty.department.dean
-        )
+        try:
+            course_guide = CourseGuide.objects.create(
+                faculty=faculty,
+                department=faculty.department,
+                subject_name=subject_name,
+                subject_code=subject_code,
+                year=year,
+                semester=semester,
+                file=file,
+                dean=faculty.department.dean,
+            )
 
-    return redirect('base:faculty-course-guide')
+            course_guide.save()
+            messages.success(request, 'Course guide submitted successfully.')
+            return redirect('base:faculty-course-guide')
+
+        except Exception as e:
+            messages.error(request, f'An error occurred: {e}')
+            return redirect('base:faculty-course-guide-form')  # Redirect to form on error
+
+    return redirect('base:faculty-dashboard')  # Redirec
 
 
 def faculty_student_requests_base(request):
@@ -321,33 +338,40 @@ def submit_leave_request(request):
         end_date = request.POST.get('to_date')
         number_of_days = request.POST.get('number_of_days')
         reason = request.POST.get('reason')
-        lengthOfService = request.POST.get('lengthOfService')
-       # is_there_substitute = request.POST.get('is_there_substitute')
-        is_there_substitute = request.POST.get('is_there_substitute') == "true"  # Compare with "true" (case-sensitive)
+        length_of_service = request.POST.get('lengthOfService')
+        is_there_substitute = request.POST.get('is_there_substitute', False)  # Default to False if not checked
         name_of_substitute = request.POST.get('name_of_substitute')
-        # If the checkbox is checked, retrieve the substitute reason
         substitute_reason = None
-        if is_there_substitute == True:
+
+        if is_there_substitute:
             substitute_reason = request.POST.get('substitute_reason')
 
-        myRequest = FacultyLeaveOfAbsence.objects.create(
-            faculty=faculty,
-            purpose=purpose_of_absence,
-            from_date=start_date,
-            to_date=end_date,
-            number_of_days=number_of_days,
-            reason=reason,
-            lengthOfService=lengthOfService,
-            is_there_substitute=is_there_substitute,  # Save the checkbox value
-            name_of_substitute=name_of_substitute,
-            reason_for_substitute=substitute_reason,  # Save the substitute reason
-            dean=dean,
-            department=department,
-        )
+        try:
+            my_request = FacultyLeaveOfAbsence.objects.create(
+                faculty=faculty,
+                purpose=purpose_of_absence,
+                from_date=start_date,
+                to_date=end_date,
+                number_of_days=number_of_days,
+                reason=reason,
+                lengthOfService=length_of_service,
+                is_there_substitute=is_there_substitute,
+                name_of_substitute=name_of_substitute,
+                reason_for_substitute=substitute_reason,
+                dean=dean,
+                department=department,
+            )
 
-        myRequest.save()
+            my_request.save()
+            messages.success(request, 'Leave request submitted successfully.')
+            return redirect('base:faculty-leave-requests')
 
-        return redirect('base:faculty-leave-requests')
+        except Exception as e:  # Catch generic exception for broader error handling
+            messages.error(request, f'An error occurred: {e}')
+            return redirect('base:faculty-leave-requests')  # Redirect to form on error
+
+    return redirect('base:faculty-leave-requests')  # Redirect to dashboard on GET request
+
 
 
 def faculty_pending_request(request):
@@ -359,32 +383,45 @@ def submitIPMark(request):
     if request.method == 'POST':
         request_id = request.POST.get('requestID')
 
-        ip_request = IPMarkRemovalRequest.objects.get(id=request_id)
-        
-        prelim = request.POST.get('prelim')
-        midterm = request.POST.get('midterm')
-        semis = request.POST.get('semis')
-        finals = request.POST.get('finals')
-        final_grade = request.POST.get('final_grade')
-        remarks = request.POST.get('remarks')
+        try:
+            ip_request = IPMarkRemovalRequest.objects.get(id=request_id)
 
-        IpMark = IPMark.objects.create(
-            request=ip_request, 
-            prelim=prelim, 
-            midterm=midterm, 
-            semis=semis, 
-            finals=finals, 
-            final_grade=final_grade, 
-            remarks=remarks
-        )
+            prelim = request.POST.get('prelim')
+            midterm = request.POST.get('midterm')
+            semis = request.POST.get('semis')
+            finals = request.POST.get('finals')
+            final_grade = request.POST.get('final_grade')
+            remarks = request.POST.get('remarks')
 
-        ip_request.approved_by_faculty = True
-        ip_request.status = 'Processing'
+            IpMark = IPMark.objects.create(
+                request=ip_request,
+                prelim=prelim,
+                midterm=midterm,
+                semis=semis,
+                finals=finals,
+                final_grade=final_grade,
+                remarks=remarks
+            )
 
-        ip_request.save()
-        IpMark.save()
+            ip_request.approved_by_faculty = True
+            ip_request.status = 'Processing'
 
-        return redirect('base:faculty-dashboard')
+            ip_request.save()
+            IpMark.save()
+
+            # Add success message with Django messages framework
+            success(request, 'IP mark for request ID {} has been submitted successfully.'.format(request_id))
+
+            return redirect('base:faculty-student-requests')
+
+        except IPMarkRemovalRequest.DoesNotExist:
+            # Handle case where request_id is not found (optional)
+            error_message = 'The specified IP mark removal request could not be found.'
+            return render(request, 'base/error.html', context={'message': error_message})
+
+    return redirect('base:faculty-dashboard')
+    
+
 
 
 
@@ -432,7 +469,7 @@ def dean_dashboard(request):
 
     }
 
-    return render(request, 'base/dean_dashboard.html', context)
+    return render(request, 'base/dean/dean_dashboard.html', context)
 
 
 def dean_faculty(request):
@@ -461,7 +498,7 @@ def approve_leave_request_dean(request, request_id):
     leaveRequest.approved_by_dean = True
     leaveRequest.save()
 
-    return redirect('base:dean-dashboard')
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
 def accept_user(request, user_id):
     user = User.objects.get(id = user_id)
@@ -499,16 +536,158 @@ def accept_user(request, user_id):
     return redirect('base:dean-dashboard')
 
 
+def dean_ip_base(request):
+    dean = request.user
+    IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_faculty = True, dean = dean)
+    approved_dean = IPrequest.filter(approved_by_dean = True)
+    pending_dean = IPrequest.filter(approved_by_dean = False)
+
+    leaveRequest = FacultyLeaveOfAbsence.objects.filter(dean = dean)
+
+    leave_pending = leaveRequest.filter(approved_by_dean = False)
+    leave_approved = leaveRequest.filter(approved_by_dean = True)
+
+
+    context = {
+        'IPrequest': IPrequest,
+        'approved_dean': approved_dean,
+        'pending_dean': pending_dean,
+
+        'leave_pending': leave_pending,
+        'leave_approved': leave_approved,
+    }
+    return render(request, 'base/dean/ip_base.html', context)
+
+def dean_ip_pending(request):
+    dean = request.user
+    IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_dean = False, dean = dean)
+    context = {
+        'IPrequest': IPrequest
+    }
+    return render(request, 'base/dean/ip_pending.html', context)
+
+def dean_ip_approved(request):
+    dean = request.user
+    IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_dean = True, dean = dean)
+    context = {
+        'IPrequest': IPrequest
+    }
+    return render(request, 'base/dean/ip_approved.html', context)
+
+
+
+
+def dean_leave_base(request):
+    dean = request.user 
+    IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_faculty = True, dean = dean)
+    approved_dean = IPrequest.filter(approved_by_dean = True)
+    pending_dean = IPrequest.filter(approved_by_dean = False)
+
+    leaveRequest = FacultyLeaveOfAbsence.objects.filter(dean = dean)
+
+    leave_pending = leaveRequest.filter(approved_by_dean = False)
+    leave_approved = leaveRequest.filter(approved_by_dean = True)
+
+    context = {
+        'leaveRequest': leaveRequest,
+
+        'approved_dean': approved_dean,
+        'pending_dean': pending_dean,
+
+        'leave_pending': leave_pending,
+        'leave_approved': leave_approved,
+
+    }
+    return render(request, 'base/dean/leave_base.html', context)
+
+
+
+def dean_leave_pending(request):
+  dean = request.user
+  leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_dean = False, dean = dean)
+
+  context = {
+      'leaveRequest': leaveRequest,
+  }
+  return render(request, 'base/dean/leave_pending.html', context)
+
+def dean_leave_approved(request):
+  dean = request.user
+  leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_dean = True, dean = dean)
+
+  context = {
+      'leaveRequest': leaveRequest,
+  }
+  return render(request, 'base/dean/leave_approved.html', context)
+
+
 
 
 def dean_course_guide(request):
     dean = request.user
     department = Department.objects.get(dean = dean)
     course_guides = CourseGuide.objects.filter(department = department)
+    course = Course.objects.get(department = department)
+   # IPrequest = IPMarkRemovalRequest.objects.filter(dean = department.dean)
+    IPrequest = IPMarkRemovalRequest.objects.filter(dean=department.dean).prefetch_related('additionalfile_set', 'ipmark_set')
+    leaveRequest = FacultyLeaveOfAbsence.objects.filter(dean = department.dean)
+
+
+    approved_dean = IPrequest.filter(approved_by_dean = True)
+    pending_dean = IPrequest.filter(approved_by_dean = False)
+
+    leave_pending = leaveRequest.filter(approved_by_dean = False)
+    leave_approved = leaveRequest.filter(approved_by_dean = True)
+
+
+
+    students = Student.objects.filter(course = course)
+    employees = Employee.objects.filter(department = department)
+
     context = {
-        'course_guides': course_guides
+        'course_guides': course_guides,
+        'students': students,
+        'employees': employees,
+
+        'approved_dean': approved_dean,
+        'pending_dean': pending_dean,
+
+        'leave_pending': leave_pending,
+        'leave_approved': leave_approved,
     }
     return render(request, 'base/dean/course_guide.html', context)
+
+
+
+def upload_dept_file(request):
+     if request.method == 'POST':
+        name = request.POST.get('file_name')
+        description = request.POST.get('description')
+        file = request.FILES.get('file')
+        dept_file = File.objects.create(
+          name = name,
+          description = description,
+          department = request.user.department,
+          file = file
+        )
+
+        dept_file.save()
+
+        return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+def dean_delete_file(request, request_id):
+    file = File.objects.get(id = request_id)
+    file.delete()
+    return redirect('base:dean-files')
+
+def dean_files(request):
+    files = File.objects.filter(department = request.user.department)
+
+    context = {
+        'files': files
+    }
+    return render(request, 'base/dean/files.html', context)
+
 
 def dean_approve_course_guide(request, request_id):
     course_guide = CourseGuide.objects.get(id = request_id)
@@ -775,7 +954,7 @@ def acad_departments(request):
 
 def department_page(request, dept_id):
     department = Department.objects.get(pk=dept_id)
-    
+    files = File.objects.filter(department = department)
     # Retrieve related models
     courses = department.course_set.all()
     course_guides = department.courseguide_set.all()
@@ -790,6 +969,7 @@ def department_page(request, dept_id):
         'course_guides': course_guides,
         'employees': employees,
         'students': students,
+        'files': files
     }
     return render(request, 'base/acad/department_page.html', context)
 
@@ -800,3 +980,78 @@ def acad_approve_course_guide(request, course_guide_id):
     course_guide.status = 'Approved'
     course_guide.save()
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+
+
+
+#REGISTRAR VIEWS
+
+def registrar_home(request):
+    IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_ACAD = True)
+    context = {
+        'IPrequest': IPrequest
+    }
+    return render(request, 'base/registrar/home.html', context)
+
+def registrar_pending_ip(request):
+    IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_registrar = False)
+    context = {
+        'IPrequest': IPrequest
+    }
+    return render(request, 'base/registrar/pending.html', context)
+
+def registrar_received_ip(request):
+    IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_registrar = True)
+    context = {
+        'IPrequest': IPrequest
+    }
+    return render(request, 'base/registrar/received.html', context)
+
+def registrar_receive_ip_request(request, request_id):
+    IPrequest = IPMarkRemovalRequest.objects.get(id = request_id)
+    IPrequest.approved_by_registrar = True
+    IPrequest.registrar = request.user
+    IPrequest.status = 'Approved'
+    IPrequest.save()
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+
+
+def hr_home(request):
+    leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_ACAD = True)
+    context = {
+        'leaveRequest': leaveRequest
+    }
+    return render(request, 'base/hr/home.html', context)
+
+def hr_pending_leave(request):
+    leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_HR = False)
+    context = {
+        'leaveRequest': leaveRequest
+    }
+    return render(request, 'base/hr/pending.html', context)
+
+def hr_approved_leave(request):
+    leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_HR = True)
+    context = {
+        'leaveRequest': leaveRequest
+    }
+    return render(request, 'base/hr/approved.html', context)
+
+def hr_approve_leave_request(request, request_id):
+    leaveRequest = FacultyLeaveOfAbsence.objects.get(id = request_id)
+    leaveRequest.approved_by_HR = True
+    leaveRequest.hr = request.user
+    leaveRequest.status = 'Approved'
+    leaveRequest.save()
+    return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+def display_leave_request_form(request, request_id):
+
+    leaveRequest = FacultyLeaveOfAbsence.objects.get(id = request_id)
+
+    context = {
+        'leaveRequest': leaveRequest
+    }
+    return render(request, 'base/includes/leaveForm.html', context)
+

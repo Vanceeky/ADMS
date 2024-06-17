@@ -1,0 +1,238 @@
+<!--
+=========================================================
+* Argon Dashboard 2 - v2.0.4
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/argon-dashboard
+* Copyright 2022 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="/static/assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="/static/assets/img/favicon.png">
+  <title>
+    Login account | ADMS | L-NU ACAD Office
+  </title>
+  <!--     Fonts and icons     -->
+  <link href="/static/assets/css/fonts/open_sans.css" rel="stylesheet" />
+  <!-- Nucleo Icons -->
+  <link href="/static/assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="/static/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="/static/assets/js/plugins/font-awesome.js" crossorigin="anonymous"></script>
+  <link href="/static/assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- CSS Files -->
+  <link id="pagestyle" href="/static/assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
+
+  <style>
+    /* Style the input fields */
+    input[type="text"],
+    input[type="password"] {
+      display: block;
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 400;
+      line-height: 1.4rem;
+      color: #495057;
+      background-color: #fff;
+      background-clip: padding-box;
+      border: 1px solid #d2d6da;
+      appearance: none;
+      border-radius: 0.5rem;
+      transition: box-shadow 0.15s ease, border-color 0.15s ease;
+      margin-top: 15px;
+  }
+
+  hr {
+    display: none;
+  }
+  input[type=text]:focus {
+    border: none;
+  }
+
+    
+    /* Style the submit button */
+    input[type="submit"] {
+        width: 100%;
+        padding: 10px;
+        background-image: linear-gradient(310deg, #1171ef 0%, #11cdef 100%);
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+    }
+    
+    /* Style the table */
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    /* Style table headers */
+    th {
+        text-align: right;
+        padding-right: 10px;
+        vertical-align: middle;
+        display: none;
+    }
+    
+    /* Style table cells */
+    td {
+        vertical-align: middle;
+    }
+    
+  
+    button[type="submit"] {
+        padding: 10px 20px;
+        width: 100%;
+        color: #fff;
+        border: none;
+        
+        border-radius: 0.5rem;
+        cursor: pointer;
+        margin-right: 10px;
+        background-image: linear-gradient(310deg, #1171ef 0%, #11cdef 100%);
+      }
+    
+    
+   
+    button:first-child {
+        margin-right: 0;
+    }
+    
+    
+    .text-center {
+        text-align: center;
+    }
+
+    
+    body {
+      background: url('/static/assets/img/BGDESKTOP.jpg') !important;
+    }
+    
+  </style>
+</head>
+
+<body class="">
+  <div class="container w-50 position-sticky z-index-sticky top-0">
+    <div class="row">
+      <div class="col-12">
+        <!-- Navbar -->
+        {% include 'authentication/nav.html' %}
+        <!-- End Navbar -->
+      </div>
+    </div>
+  </div>
+  <main class="main-content  mt-0">
+    <div class="page-header align-items-start min-vh-50 pt-5 pb-11 m-3 border-radius-lg">
+    
+      <div class="container">
+        <div class="row justify-content-center">
+          <!--
+          <div class="col-lg-5 text-center mx-auto">
+            <h1 class="text-white mb-2 mt-5">Welcome!</h1>
+            <p class="text-lead text-white">Use these awesome forms to login or create new account in your project for free.</p>
+          </div>
+          -->
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <div class="row mt-lg-n10 mt-md-n11 mt-n10 justify-content-center">
+        <div class="col-xl-6 col-lg-6 col-md-8 mx-auto">
+          <div class="card z-index-0">
+          
+            <div class="card-body mt-0">
+
+              {% block content %}
+
+              {% endblock %}
+
+
+             
+              <p class="text-sm mt-3 mb-0">Forgotten your password? <a href="/accounts/password/reset/" class="text-dark font-weight-bolder">click here</a></p>
+              
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  <!-- -------- START FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
+  <footer class="footer py-5">
+    <div class="container">
+
+      <div class="row">
+        <div class="col-8 mx-auto text-center mt-1">
+          <p class="mb-0 text-secondary">
+            Copyright © <script>
+              document.write(new Date().getFullYear())
+            </script> ADMS | Lyceum-Northwestern University.
+          </p>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <!-- -------- END FOOTER 3 w/ COMPANY DESCRIPTION WITH LINKS & SOCIAL ICONS & COPYRIGHT ------- -->
+  <!--   Core JS Files   -->
+
+  {% include 'includes/scripts.html' %}
+
+  <script>
+    // Get the label elements for username, password, and token
+    const usernameLabel = document.querySelector('label[for="id_auth-username"]');
+    const passwordLabel = document.querySelector('label[for="id_auth-password"]');
+    const tokenLabel = document.querySelector('label[for="id_token-otp_token"]');
+
+    // Get the input elements for username, password, and token
+    const usernameInput = document.getElementById('id_auth-username');
+    const passwordInput = document.getElementById('id_auth-password');
+    const tokenInput = document.getElementById('id_token-otp_token');
+
+    // Set the placeholders for username, password, and token
+    if (usernameLabel) {
+        usernameInput.setAttribute('placeholder', usernameLabel.innerText);
+        usernameLabel.parentNode.removeChild(usernameLabel);
+    }
+    if (passwordLabel) {
+        passwordInput.setAttribute('placeholder', passwordLabel.innerText);
+        passwordLabel.parentNode.removeChild(passwordLabel);
+    }
+    if (tokenLabel) {
+        tokenInput.setAttribute('placeholder', tokenLabel.innerText);
+        tokenLabel.parentNode.removeChild(tokenLabel);
+    }
+
+     // Add an ID to the "Back" button
+     const backButton = document.querySelector('.btn[type="button"]');
+
+     backButton.id = 'backBtn';
+ 
+     // Hide or show the "Back" button based on the visibility of username and password inputs
+     const backBtn = document.getElementById('backBtn');
+     if (usernameInput.style.display === 'none' && passwordInput.style.display === 'none') {
+         backBtn.style.display = 'block';
+        
+     } else {
+         backBtn.style.display = 'none';
+
+     }
+
+    
+</script>
+
+</body>
+
+</html>

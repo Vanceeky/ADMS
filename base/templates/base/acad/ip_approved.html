@@ -4,7 +4,7 @@
     </div>
     <div class="card-body px-0 pt-0 pb-2">
       <div class="table-responsive p-3">
-        <table class="table align-items-center mb-0">
+        <table class="table align-items-center mb-0" id="table_approved">
           <thead>
             <tr>
               <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
@@ -71,17 +71,15 @@
                         {% endif %}
                     </td>
 
-                    <td class="text-md d-flex justify-content-center mt-3">
+                    <td class="text-md">
                         {% if not ip.approved_by_ACAD %}
                             <a href="javascript:;" class="mx-2 accept-request" data-request-id="{{ ip.id }}"
                                 data-bs-toggle="tooltip" data-bs-title="Approve request">
                                 <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
                             </a>
                         {% else %}
-                            <a href="{% url 'base:view-approval-form' request_id=ip.id %}" target="_blank" class="mx-2 view-form"
-                            data-bs-toggle="tooltip" data-bs-title="View request">
-                            <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
-                            </a>
+                        <a href="{% url 'base:view-approval-form' request_id=ip.id %}" target="_blank" class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i class="fas fa-file-pdf text-lg me-1" aria-hidden="true"></i> PDF</a>
+
                         {% endif %}
 
                     </td>
@@ -112,3 +110,8 @@
       </div>
     </div>
 </div>
+
+
+<script>
+    let approved = new DataTable('#table_approved')
+    </script>

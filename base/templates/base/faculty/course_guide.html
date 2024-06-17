@@ -16,6 +16,16 @@ Faculty Dashboard
 <div class="container-fluid py-4">
     <div class="row mt-4">
 
+      
+      {% for message in messages %}
+      <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+        <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+        <span class="alert-text">{{ message }}</span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+    {% endfor %}
 
         <div class="col-lg-8 h-100 mb-lg-0 mb-4">
             <div class="card z-index-2 h-100">
@@ -52,7 +62,7 @@ Faculty Dashboard
                         </thead>
                         <tbody>
                           {% for cg in course_guides %}
-                          {% if cg.status == 'Approved' %}
+                        
                           <tr>
                             <td>
                                 <div class="d-flex flex-column justify-content-center">
@@ -99,7 +109,7 @@ Faculty Dashboard
                          
     
                           </tr>
-                          {% endif %}
+                    
                           {% endfor %}
     
     
@@ -224,13 +234,13 @@ Faculty Dashboard
 
                 <div class="form-group">
                     <label for="example-text-input" class="form-control-label">Subject name: </label>
-                    <input class="form-control" name="subject_name" type="text" placeholder="Computer Programming 1" id="example-text-input">
+                    <input class="form-control" name="subject_name" type="text" required placeholder="Computer Programming 1" id="example-text-input">
                 </div>
 
                 <div class="col-md-4">
                     <div class="form-group">
                         <label for="example-text-input" class="form-control-label">Subject Code: </label>
-                        <input class="form-control" name="subject_code" type="text" placeholder="IT-PROG1" id="example-text-input">
+                        <input class="form-control" name="subject_code" type="text" required placeholder="IT-PROG1" id="example-text-input">
                     </div>
                 </div>
 
@@ -238,7 +248,7 @@ Faculty Dashboard
               <div class="col-md-4">
                 <div class="form-group">
                   <label for="exampleFormControlSelect1">Semester: </label>
-                  <select class="form-control" name="semester" id="">
+                  <select class="form-control" name="semester" required id="">
                     <option value="1st Semester">1st Semester</option>
                     <option value="2nd Semester"> 2nd Semester </option>
           
@@ -250,14 +260,14 @@ Faculty Dashboard
               <div class="col-md-4">
                 <div class="form-group">
                     <label for="example-text-input" class="form-control-label">Year</label>
-                    <input class="form-control" name="year" type="text" placeholder="2023-2024" id="example-text-input">
+                    <input class="form-control" name="year" type="text" required placeholder="2023-2024" id="example-text-input">
                 </div>
               </div>
 
 
               <div class="form-group">
                 <label for="example-text-input" class="form-control-label">Upload File:</label>
-                <input class="form-control" name="file" type="file" placeholder="2023-2024" id="example-text-input">
+                <input class="form-control" name="file" type="file"required  placeholder="2023-2024" id="example-text-input">
             </div>
               
 

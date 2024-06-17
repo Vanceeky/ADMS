@@ -1,0 +1,238 @@
+{% extends 'base.html' %}
+
+{% block title %}
+
+Dean Dashboard 
+
+{% endblock %}
+
+{% block aside %}
+
+  {% include 'base/includes/dean_aside.html' %}
+
+{% endblock %}
+
+
+{% block content %}
+
+<div class="container-fluid py-4">
+
+  <div class="row mt-4">
+
+    <div class="col-lg-9 mb-lg-0 mb-4">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+            <div class=" d-flex justify-content-between align-items-center">
+                            
+                <div class="d-flex flex-column">
+                    <h5 class="mb-0">Files</h5>
+                
+
+                    <span class="text-md">{{ request.user.department }}</span>
+                </div>
+
+                <div class="">
+                  <a href="" class="btn btn-sm bg-gradient-secondary" data-bs-toggle="modal" data-bs-target="#modal-upload">Upload File</a>
+                  <a href="{% url 'base:dean-course-guide' %}" class="btn btn-sm bg-gradient-secondary">Course Guides</a>
+                </div>
+            </div>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-3">
+            <table class="table align-items-center mb-0" id="myTable">
+              <thead>
+                <tr>
+                    <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Name</th>
+                    <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Description</th>
+
+                    <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">File</th>
+                    <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Date uploaded</th>
+                    <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2"></th>
+                  </tr> 
+              </thead>
+              <tbody>
+                {% for cg in files %}
+              
+                <tr>
+
+                    <td>
+               
+                            <h6 class="mb-0 text-md">{{cg.name  }}</h6>
+             
+                   
+                      
+                    </td>
+                  <td>
+                        <p class="text-md text-secondary mb-0">{{cg.description}}</p>
+                  </td>
+
+                  <td class="text-center">
+               
+                    <div class="d-flex flex-column justify-content-center">
+                     
+                        <a data-bs-toggle="tooltip" data-bs-title="View File" href="{{ cg.file.url }}" target="_blank"class="btn btn-link text-dark text-sm mb-0 px-0 ms-4">
+                            
+                            {{ cg.file}}
+                        </a>
+                    </div>
+                
+                 
+                   
+                </td>
+
+                  <td>
+                    <p class="text-md text-secondary mb-0">{{cg.date_created}}</p>
+                    </td>
+
+
+     
+
+
+
+   
+                  
+
+                  <td>
+
+                    <a href="#" class="mx-2 approve-link" data-request-id="{{ cg.id }}"
+                    data-bs-toggle="tooltip" data-bs-title="Remove">
+                    <i class="fas fa-trash text-secondary" aria-hidden="true"></i>
+                    </a>
+                 
+                  </td>
+
+               
+
+                </tr>
+                
+                {% endfor %}
+
+
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-lg-3">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="card">
+              <div class="card-header pb-0 p-3">
+                  <h6 class="mb-0">Requests</h6>
+              </div>
+              <div class="card-body p-3">
+                  <ul class="list-group">
+                      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                          <div class="d-flex align-items-center">
+                              <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                                  <i class="ni ni-mobile-button text-white opacity-10"></i>
+                              </div>
+                              <div class="d-flex flex-column">
+                                  <h6 class="mb-1 text-dark text-sm">IP Mark Removal Request</h6>
+                                  <span class="text-xs">{{ pending_dean.count }} in pending, <span class="font-weight-bold">{{ approved_dean.count }} approved</span></span>
+                              </div>
+                          </div>
+                          <div class="d-flex">
+                              <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
+                          </div>
+                      </li>
+                      <li class="list-group-item border-0 d-flex justify-content-between ps-0 mb-2 border-radius-lg">
+                          <div class="d-flex align-items-center">
+                              <div class="icon icon-shape icon-sm me-3 bg-gradient-dark shadow text-center">
+                                  <i class="ni ni-tag text-white opacity-10"></i>
+                              </div>
+                              <div class="d-flex flex-column">
+                                  <h6 class="mb-1 text-dark text-sm">Faculty Leave Request</h6>
+                                  <span class="text-xs">{{ leave_pending.count }} pending, <span class="font-weight-bold">{{ leave_approved.count }} approved</span></span>
+                              </div>
+                          </div>
+                          <div class="d-flex">
+                              <button class="btn btn-link btn-icon-only btn-rounded btn-sm text-dark icon-move-right my-auto"><i class="ni ni-bold-right" aria-hidden="true"></i></button>
+                          </div>
+
+                  </ul>
+              </div>
+          </div>
+        </div>
+      
+      </div>
+    </div>
+
+  </div>
+
+
+
+</div>
+
+
+<!-- MOdal -->
+
+
+{% include 'base/modals/upload_file.html' %}
+
+{% endblock %}
+
+
+{% block javascripts %}
+
+<script>
+let table = new DataTable('#myTable')
+</script>
+
+<script>
+  $(document).ready(function() {
+    
+    $('.approve-link').on('click', function(event) {
+      event.preventDefault(); 
+      var approveLink = $(this).attr('href');
+      var requestId = $(this).data('request-id');
+      Swal.fire({
+        title: 'Are you sure?',
+        text: 'You are about to approve this request. This action cannot be undone.',
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Yes, approve',
+        cancelButtonText: 'Cancel'
+      }).then((result) => {
+        if (result.isConfirmed) {
+          // Redirect to the approval link
+          Swal.fire({
+            title: 'Approved!',
+            text: 'The request has been successfully approved.',
+            icon: 'success',
+            confirmButtonText: 'OK'
+          }).then(() => {
+           
+            window.location.href = `/dean/delete-file/${requestId}/`;
+          });
+        }
+      });
+    });
+  });
+</script>
+
+<script>
+
+    var links = document.querySelectorAll('.btn-link');
+  
+    // Loop through each link
+    links.forEach(function(link) {
+
+      var text = link.textContent;
+  
+    
+      text = text.replace('files/', '');
+  
+    
+      text = text.replace('.pdf', '');
+  
+      link.textContent = text;
+    });
+  </script>
+  
+
+
+
+{% endblock %}

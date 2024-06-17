@@ -30,7 +30,7 @@ ACAD Dashboard
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
                       <div class="table-responsive p-3">
-                        <table class="table align-items-center mb-0">
+                        <table class="table align-items-center mb-0" id="table_ip">
                           <thead>
                             <tr>
                               <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
@@ -41,7 +41,7 @@ ACAD Dashboard
                               <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Remarks</th>
         
                               <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
-                              <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Actions</th>
+                              <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2"></th>
                             </tr>
                           </thead>
                           <tbody>
@@ -97,17 +97,15 @@ ACAD Dashboard
                                         {% endif %}
                                     </td>
         
-                                    <td class="text-md d-flex justify-content-center mt-3">
+                                    <td class="text-md">
                                         {% if not ip.approved_by_ACAD %}
                                             <a href="javascript:;" class="mx-2 accept-request" data-request-id="{{ ip.id }}"
                                                 data-bs-toggle="tooltip" data-bs-title="Approve request">
                                                 <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
                                             </a>
                                         {% else %}
-                                            <a href="{% url 'base:view-approval-form' request_id=ip.id %}" target="_blank" class="mx-2 view-form"
-                                            data-bs-toggle="tooltip" data-bs-title="View request">
-                                            <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
-                                            </a>
+                                        <a href="{% url 'base:view-approval-form' request_id=ip.id %}" target="_blank" class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i class="fas fa-file-pdf text-lg me-1" aria-hidden="true"></i> PDF</a>
+
                                         {% endif %}
         
                                     </td>
@@ -199,6 +197,12 @@ ACAD Dashboard
 
 
 {% block javascripts %}
+<script>
+
+let table = new DataTable('#table_ip')
+
+</script>
+
 
 <script>
     $(document).ready(function() {
@@ -338,7 +342,7 @@ ACAD Dashboard
   document.addEventListener("DOMContentLoaded", function() {
   // Check if the current URL matches the target URL
   var currentUrl = window.location.href;
-  var targetUrl = "http://127.0.0.1:8000/acad/requests/ip/"; // Replace with your actual template tag
+  var targetUrl = window.location.href; // Replace with your actual template tag
 
   if (currentUrl === targetUrl) {
     // Show the collapse element
@@ -366,7 +370,7 @@ ACAD Dashboard
                 success: function (data) {
                     $('.sub-content-area').html(data);
                     $(".ip-link").addClass('active');
-                    
+                 
                     
                 },
                 error: function (xhr, status, error) {

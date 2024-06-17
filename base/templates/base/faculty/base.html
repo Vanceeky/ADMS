@@ -19,8 +19,19 @@ Faculty Dashboard
 
 
 
+
         <div class="col-lg-12 h-100 mb-lg-0 mb-4">
 
+          {% for message in messages %}
+            <div class="alert alert-secondary alert-dismissible fade show" role="alert">
+              <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+              <span class="alert-text">{{ message }}</span>
+              <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close">
+                  <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+          {% endfor %}
+          
             <div class="sub-content-area">
 
                 <div class="card z-index-2 h-100">
@@ -51,7 +62,7 @@ Faculty Dashboard
                                 <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Additional File</th>
                                 <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Sent</th>
                                 <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
-                                <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Actions</th>
+                                <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2"></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -107,12 +118,7 @@ Faculty Dashboard
 
                                 <td class="text-md align-middle text-center">
 
-                                    {% if ip.status == 'Processing' %}
-                                    <a href="javascript:;" class="mx-2 process-button" data-request-id="{{ ip.id }}"
-                                    data-bs-toggle="tooltip" data-bs-title="View request">
-                                    <i class="fas fa-eye text-secondary" aria-hidden="true"></i>
-                                    </a>
-                                    {% elif ip.status == 'Pending' %}
+                                    {% if ip.status == 'Pending' %}
 
                                     <a href="javascript:;" class="mx-2 process-button" data-request-id="{{ ip.id }}"
                                     data-bs-toggle="modal" data-bs-target="#modal-process">
@@ -123,7 +129,11 @@ Faculty Dashboard
                                         <i class="fas fa-trash text-secondary" aria-hidden="true"></i>
                                     </a>
 
+                                    {% elif ip.status == 'Processing' %}
+
+
                                     {% elif ip.status == 'Approved' %}
+
                                     <a href="{% url 'base:view-approval-form' request_id=ip.id %}" target="_blank" class="mx-2" data-bs-toggle="tooltip" data-bs-title="Print">
                                     <i class="fas fa-print text-secondary" aria-hidden="true"></i>
                                     </a>
@@ -268,25 +278,25 @@ Faculty Dashboard
                   <div class="col-md-3">
                       <div class="form-group">
                           <label for="example-number-input" class="form-control-label">Prelim</label>
-                          <input class="form-control text-center" name="prelim" type="text" id="example-number-input" maxlength="3">
+                          <input class="form-control text-center" name="prelim" type="text" id="example-number-input" required maxlength="3">
                       </div>
                   </div>
                   <div class="col-md-3">
                       <div class="form-group">
                           <label for="example-number-input" class="form-control-label">Midterm</label>
-                          <input class="form-control text-center" name="midterm" type="text" id="example-number-input" maxlength="3">
+                          <input class="form-control text-center" name="midterm" type="text" id="example-number-input" required maxlength="3">
                       </div>
                   </div>
                   <div class="col-md-3">
                       <div class="form-group">
                           <label for="example-number-input" class="form-control-label">Semi-final</label>
-                          <input class="form-control text-center" name="semis" type="text" id="example-number-input" maxlength="3">
+                          <input class="form-control text-center" name="semis" type="text" id="example-number-input" required maxlength="3">
                       </div>
                   </div>
                   <div class="col-md-3">
                       <div class="form-group">
                           <label for="example-number-input" class="form-control-label">Final</label>
-                          <input class="form-control text-center" name="finals" type="text" id="example-number-input" maxlength="3" >
+                          <input class="form-control text-center" name="finals" type="text" id="example-number-input" required maxlength="3" >
                       </div>
                   </div>
 
@@ -296,7 +306,7 @@ Faculty Dashboard
                   <div class="col-md-4">
                       <div class="form-group">
                           <label for="example-number-input" class="form-control-label">Final Grade</label>
-                          <input class="form-control text-center" name="final_grade" type="text" id="final_grade" maxlength="5" >
+                          <input class="form-control text-center" name="final_grade" type="text" id="final_grade" required maxlength="5" >
                       </div>
                   </div>
                   <div class="col-md-8">
@@ -366,6 +376,13 @@ Faculty Dashboard
                     let table_pending = new DataTable('#myTable_pending')
                     let table_approved = new DataTable('#myTable_approved')
                     let table_processing = new DataTable('#myTable_processing')
+
+                    var links = document.querySelectorAll("a[href*='/files/']"); 
+                    for (var i = 0; i < links.length; i++) {
+                      var link = links[i];
+                      var filename = link.textContent.trim().split('/').pop(); 
+                      link.textContent = filename; 
+                    }
                     
                 },
                 error: function (xhr, status, error) {
@@ -396,6 +413,7 @@ Faculty Dashboard
       
     });
   </script>
+
 
   <script>
     function updateRemarks() {

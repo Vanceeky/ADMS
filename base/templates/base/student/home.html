@@ -7,7 +7,7 @@
                 <div class="d-flex flex-column">
                     <h5 class="mb-0"> Requests</h5>
 
-                    <span class="text-md">Tickets submitted</span>
+                    <span class="text-md">Tickets Submitted </span>
                 </div>
             </div>
             
@@ -19,13 +19,16 @@
   <div class="card-body p-3">
    
         <div class="table-responsive">
-          <table class="table align-items-center mb-0">
+          <table class="table align-items-center mb-0" id="myTable_home">
             <thead>
               <tr>
                 <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
                 <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Sent</th>
                 <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Instructor</th>
+                <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Additional File</th>
                 <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
+                
+                <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2"></th>
               </tr>
             </thead>
             <tbody>
@@ -47,8 +50,40 @@
                   <p class="text-md font-weight-bold mb-0">{{ip.instructor.user.first_name}} {{ ip.instructor.user.last_name}}</p>
               
                 </td>
+
+                <td>
+                  {% for af in ip.additionalfile_set.all %}
+                  <div class="text-center d-flex flex-column justify-content-center">
+                      <a href="{{ af.file.url }}" target="_blank"><p class="text-md mb-0">{{ af.file }}</p></a>
+                  </div>
+                  {% endfor %}
+              
+              </td>
+
                 <td class="align-middle text-center text-md">
                     <span class="badge bg-gradient-success">{{ ip.status }}</span>
+                </td>
+
+                <td class="text-md text-center">
+
+                  {% if ip.status == 'Pending' %}
+
+                  <a href="javascript:;" class="mx-2 cancel-request" data-request-id="{{ ip.id }}"
+                  data-bs-toggle="tooltip" data-bs-title="Cancel request">
+                  <i class="fas fa-trash text-secondary" aria-hidden="true"></i>
+                  </a>
+
+    
+                  {% elif ip.status == 'Approved' %}
+
+
+                  <a href="{% url 'base:view-approval-form' request_id=ip.id %}" target="_blank" class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i class="fas fa-file-pdf text-lg me-1" aria-hidden="true"></i> PDF</a>
+
+                               
+              
+                  {% endif %}
+
+
                 </td>
 
               </tr>
@@ -61,3 +96,9 @@
       
   </div>
 </div>
+
+
+
+
+
+

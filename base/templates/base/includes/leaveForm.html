@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ ip }}</title>
+    <link href="/static/assets/css/nucleo-icons.css" rel="stylesheet" />
+    <link href="/static/assets/css/nucleo-svg.css" rel="stylesheet" />
+    <!-- Font Awesome Icons -->
+    <script src="/static/assets/js/plugins/font-awesome.js" crossorigin="anonymous"></script>
+    <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+    <link id="pagestyle" href="/static/assets/css/argon-dashboard.css?v=2.0.4" rel="stylesheet" />
+
+    <style>
+
+      /*
+        .form{
+            background: url('/static/assets/img/L-NU_LOGO.png');
+            background-repeat: repeat-y;
+            background-size: cover;
+          
+        }
+   */
+
+
+    </style>
+</head>
+<body>
+    
+
+    <div class="container">
+        <div class="row">
+
+
+                <div class="col-lg-12">
+                    <div class="">
+                     
+                        <div class="card-header">
+                            <br>
+                            <div class="d-flex px-2 py-1 align-items-center">
+                                <div>
+                                <img src="/static/assets/img/L-NU_LOGO.png" class="avatar avatar-lg me-3">
+                                </div>
+                                <div class="d-flex mt-0 flex-column">
+                                    <h5 class="mb-0 text-md">LYCEUM-NORTHWESTERN UNIVERSITY</h5>
+                                    <p class="text-sm text-secondary mb-0">Tapuac District, Dagupan City</p>
+                                    <h6 class="text-md">Human Resource Department</h6>
+                                 
+                                </div>
+
+                                
+                  
+                            </div>
+                            
+                            <h5 class="text-center">Faculty Leave of Absence / On Official Business </h5>
+                        </div>
+                        <br>
+                        
+                        <div class="card-body form">
+                            <div class="mb-0">
+                     
+                                <p class="mb-0 text-xs">Date Filed         : <span class="font-weight-bold"><u>{{ leaveRequest.date_requested }}</u></span></p>
+                                <p class="mb-0 text-xs">Name of Faculty    :  <span class="font-weight-bold"><u>{{ leaveRequest.faculty.user.first_name }} {{leaveRequest.faculty.user.last_name}}</u></span></p>
+                                <p class="mb-0 text-xs">Length of Service  :  <span class="font-weight-bold"><u>{{ leaveRequest.lengthOfService }}</u></span></p>
+                                <p class="mb-0 text-xs">College/Department :  <span class="font-weight-bold"><u>{{ leaveRequest.faculty.department }}</u></span></p>
+                             </div>
+       
+                             <br>
+                            
+
+                            <div class="">
+                                <p class="text-sm font-weight-bold mb-0">Purpose of Absence:</p>
+        
+                                <div class="table-responsive">
+                                    <table class="table align-middle table-nowrap table-centered mb-0">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center text-xs"> </th>
+                                                <th class="text-center text-xs">From</th>
+                                                <th class="text-center text-xs">To</th>
+                                                <th class="text-center text-xs">No. of Days</th>
+                                            </tr>
+                                        </thead><!-- end thead -->
+                                        <tbody>
+                                         
+                                            <tr>
+                                                <td class="text-center text-sm">
+                                                    {{ leaveRequest.purpose }}
+                                                </td>
+                                                <td class="text-center text-sm">{{leaveRequest.from_date}} </td>
+                                                <td class="text-center text-sm"> {{leaveRequest.to_date }}</td>
+                                                <td class="text-center text-sn">{{ leaveRequest.number_of_days }}</td>
+                                            </tr>
+                                       
+
+                
+                                            <!-- end tr -->
+                                        </tbody>
+                                            
+                                        <!-- end tbody -->
+                                    </table><!-- end table -->
+
+
+                                    <p class="text-sm font-weight-bold mb-0">Reason: <span class="fw-normal text-capitalize">{{ leaveRequest.reason}}</span></p>
+                                    <br>
+                                    {% if leaveRequest.is_there_substitute%}
+                                    <p class="mb-0 text-xs">Name of Substitute :  <span class="font-weight-bold"><u>{{ leaveRequest.name_of_substitute }}</u></span></p>
+                                    <p class="mb-0 text-xs">Reason :  <span class="font-weight-bold"><u>{{ leaveRequest.reason_for_substitute }}</u></span></p>
+
+                                    {% else %}
+
+                                    <p class="mb-0 text-xs">Note :  <span class="font-weight-bold"><u>Substitute not Needed</u></span></p>
+                                    {% endif %}
+                                </div><!-- end table responsive -->
+
+                            </div>
+
+                    
+
+                            <hr class="dark horizontal">
+                            <br>
+
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <div>
+                                        <p class="text-xxs text-secondary mb-0">Submitted by:</p>
+                                        <u><h6 class="mb-0 text-xs">{{ leaveRequest.faculty.user.first_name }} {{ leaveRequest.faculty.user.last_name}}</h6></u>
+                                        <p class="text-xxs text-secondary mb-0">Employee/Faculty</p>
+                                    </div>
+                                    <br>
+                                    <div>
+                                        <p class="text-xxs text-secondary mb-0">Recommended by:</p>
+                                        <u><h6 class="mb-0 text-xs">{{ leaveRequest.dean.first_name }} {{ leaveRequest.dean.last_name}}</h6></u>
+                                        <p class="text-xxs text-secondary mb-0">Dean</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-4">
+
+                                    <div>
+                                        <p class="text-xxs text-secondary mb-0">Approved by:</p>
+                                        <u><h6 class="mb-0 text-xs">{{ leaveRequest.acad.first_name}} {{ leaveRequest.acad.last_name }}</h6></u>
+                                        <p class="text-xxs text-secondary mb-0">VP, Academic Affairs</p>
+                                        <img class="mt-3" style="width: 120px; border: 2px solid red" src="{{ leaveRequest.qr_code.url }}">
+                                      
+                                        </div>
+                                        <br>
+                                      
+                                </div>
+
+                                <div class="col-md-4">
+
+                                    <div class="d-flex flex-column justify-content-center">
+                                        <p class="text-xs text-secondary mb-0">Received By:</p>
+                                        
+                                        <h6 class="mb-0 text-xs"><u>{{ leaveRequest.hr.first_name }} {{ leaveRequest.hr.last_name}}</u></h6>
+                                        
+                                        <p class="text-xxs text-secondary mb-0">HR Department</p>
+                                        
+                                        <br>
+                            
+                                        <div class="d-flex flex-column">
+                                            <p class="text-sm text-secondary">{{ leaveRequest.date_updated }}</p>
+                                            <p class="text-sm text-secondary">Faculty Leave of Absence Request #{{ leaveRequest.id }}</p>
+                                            <p class="mt-0 text-danger text-sm font-weight-bold">( Document not Valid without QR Code )</p>
+                                        </div>
+
+                                        </div>
+
+
+                               
+                                </div>
+                            </div>
+
+                  
+
+                            
+                            
+                        </div>
+                    </div>
+                    <div class="py-2">
+
+                                <div class="d-print-none mt-4">
+                                    <div class="float-end">
+                                        <a href="javascript:window.print()" class="btn btn-success me-1"><i class="fa fa-print"></i>Print</a>
+                                        <a href="#" class="btn btn-primary w-md">Save</a>
+                                    </div>
+                                </div>
+                            </div>
+                </div><!-- end col -->
+            </div>
+        </div>
+
+</body>
+
+<script>
+
+  
+    // Insert date and time into HTML
+
+    function formatDateTime(dateTime) {
+  // Ensure dateTime is a valid Date object
+    if (!(dateTime instanceof Date)) {
+        dateTime = new Date(dateTime);  // Try converting it to a Date
+    }
+
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"
+    ];
+
+    const day = dateTime.getDate();
+    const month = monthNames[dateTime.getMonth()];
+    const year = dateTime.getFullYear();
+    const hour = dateTime.getHours() % 12 || 12;  // Convert to 12-hour format
+    const minutes = dateTime.getMinutes().toString().padStart(2, '0');
+    const meridian = dateTime.getHours() < 12 ? 'AM' : 'PM';
+
+    return `${day}, ${month} ${year} ${hour}:${minutes} ${meridian}`;
+    }
+
+    // Example usage
+    const dateTime = new Date();  // Or replace with your actual datetime object
+    const formattedDateTime = formatDateTime(dateTime);
+    console.log(formattedDateTime);
+    document.getElementById("datetime").innerHTML = formattedDateTime;
+
+  </script>
+</html>

@@ -1,0 +1,120 @@
+<div class="card mb-4">
+    <div class="card-header pb-0">
+        <h6>IP Mark Removal Requests Pending</h6>
+    </div>
+    <div class="card-body px-0 pt-0 pb-2">
+    <div class="table-responsive p-3">
+        <table class="table align-items-center mb-0" id="myTable_pending">
+        <thead>
+            <tr>
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Request</th>
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Student</th>
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Subject</th>
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Instructor</th>
+            <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Remarks</th>
+            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
+            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            {% for ip in IPrequest %}
+         
+       
+                <tr>
+                    <td>
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-md">IP Mark Removal</h6>
+                            <p class="text-md text-secondary mb-0">Ticket #{{ip.id}}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-md">{{ ip.student.user.last_name }}, {{ ip.student.user.first_name}}</h6>
+                            <p class="text-md text-secondary mb-0">{{ ip.student.student_id}}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-0 text-md">{{ip.subject_code}}</h6>
+                            <p class="text-md text-secondary mb-0">{{ip.subject_name}}</p>
+                        </div>
+                    </td>
+                    <td>
+                        <p class="text-md text-secondary mb-0">Approved by:</p>
+                        <p class="text-md font-weight-bold mb-0">{{ ip.instructor.user.first_name }} {{ ip.instructor.user.last_name}}</p>
+                    </td>
+                    <td>
+                    {% for ip_mark in ip.ipmark_set.all %}
+                    <p class="text-md font-weight-bold mb-0">{{ ip_mark.remarks }}</p>
+                    <p class="text-md text-secondary mb-0">Final Grade: {{ip_mark.final_grade}}</p>
+                    
+                    {% endfor %}
+                    </td>
+                    <td class="align-middle text-center text-md">
+                        {% if ip.approved_by_dean %}
+                            <span class="badge bg-gradient-success">Approved</span>
+                        {% else %}
+                            <span class="badge bg-gradient-warning">Pending</span>
+                        {% endif %}
+                    </td>
+                    <td class="text-md text-center">
+                        {% if not ip.approved_by_dean %}
+                            <a href="#" class="mx-2 process-button approve-link" data-request-id="{{ ip.id }}"
+                                data-bs-toggle="tooltip" data-bs-title="Approve request">
+                                <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                            </a>
+                        {% else %}
+                             <a href="#" class="mx-2 process-button approve-link" data-request-id="{{ ip.id }}"
+                                data-bs-toggle="tooltip" data-bs-title="Approve request">
+                                <i class="fas fa-check-circle text-secondary" aria-hidden="true"></i>
+                            </a>
+                        {% endif %}
+                    </td>
+                </tr>
+         
+      
+
+
+        {% endfor %}
+        
+
+
+        </tbody>
+        </table>
+    </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function() {
+      
+      $('.approve-link').on('click', function(event) {
+        event.preventDefault(); 
+        var approveLink = $(this).attr('href');
+        var requestId = $(this).data('request-id');
+        Swal.fire({
+          title: 'Are you sure?',
+          text: 'You are about to approve this request. This action cannot be undone.',
+          icon: 'warning',
+          showCancelButton: true,
+          confirmButtonText: 'Yes, approve',
+          cancelButtonText: 'Cancel'
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Redirect to the approval link
+            Swal.fire({
+              title: 'Approved!',
+              text: 'The request has been successfully approved.',
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(() => {
+             
+              window.location.href = `/approve-IPMarkRemoval-request/${requestId}/`;
+            });
+          }
+        });
+      });
+    });
+  </script>
+  

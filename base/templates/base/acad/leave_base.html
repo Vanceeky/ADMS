@@ -33,7 +33,7 @@ ACAD Dashboard
                     </div>
                     <div class="card-body px-0 pt-0 pb-2">
                     <div class="table-responsive p-3">
-                        <table class="table align-items-center mb-0">
+                        <table class="table align-items-center mb-0" id="leave">
                         <thead>
                             <tr>
                             <th class="text-uppercase text-secondary text-xs font-weight-bolder opacity-7 ps-2">Faculty</th>
@@ -51,7 +51,7 @@ ACAD Dashboard
 
                         
                             <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Status</th>
-                            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2">Actions</th>
+                            <th class="text-uppercase text-center text-secondary text-xs font-weight-bolder opacity-7 ps-2"></th>
                             </tr>
                         </thead>
                         
@@ -159,6 +159,11 @@ ACAD Dashboard
                                         <a href="javascript:;" class="mx-2" data-bs-toggle="tooltip" data-bs-title="Cancel Request">
                                         <i class="fas fa-trash text-secondary" aria-hidden="true"></i>
                                     </a>
+
+                                    {% elif ip.status == 'Approved' %}
+
+                                    <a href="" target="_blank" class="btn btn-link text-dark text-sm mb-0 px-0 ms-4"><i class="fas fa-file-pdf text-lg me-1" aria-hidden="true"></i> PDF</a>
+
                                     {% endif %}
 
                                     </td>
@@ -188,7 +193,11 @@ ACAD Dashboard
 
 {% block javascripts %}
 
+<script>
 
+  let leave = new DataTable('#leave')
+
+</script>
 
 <script>
     $(document).ready(function() {
