@@ -20,6 +20,7 @@ class Course(models.Model):
         return f'{self.name} - {self.department}'
     
 class File(models.Model):
+    file_type = models.CharField(max_length = 155, null = True, blank = True, name="file_type")
     name = models.CharField(max_length = 155)
     description = models.TextField()
     department = models.ForeignKey(Department, on_delete=models.CASCADE, null = True, blank = True)

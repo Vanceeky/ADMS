@@ -11,6 +11,18 @@
             <form action="{% url 'base:upload-dept-file' %}" method="POST" enctype="multipart/form-data">
                 {% csrf_token %}
                 <div class="modal-body">
+
+                    <div class="form-group">
+                      <label for="exampleFormControlSelect1">Select Type</label>
+                      <select class="form-control" name="file_type" required>
+                        
+                        <option value="Accreditation">Accreditation</option>
+                        <option value="Grading Sheet">Grading Sheet</option>
+                        <option value="Autonomous ISO">Autonomous ISO</option>
+        
+                        
+                      </select>
+                    </div>
                     <div class="form-group">
                         <label for="example-text-input" class="form-control-label">File name</label>
                         <input class="form-control" name="file_name" required type="text" id="example-text-input">

@@ -88,6 +88,9 @@ urlpatterns = [
     path('acad/departments/', views.acad_departments, name="acad-departments"),
     path('acad/deparment/<str:dept_id>/', views.department_page, name="acad-department-detail"),
 
+
+
+    #REGISTRAR URLS
     path('registrar/', views.registrar_home, name='registrar-home'),
     path('registrar/pending/ip-mark-removal/', views.registrar_pending_ip, name='registrar-pending'),
     path('registrar/receieve/ip-mark-removal/', views.registrar_received_ip, name='registrar-received'),

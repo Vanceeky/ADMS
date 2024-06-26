@@ -16,9 +16,22 @@ from django.utils.timezone import now
 from department.models import File
 import qrcode
 from io import BytesIO
+from django.contrib.auth.decorators import login_required
+from base.decorators import group_required
 
 from django.contrib.messages import success
 #from datetime import datetime
+
+
+permitted_group_mappings = {
+    'student': '/',
+    'faculty': '/faculty/home/',
+    'dean': '/dean/',
+    'acad': '/acad/',
+    'registrar': '/registrar/',
+    'hr': '/hr/',
+}
+
 
 #STUDENT VIEWS
 
@@ -77,7 +90,8 @@ def recent_activities(request, student):
 
     return approval_statuses
 
-
+@login_required
+@group_required('student', permitted_group_mappings=permitted_group_mappings)
 def student_profile(request):
     student = Student.objects.get(user = request.user)
     context = {
@@ -87,6 +101,8 @@ def student_profile(request):
 
 
 
+@login_required
+@group_required('student', permitted_group_mappings=permitted_group_mappings)
 def dashboard(request):
     student = Student.objects.get(user = request.user)
     IPrequest = IPMarkRemovalRequest.objects.filter(student = student).prefetch_related('additionalfile_set', 'ipmark_set')
@@ -100,6 +116,8 @@ def dashboard(request):
 
     return render(request, 'base/student/base.html', context)
 
+@login_required
+@group_required('student', permitted_group_mappings=permitted_group_mappings)
 def request_home(request):
     student = Student.objects.get(user = request.user)
     IPrequest = IPMarkRemovalRequest.objects.filter(student = student)
@@ -114,7 +132,8 @@ def request_home(request):
     return render(request, 'base/student/home.html', context)
 
 
-
+@login_required
+@group_required('student', permitted_group_mappings=permitted_group_mappings)
 def request_page(request):
 
     student = Student.objects.get(user = request.user)
@@ -127,7 +146,8 @@ def request_page(request):
     }
     return render(request, 'base/student/request_page.html', context)
 
-
+@login_required
+@group_required('student', permitted_group_mappings=permitted_group_mappings)
 def request_process_page(request):
     student = Student.objects.get(user = request.user)
     IPrequest = IPMarkRemovalRequest.objects.filter(student = student, status = 'Processing')
@@ -139,6 +159,8 @@ def request_process_page(request):
     }
     return render(request, 'base/student/request_process.html', context)
 
+@login_required
+@group_required('student', permitted_group_mappings=permitted_group_mappings)
 def request_approved_page(request):
     student = Student.objects.get(user = request.user)
     IPrequest = IPMarkRemovalRequest.objects.filter(student = student, status = 'Approved')
@@ -152,10 +174,14 @@ def request_approved_page(request):
 
 
 
+@login_required
+@group_required('student', permitted_group_mappings=permitted_group_mappings)
 def is_ajax(request):
     return request.META.get('HTTP_X_REQUESTED_WITH') == 'XMLHttpRequest'
 
 
+@login_required
+@group_required('student', permitted_group_mappings=permitted_group_mappings)
 def instructors_autocomplete(request):
     if is_ajax(request=request):
         term = request.GET.get('term', '')
@@ -177,6 +203,8 @@ def instructors_autocomplete(request):
     else:
         return JsonResponse({'message': 'Not a valid request.'}, safe=False)
 
+@login_required
+@group_required('student', permitted_group_mappings=permitted_group_mappings)
 def requestIPMarkRemoval(request):
     if request.method == 'POST':
         student = request.POST.get('student')
@@ -223,6 +251,8 @@ def requestIPMarkRemoval(request):
 
 #FACULTY VIEWS
 
+@login_required
+@group_required('faculty', permitted_group_mappings=permitted_group_mappings)
 def faculty_dashboard(request):
     faculty = Employee.objects.get(user = request.user)
    # IPrequest = IPMarkRemovalRequest.objects.filter(instructor = faculty)
@@ -240,7 +270,8 @@ def faculty_dashboard(request):
 
     return render(request, 'base/faculty/faculty_dashboard.html', context)
 
-
+@login_required
+@group_required('faculty', permitted_group_mappings=permitted_group_mappings)
 def faculty_course_guide(request):
    faculty = Employee.objects.get(user = request.user)
    course_guides = CourseGuide.objects.filter(faculty = faculty )
@@ -250,7 +281,8 @@ def faculty_course_guide(request):
    }
    return render(request, 'base/faculty/course_guide.html', context)
 
-
+@login_required
+@group_required('faculty', permitted_group_mappings=permitted_group_mappings)
 def faculty_submit_course_guide(request):
     faculty = Employee.objects.get(user=request.user)
 
@@ -284,6 +316,8 @@ def faculty_submit_course_guide(request):
     return redirect('base:faculty-dashboard')  # Redirec
 
 
+@login_required
+@group_required('faculty', permitted_group_mappings=permitted_group_mappings)
 def faculty_student_requests_base(request):
     faculty = Employee.objects.get(user = request.user)
     IPrequest = IPMarkRemovalRequest.objects.filter(instructor = faculty).prefetch_related('additionalfile_set', 'ipmark_set')
@@ -294,28 +328,40 @@ def faculty_student_requests_base(request):
     return render(request, 'base/faculty/base.html', context)
     
 
-
+@login_required
+@group_required('faculty', permitted_group_mappings=permitted_group_mappings)
 def get_ip_requests_by_status(request, status):
   faculty = Employee.objects.get(user=request.user)
   IPrequest = IPMarkRemovalRequest.objects.filter(instructor=faculty, status=status).prefetch_related('additionalfile_set', 'ipmark_set')
   return IPrequest
 
+
+@login_required
+@group_required('faculty', permitted_group_mappings=permitted_group_mappings)
 def faculty_student_requests_pending(request):
   IPrequest = get_ip_requests_by_status(request, 'Pending')
   context = {'IPrequest': IPrequest}
   return render(request, 'base/faculty/pending.html', context)
 
+
+@login_required
+@group_required('faculty', permitted_group_mappings=permitted_group_mappings)
 def faculty_student_requests_processing(request):
   IPrequest = get_ip_requests_by_status(request, 'Processing')
   context = {'IPrequest': IPrequest}
   return render(request, 'base/faculty/processing.html', context)
 
+
+@login_required
+@group_required('faculty', permitted_group_mappings=permitted_group_mappings)
 def faculty_student_requests_approved(request):
   IPrequest = get_ip_requests_by_status(request, 'Approved')
   context = {'IPrequest': IPrequest}
   return render(request, 'base/faculty/approved.html', context)
 
 
+@login_required
+@group_required('faculty', permitted_group_mappings=permitted_group_mappings)
 def faculty_leave_request(request):
     faculty = Employee.objects.get(user=request.user)
     LeaveRequest = FacultyLeaveOfAbsence.objects.filter(faculty = faculty)
@@ -326,7 +372,8 @@ def faculty_leave_request(request):
 
 
 
-
+@login_required
+@group_required('faculty', permitted_group_mappings=permitted_group_mappings)
 def submit_leave_request(request):
     faculty = Employee.objects.get(user=request.user)
     department = faculty.department
@@ -378,7 +425,8 @@ def faculty_pending_request(request):
 
     pass 
 
-
+@login_required
+@group_required('faculty', permitted_group_mappings=permitted_group_mappings)
 def submitIPMark(request):
     if request.method == 'POST':
         request_id = request.POST.get('requestID')
@@ -429,10 +477,12 @@ def submitIPMark(request):
 #DEAN Views
 
 
+
 def dean_profile(request):
     return render(request, 'base/dean_profile.html')
 
-
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_dashboard(request):
 
     department = Department.objects.get(dean = request.user)
@@ -471,10 +521,13 @@ def dean_dashboard(request):
 
     return render(request, 'base/dean/dean_dashboard.html', context)
 
-
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_faculty(request):
     return render(request, 'base/dean_faculty.html')
 
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_students(request):
 
     department = Department.objects.get(dean = request.user)
@@ -485,7 +538,8 @@ def dean_students(request):
     }
     return render(request, 'base/students.html', context)
 
-
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def approved_IP_request(request, request_id):
     IPrequest = IPMarkRemovalRequest.objects.get(id = request_id)
     IPrequest.approved_by_dean = True
@@ -493,6 +547,9 @@ def approved_IP_request(request, request_id):
 
     return redirect('base:dean-dashboard')
 
+
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def approve_leave_request_dean(request, request_id):
     leaveRequest = FacultyLeaveOfAbsence.objects.get(id = request_id)
     leaveRequest.approved_by_dean = True
@@ -500,17 +557,20 @@ def approve_leave_request_dean(request, request_id):
 
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
+
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def accept_user(request, user_id):
     user = User.objects.get(id = user_id)
     user.is_active = True
     user.save()
 
     # Email notification content
-    subject = 'Lyceum Account Activated'
+    subject = 'Lyceum ADMS Account Activated'
     message = f"""
     Hi {user.first_name} {user.last_name},
 
-    Your account at Lyceum has been successfully activated.
+    Your account at Lyceum ADMS has been successfully activated.
 
     You can now log in using your credentials.
     
@@ -522,7 +582,7 @@ def accept_user(request, user_id):
     Thank you for choosing Lyceum!
 
     Sincerely,
-    Lyceum Registration Team
+    Lyceum Academic Affairs
     """
 
     # Send email notification to the user
@@ -536,6 +596,8 @@ def accept_user(request, user_id):
     return redirect('base:dean-dashboard')
 
 
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_ip_base(request):
     dean = request.user
     IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_faculty = True, dean = dean)
@@ -558,6 +620,8 @@ def dean_ip_base(request):
     }
     return render(request, 'base/dean/ip_base.html', context)
 
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_ip_pending(request):
     dean = request.user
     IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_dean = False, dean = dean)
@@ -566,6 +630,9 @@ def dean_ip_pending(request):
     }
     return render(request, 'base/dean/ip_pending.html', context)
 
+
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_ip_approved(request):
     dean = request.user
     IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_dean = True, dean = dean)
@@ -576,7 +643,8 @@ def dean_ip_approved(request):
 
 
 
-
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_leave_base(request):
     dean = request.user 
     IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_faculty = True, dean = dean)
@@ -601,7 +669,8 @@ def dean_leave_base(request):
     return render(request, 'base/dean/leave_base.html', context)
 
 
-
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_leave_pending(request):
   dean = request.user
   leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_dean = False, dean = dean)
@@ -611,6 +680,9 @@ def dean_leave_pending(request):
   }
   return render(request, 'base/dean/leave_pending.html', context)
 
+
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_leave_approved(request):
   dean = request.user
   leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_dean = True, dean = dean)
@@ -622,7 +694,8 @@ def dean_leave_approved(request):
 
 
 
-
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_course_guide(request):
     dean = request.user
     department = Department.objects.get(dean = dean)
@@ -658,13 +731,16 @@ def dean_course_guide(request):
     return render(request, 'base/dean/course_guide.html', context)
 
 
-
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def upload_dept_file(request):
      if request.method == 'POST':
+        file_type = request.POST.get('file_type')
         name = request.POST.get('file_name')
         description = request.POST.get('description')
         file = request.FILES.get('file')
         dept_file = File.objects.create(
+          file_type = file_type,
           name = name,
           description = description,
           department = request.user.department,
@@ -675,11 +751,17 @@ def upload_dept_file(request):
 
         return HttpResponseRedirect(request.META['HTTP_REFERER'])
 
+
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_delete_file(request, request_id):
     file = File.objects.get(id = request_id)
     file.delete()
     return redirect('base:dean-files')
 
+
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_files(request):
     files = File.objects.filter(department = request.user.department)
 
@@ -688,7 +770,8 @@ def dean_files(request):
     }
     return render(request, 'base/dean/files.html', context)
 
-
+@login_required
+@group_required('dean', permitted_group_mappings=permitted_group_mappings)
 def dean_approve_course_guide(request, request_id):
     course_guide = CourseGuide.objects.get(id = request_id)
     course_guide.approved_by_dean = True
@@ -702,6 +785,9 @@ def dean_approve_course_guide(request, request_id):
 
 ##############################################################
 
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def acad_dashboard(request):
     #IPrequest = IPMarkRemovalRequest.objects.all()
 
@@ -723,6 +809,10 @@ def acad_dashboard(request):
     }
     return render(request, 'base/acad/acad_dashboard.html', context)
 
+
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def approved_request_acad(request, request_id):
 
     IPrequest = IPMarkRemovalRequest.objects.get(id=request_id)
@@ -757,6 +847,10 @@ def approved_request_acad(request, request_id):
 
     return redirect('base:acad-dashboard')
 
+
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def approve_leave_request(request, request_id):
 
     leaveRequest = FacultyLeaveOfAbsence.objects.get(id=request_id)
@@ -788,6 +882,7 @@ def approve_leave_request(request, request_id):
     leaveRequest.save()
 
     return redirect('base:acad-dashboard')
+
 
 
 def display_request_form(request, request_id):
@@ -846,6 +941,10 @@ def ip_approved(request):
     return render(request, 'base/acad/ip_approved.html', context)
 """
 
+
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def get_ip_requests(request, approved_by_acad=None):
   filters = {'approved_by_dean': True}
   if approved_by_acad is not None:
@@ -853,6 +952,10 @@ def get_ip_requests(request, approved_by_acad=None):
   IPrequest = IPMarkRemovalRequest.objects.prefetch_related('additionalfile_set', 'ipmark_set').filter(**filters)
   return IPrequest
 
+
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def ip_base(request):
   IPrequest = get_ip_requests(request)  # All (approved by Dean)
   pending_request = get_ip_requests(request, approved_by_acad=False)
@@ -869,6 +972,10 @@ def ip_base(request):
   }
   return render(request, 'base/acad/ip_base.html', context)
 
+
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def ip_pending(request):
   IPrequest = get_ip_requests(request, approved_by_acad=False)
   pending_request = IPrequest
@@ -881,6 +988,10 @@ def ip_pending(request):
   }
   return render(request, 'base/acad/ip_pending.html', context)
 
+
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def ip_approved(request):
   IPrequest = get_ip_requests(request, approved_by_acad=True)
   pending_request = []  # Empty list for pending
@@ -894,6 +1005,9 @@ def ip_approved(request):
   return render(request, 'base/acad/ip_approved.html', context)
 
 
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def get_leave_requests(request, approved_by_acad=None):
   filters = {'approved_by_dean': True}
   if approved_by_acad is not None:
@@ -903,6 +1017,8 @@ def get_leave_requests(request, approved_by_acad=None):
 
 
 
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def leave_base(request):
   leaveRequest = get_leave_requests(request)  # All (approved by Dean)
   context = {
@@ -912,6 +1028,10 @@ def leave_base(request):
   }
   return render(request, 'base/acad/leave_base.html', context)
 
+
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def leave_pending(request):
   leaveRequest = get_leave_requests(request, approved_by_acad=False)
   context = {
@@ -919,6 +1039,10 @@ def leave_pending(request):
   }
   return render(request, 'base/acad/leave_pending.html', context)
 
+
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def leave_approved(request):
   leaveRequest = get_leave_requests(request, approved_by_acad=True)
   context = {
@@ -927,6 +1051,8 @@ def leave_approved(request):
   return render(request, 'base/acad/leave_approved.html', context)
 
 
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def acad_departments(request):
     departments = Department.objects.all()
     # Fetch related models for each department
@@ -952,6 +1078,10 @@ def acad_departments(request):
     
     return render(request, 'base/acad/departments.html', context)
 
+
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def department_page(request, dept_id):
     department = Department.objects.get(pk=dept_id)
     files = File.objects.filter(department = department)
@@ -973,6 +1103,10 @@ def department_page(request, dept_id):
     }
     return render(request, 'base/acad/department_page.html', context)
 
+
+
+@login_required
+@group_required('acad', permitted_group_mappings=permitted_group_mappings)
 def acad_approve_course_guide(request, course_guide_id):
     course_guide = CourseGuide.objects.get(pk=course_guide_id)
     course_guide.approved_by_ACAD = True
@@ -986,6 +1120,8 @@ def acad_approve_course_guide(request, course_guide_id):
 
 #REGISTRAR VIEWS
 
+@login_required
+@group_required('registrar', permitted_group_mappings=permitted_group_mappings)
 def registrar_home(request):
     IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_ACAD = True)
     context = {
@@ -993,6 +1129,10 @@ def registrar_home(request):
     }
     return render(request, 'base/registrar/home.html', context)
 
+
+
+@login_required
+@group_required('registrar', permitted_group_mappings=permitted_group_mappings)
 def registrar_pending_ip(request):
     IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_registrar = False)
     context = {
@@ -1000,6 +1140,10 @@ def registrar_pending_ip(request):
     }
     return render(request, 'base/registrar/pending.html', context)
 
+
+
+@login_required
+@group_required('registrar', permitted_group_mappings=permitted_group_mappings)
 def registrar_received_ip(request):
     IPrequest = IPMarkRemovalRequest.objects.filter(approved_by_registrar = True)
     context = {
@@ -1007,6 +1151,10 @@ def registrar_received_ip(request):
     }
     return render(request, 'base/registrar/received.html', context)
 
+
+
+@login_required
+@group_required('registrar', permitted_group_mappings=permitted_group_mappings)
 def registrar_receive_ip_request(request, request_id):
     IPrequest = IPMarkRemovalRequest.objects.get(id = request_id)
     IPrequest.approved_by_registrar = True
@@ -1017,6 +1165,8 @@ def registrar_receive_ip_request(request, request_id):
 
 
 
+@login_required
+@group_required('hr', permitted_group_mappings=permitted_group_mappings)
 def hr_home(request):
     leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_ACAD = True)
     context = {
@@ -1024,6 +1174,10 @@ def hr_home(request):
     }
     return render(request, 'base/hr/home.html', context)
 
+
+
+@login_required
+@group_required('hr', permitted_group_mappings=permitted_group_mappings)
 def hr_pending_leave(request):
     leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_HR = False)
     context = {
@@ -1031,6 +1185,10 @@ def hr_pending_leave(request):
     }
     return render(request, 'base/hr/pending.html', context)
 
+
+
+@login_required
+@group_required('hr', permitted_group_mappings=permitted_group_mappings)
 def hr_approved_leave(request):
     leaveRequest = FacultyLeaveOfAbsence.objects.filter(approved_by_HR = True)
     context = {
@@ -1038,6 +1196,10 @@ def hr_approved_leave(request):
     }
     return render(request, 'base/hr/approved.html', context)
 
+
+
+@login_required
+@group_required('hr', permitted_group_mappings=permitted_group_mappings)
 def hr_approve_leave_request(request, request_id):
     leaveRequest = FacultyLeaveOfAbsence.objects.get(id = request_id)
     leaveRequest.approved_by_HR = True
@@ -1045,6 +1207,9 @@ def hr_approve_leave_request(request, request_id):
     leaveRequest.status = 'Approved'
     leaveRequest.save()
     return HttpResponseRedirect(request.META['HTTP_REFERER'])
+
+
+
 
 def display_leave_request_form(request, request_id):
 

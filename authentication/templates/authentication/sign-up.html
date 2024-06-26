@@ -151,7 +151,7 @@
                         </div>
                         <div class="col-md-7">
                           <div class="mb-3">
-                              <input type="email" name="email" class="form-control form-control-lg" placeholder="Company Email" required>
+                              <input type="email" name="email" id="emp_email" class="form-control form-control-lg" placeholder="Company Email" required>
                           </div>
                       </div>
 
@@ -239,91 +239,6 @@
 
 
 
-<!--
-
-<script>
-  $(document).ready(function() {
-    $('#student_form').submit(function(e) {
-        e.preventDefault();
-        $.ajax({
-            type: 'POST',
-            url: $(this).attr('action'),
-            data: new FormData(this),
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Registration submitted successfully!',
-                        text: response.message,
-                    }).then(function() {
-                        
-                        window.location.href = '/login/';
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.message,
-                    });
-                }
-            },
-            error: function(xhr, errmsg, err) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while processing your request. Please try again later.',
-                });
-            }
-        });
-    });
-});
-
-</script>
-
-<script>
-  $(document).ready(function() {
-    $('#faculty_form').submit(function(e) {
-        e.preventDefault();
-        $.ajax({
-            type: 'POST',
-            url: $(this).attr('action'),
-            data: new FormData(this),
-            processData: false,
-            contentType: false,
-            success: function(response) {
-                if (response.success) {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Registration submitted successfully!',
-                        text: response.message,
-                    }).then(function() {
-                        
-                        window.location.href = '/login/';
-                    });
-                } else {
-                    Swal.fire({
-                        icon: 'error',
-                        title: 'Error',
-                        text: response.message,
-                    });
-                }
-            },
-            error: function(xhr, errmsg, err) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Error',
-                    text: 'An error occurred while processing your request. Please try again later.',
-                });
-            }
-        });
-    });
-});
-
-</script>
-
--->
 
 <script>
   
@@ -354,7 +269,7 @@
                   title: 'Registration submitted successfully!',
                   text: response.message,
                 }).then(function() {
-                  window.location.href = '/login/';
+                  window.location.href = '/account/login/';
                 });
               } else {
                 Swal.fire({
@@ -384,7 +299,7 @@
 
 <script>
   $(document).ready(function() {
-    const emailInput = $('input[name="email"]');
+    const emailInput = $('#emp_email');
     const emailBtn = $('#employee_btn');
   
     // Enable button by default (optional)

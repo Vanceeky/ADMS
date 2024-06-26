@@ -153,21 +153,25 @@
         <div class="col-xl-4 col-lg-5 col-md-7 mx-auto">
           <div class="card z-index-0">
             <div class="card-header text-center">
-              <h5>ADMS <br> Office of Academic Affairs</h5>
+              <h5><img src="/static/assets/img/ACAD.png" class="avatar avatar-lg"> <br> Office of Academic Affairs</h5>
               <p class="text-sm font-weight-bold mb-2 text-secondary text-border d-inline z-index-2 bg-white">
                 Login to your account
               </p> 
             </div>
           
             <div class="card-body mt-0">
-
+              {% if user.is_authenticated %}
+              <p>You are already logged in. You cannot access the registration page.</p>
+              <p><a href="{% url 'authentication:logout-user' %}">Logout</a></p>
+              {% else %}
               {% block content %}
 
               {% endblock %}
 
+              {% endif  %}
 
              
-              <p class="text-sm mt-3 mb-0">Forgotten your password? <a href="/accounts/password/reset/" class="text-dark font-weight-bolder">click here</a></p>
+              <p class="text-sm mt-3 mb-0">Forgotten your password? <a href="#" class="text-dark font-weight-bolder">click here</a></p>
               
 
             </div>

@@ -12,7 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
-
+from django.contrib.auth.decorators import login_required
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -29,7 +29,7 @@ DEBUG = True
 DEBUG404 = True
 
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['127.0.0.1', '10.222.89.43', 'localhost']
 
 #CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1']
 
@@ -95,6 +95,7 @@ ROOT_URLCONF = 'ADMS.urls'
 
 # Set the allauth adapter to be the 2FA adapter.
 #ACCOUNT_ADAPTER = 'allauth_2fa.adapter.OTPAdapter'
+
 LOGIN_URL = '/account/login/'
 LOGIN_REDIRECT_URL = '/get_login_redirect_url/'
 LOGOUT_REDIRECT_URL = '/account/login/'
@@ -206,9 +207,13 @@ ACCOUNT_SIGNUP_REDIRECT_URL = '/accounts/confirm-email/' """
 
 #LOGIN_REDIRECT_URL = '/your-desired-page/' 
 
-EMAIL_HOST = 'sandbox.smtp.mailtrap.io'
-EMAIL_HOST_USER = '6d6a5edefc2f28'
-EMAIL_HOST_PASSWORD = '9a75c3728d6594'
-EMAIL_PORT = '2525'
+#EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #smtp
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'jinmori3500@gmail.com'
+EMAIL_HOST_PASSWORD = 'zphljcydzydpfaen' #zphl jcyd zydp faen
+
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend' #smtp
+
+EMAIL_USE_TLS = True
+EMAIL_PORT = 587

@@ -14,6 +14,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import reverse
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
+from base.decorators import prevent_logged_in_users
 
 # Create your views here.
 
@@ -94,6 +95,9 @@ def logout_user(request):
     logout(request)
     return redirect('/account/login')
 
+
+
+@prevent_logged_in_users
 def register_page(request):
     departments = Department.objects.all()
     courses = Course.objects.all()
@@ -104,84 +108,6 @@ def register_page(request):
     }
     return render(request, 'authentication/sign-up.html', context)
 
-def register_user2(request):
-    if request.method == 'POST':
-        course = request.POST.get('course')
-        student_number = request.POST.get('student_number')
-        year_level = request.POST.get('year_level')
-        firstname = request.POST.get('firstname')
-        lastname = request.POST.get('lastname')
-        email = request.POST.get('email')
-        proof_of_enrollment = request.FILES.get('proof_of_enrollment')
-
-        try:
-            user = User.objects.create_user(
-                username=student_number,
-                email=email,
-                first_name=firstname,
-                last_name=lastname,
-                password=student_number,
-                is_active=False  # Set user inactive until approved
-            )
-            user.save()
-
-            student = Student.objects.create(
-                user=user,
-                course=Course.objects.get(id=course),
-                student_id=student_number,
-                year_level=year_level,
-                proof_of_enrollment=proof_of_enrollment
-            )
-            student.save()
-
-            messages.success(request, 'Registration submitted successfully! You will be notified within 24 hours regarding the approval status of your registration.')  # Sweetalert2 success message with approval wait time
-
-            return redirect('authentication:register-page') 
-
-        except IntegrityError as e:
-            messages.error(request, f'Registration failed: {e}')  
-            return redirect('authentication:register-page')
-
-    return redirect('authentication:register-page') 
-
-
-
-def register_user3(request):
-    if request.method == 'POST':
-        course = request.POST.get('course')
-        student_number = request.POST.get('student_number')
-        year_level = request.POST.get('year_level')
-        firstname = request.POST.get('firstname')
-        lastname = request.POST.get('lastname')
-        email = request.POST.get('email')
-        proof_of_enrollment = request.FILES.get('proof_of_enrollment')
-
-        try:
-            user = User.objects.create_user(
-                username=student_number,
-                email=email,
-                first_name=firstname,
-                last_name=lastname,
-                password=student_number,
-                is_active=False  # Set user inactive until approved
-            )
-
-            student = Student.objects.create(
-                user=user,
-                course=Course.objects.get(id=course),
-                student_id=student_number,
-                year_level=year_level,
-                proof_of_enrollment=proof_of_enrollment
-            )
-
-            message = 'You will be notified within 24 hours regarding the approval status of your registration.'
-
-            return JsonResponse({'success': True, 'message': message})
-
-        except IntegrityError as e:
-            return JsonResponse({'success': False, 'message': f'Registration failed: {e}'})
-
-    return redirect('authentication:register-page')
 
 
 def register_user(request):
@@ -222,11 +148,11 @@ def register_user(request):
 
 
             # Email notification content
-            subject = 'Lyceum Registration Confirmation'
+            subject = 'Lyceum-AMDS Registration Confirmation'
             message = f"""
             Hi {firstname} {lastname},
 
-            This email confirms that you have successfully registered for an account at Lyceum.
+            This email confirms that you have successfully registered for an account at Lyceum ADMS.
 
             Your login credentials are:
             Username: {student_number}
@@ -238,7 +164,7 @@ def register_user(request):
             Thank you for choosing Lyceum!
 
             Sincerely,
-            Lyceum Registration Team
+            Lyceum Academic Affairs
             """
 
             # Send email notification to the registered user
@@ -258,6 +184,7 @@ def register_user(request):
             return JsonResponse({'success': False, 'message': f'Registration failed: {e}'})
 
     return redirect('authentication:register-page')
+
 
 def register_employee(request):
     if request.method == "POST":

@@ -1,0 +1,34 @@
+Automated Document Processing and File Archiving System:
+
+APPS:
+- Home
+- Dashboard
+- Departments
+- Authentication
+
+To-Do: May 29, 2024
+
+- create course model ok
+- create department model ok
+- create faculty user model
+- create student user model ok
+
+- Login/Registration Functionality 
+- Forgot password function
+
+Add: 
+Password validation / create new password
+
+
+if faculty.approved request = show notification
+
+TO-DO: Later June 2, 2024
+- Faculty Dashboard
+- Receive request - display notification
+- input grade
+- dean dashboard - display notification
+
+
+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
+
+- 

@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg blur border-radius-lg top-0 z-index-3 shadow position-absolute mt-4 py-2 start-0 end-0 mx-4">
     <div class="container-fluid">
-      <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="/static/pages/dashboard.html">
+      <a class="navbar-brand font-weight-bolder ms-lg-0 ms-3 " href="#">
         Lyceum-Northwestern University
       </a>
       <button class="navbar-toggler shadow-none ms-2" type="button" data-bs-toggle="collapse" data-bs-target="#navigation" aria-controls="navigation" aria-expanded="false" aria-label="Toggle navigation">
@@ -14,13 +14,119 @@
         <ul class="navbar-nav mx-auto">
 
           {% if request.user.is_authenticated %}
-          <li class="nav-item">
-            <a class="nav-link me-2" href="{% url 'authentication:register-page' %}">
-              <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
-              Account
-            </a>
-          </li>
+            {% for group in request.user.groups.all %}
+                {% if group.name == 'student' %}
+
+
+                <li class="nav-item">
+
+      
+                  <a class="nav-link me-2" href="{% url 'base:student-dashboard' %}">
+                    <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
+                    Student Account
+                  </a>
+            
+            
+      
+                </li>
+
+                {% endif %}
+
+                {% if group.name == 'faculty' %}
+
+
+                <li class="nav-item">
+
+      
+                  <a class="nav-link me-2" href="{% url 'base:faculty-dashboard' %}">
+                    <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
+                    Faculty Account
+                  </a>
+            
+            
+      
+                </li>
+
+                {% endif %}
+
+                {% if group.name == 'dean' %}
+
+
+                <li class="nav-item">
+
+      
+                  <a class="nav-link me-2" href="{% url 'base:dean-dashboard' %}">
+                    <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
+                    Dean Account
+                  </a>
+            
+            
+      
+                </li>
+
+                {% endif %}
+
+                {% if group.name == 'acad' %}
+
+
+                <li class="nav-item">
+
+      
+                  <a class="nav-link me-2" href="{% url 'base:acad-dashboard' %}">
+                    <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
+                    ACAD Account
+                  </a>
+            
+            
+      
+                </li>
+
+                {% endif %}
+
+                {% if group.name == 'registrar' %}
+
+
+                <li class="nav-item">
+
+      
+                  <a class="nav-link me-2" href="{% url 'base:registrar-home' %}">
+                    <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
+                    Registrar Account
+                  </a>
+            
+            
+      
+                </li>
+
+                {% endif %}
+
+
+                {% if group.name == 'hr' %}
+
+
+                <li class="nav-item">
+
+      
+                  <a class="nav-link me-2" href="{% url 'base:hr-home' %}">
+                    <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
+                    HR Account
+                  </a>
+            
+            
+      
+                </li>
+
+                {% endif %}
+
+
+            {% endfor %}
+        
           {% else %}
+
+
+      
+
+
           <li class="nav-item">
             <a class="nav-link me-2" href="{% url 'authentication:register-page' %}">
               <i class="fas fa-user-circle opacity-6 text-dark me-1"></i>
